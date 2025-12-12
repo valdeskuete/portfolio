@@ -1,0 +1,612 @@
+/* --- IMPORTATION DE LA POLICE (Poppins) --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* --- RÉINITIALISATION GÉNÉRALE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    scroll-behavior: smooth; 
+    font-family: 'Poppins', sans-serif;
+    /* Améliore le rendu de la police */
+    text-rendering: optimizeLegibility; 
+}
+
+/* --- VARIABLES DE COULEURS (Thème Dark Néon) --- */
+:root {
+    --bg-color: #1f242d;       
+    --second-bg-color: #323946; 
+    --text-color: #d1d1d1;    /* LÉGÈREMENT GRIS (moins agressif que le blanc pur) */
+    --main-color: #0ef;        
+    --neon-glow: 0 0 1rem var(--main-color), 0 0 2rem var(--main-color); /* Nouvelle variable de Lueur */
+}
+
+html {
+    font-size: 62.5%; /* Base pour les rem */
+    overflow-x: hidden;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* --- HEADER / NAVIGATION --- */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 9%;
+    background: var(--bg-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 2.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+    cursor: default;
+}
+
+/* Effet néon sur le ".Tech" */
+.neon-text {
+    color: var(--main-color);
+    text-shadow: var(--neon-glow); /* Utilisation de la nouvelle variable */
+}
+.navbar a {
+    font-size: 1.7rem;
+    color: var(--text-color);
+    margin-left: 4rem;
+    transition: .3s;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: var(--main-color);
+}
+
+#menu-icon {
+    font-size: 3.6rem;
+    color: var(--text-color);
+    display: none; /* Caché sur PC */
+    cursor: pointer;
+}
+
+/* --- SECTIONS (Général) --- */
+section {
+    min-height: 100vh;
+    padding: 10rem 9% 2rem;
+}
+
+span {
+    color: var(--main-color);
+}
+
+/* --- ACCUEIL (HOME) --- */
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-content h3 {
+    font-size: 3.2rem;
+    font-weight: 700;
+}
+
+.home-content h3:nth-of-type(2) {
+    margin-bottom: 2rem;
+}
+
+.home-content h1 {
+    font-size: 5.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.home-content p {
+    font-size: 1.6rem;
+}
+
+/* Boutons réseaux sociaux ronds avec effet lueur */
+.social-media a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    background: transparent;
+    border: .2rem solid var(--main-color);
+    border-radius: 50%;
+    font-size: 2rem;
+    color: var(--main-color);
+    margin: 3rem 1.5rem 3rem 0;
+    transition: .5s ease;
+}
+
+.social-media a:hover {
+    background: var(--main-color);
+    color: var(--second-bg-color);
+    box-shadow: 0 0 1rem var(--main-color); /* Lueur */
+}
+
+.btn {
+    display: inline-block;
+    padding: 1rem 2.8rem;
+    background: var(--main-color);
+    border-radius: 4rem;
+    box-shadow: 0 0 1rem var(--main-color);
+    font-size: 1.6rem;
+    color: var(--second-bg-color);
+    letter-spacing: .1rem;
+    font-weight: 600;
+    transition: .5s ease;
+}
+
+.btn:hover {
+    box-shadow: none; /* Enlève la lueur au survol pour effet "clic" */
+}
+
+/* Image profil avec animation flottante */
+.home-img img {
+    width: 35vw;
+    border-radius: 50%; /* Rond si l'image est carrée, sinon mettre 20px */
+    box-shadow: 0 0 25px var(--main-color);
+    border: 2px solid var(--main-color);
+    animation: floatImage 4s ease-in-out infinite;
+}
+
+@keyframes floatImage {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-2.4rem); }
+    100% { transform: translateY(0); }
+}
+
+/* --- TITRES DE SECTIONS --- */
+.heading {
+    text-align: center;
+    font-size: 4.5rem;
+    margin-bottom: 4rem;
+}
+
+/* --- SERVICES --- */
+.services {
+    background: var(--second-bg-color);
+}
+
+.services-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.services-box {
+    flex: 1 1 30rem;
+    background: var(--bg-color);
+    padding: 3rem 2rem 4rem;
+    border-radius: 2rem;
+    text-align: center;
+    border: .2rem solid var(--bg-color);
+    transition: .5s ease;
+}
+
+.services-box:hover {
+    border-color: var(--main-color);
+    transform: scale(1.02);
+}
+
+.services-box i {
+    font-size: 7rem;
+    color: var(--main-color);
+}
+
+.services-box h3 {
+    font-size: 2.6rem;
+}
+
+.services-box p {
+    font-size: 1.6rem;
+    margin: 1rem 0 3rem;
+}
+
+/* --- COMPÉTENCES (SKILLS) --- */
+.skills h2 {
+    margin-bottom: 5rem;
+}
+
+.skills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5rem;
+}
+
+.skills-column {
+    flex: 1 1 40rem;
+}
+
+.skills-column .title {
+    font-size: 2.5rem;
+    margin: 0 0 1.5rem;
+}
+
+.skills-box {
+    border: .2rem solid var(--main-color); /* Encadré néon */
+    border-radius: .5rem;
+    padding: .5rem 1.5rem;
+}
+
+.skills-content .progress {
+    padding: 1rem 0;
+}
+
+.skills-content .progress h3 {
+    font-size: 1.7rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.skills-content .progress .bar {
+    height: 2.5rem;
+    border-radius: .6rem;
+    border: .2rem solid var(--main-color);
+    padding: .5rem;
+    margin: 1rem 0;
+}
+
+.skills-content .progress .bar span {
+    display: block;
+    height: 100%;
+    border-radius: .3rem;
+    background: var(--main-color);
+    width: 0%; /* Sera rempli par l'animation ou JS plus tard, pour l'instant : */
+    animation: fillBar 2s forwards; 
+}
+
+/* Animation simple pour remplir les barres */
+@keyframes fillBar {
+    to { width: 80%; } /* Valeur par défaut */
+}
+
+/* Liste des qualités */
+.skills-content ul {
+    list-style: none;
+}
+.skills-content ul li {
+    font-size: 1.7rem;
+    padding: 1rem 0;
+}
+.skills-content ul li i {
+    color: var(--main-color);
+    margin-right: 1rem;
+}
+
+/* --- PORTFOLIO --- */
+.portfolio {
+    background: var(--second-bg-color);
+}
+
+.portfolio-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.portfolio-box {
+    position: relative;
+    border-radius: 2rem;
+    box-shadow: 0 0 1rem var(--bg-color);
+    overflow: hidden;
+    display: flex;
+    height: 300px; /* Hauteur fixe pour uniformiser */
+}
+
+.portfolio-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* L'image remplit la case sans se déformer */
+    transition: .5s ease;
+}
+
+.portfolio-box:hover img {
+    transform: scale(1.1);
+}
+
+.portfolio-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.1), var(--main-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 0 4rem;
+    transform: translateY(100%); /* Caché par défaut */
+    transition: .5s ease;
+}
+
+.portfolio-box:hover .portfolio-layer {
+    transform: translateY(0); /* Apparition au survol */
+}
+
+.portfolio-layer h4 {
+    font-size: 3rem;
+    color: #fff; /* Force le blanc car le fond devient cyan */
+}
+
+.portfolio-layer p {
+    font-size: 1.6rem;
+    margin: .3rem 0 1rem;
+    color: #fff;
+}
+
+.portfolio-layer a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 5rem;
+    height: 5rem;
+    background: #fff;
+    border-radius: 50%;
+}
+
+.portfolio-layer a i {
+    font-size: 2rem;
+    color: #333;
+}
+
+/* --- CONTACT --- */
+.contact h2 {
+    margin-bottom: 3rem;
+}
+
+.contact form {
+    max-width: 70rem;
+    margin: 1rem auto;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.contact form .input-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.contact form .input-box input,
+.contact form textarea {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    background: var(--second-bg-color);
+    border-radius: .8rem;
+    margin: .7rem 0;
+    border: .2rem solid transparent;
+}
+
+.contact form .input-box input {
+    width: 49%;
+}
+
+/* Focus : Quand on clique dans le champ, bordure néon */
+.contact form .input-box input:focus,
+.contact form textarea:focus {
+    border-color: var(--main-color);
+}
+
+.contact form textarea {
+    resize: none;
+}
+
+.contact form .btn {
+    margin-top: 2rem;
+    cursor: pointer;
+}
+
+/* --- FOOTER --- */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 2rem 9%;
+    background: var(--second-bg-color);
+}
+
+.footer-text p {
+    font-size: 1.6rem;
+}
+
+.footer-iconTop a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: .8rem;
+    background: var(--main-color);
+    border-radius: .8rem;
+    transition: .5s ease;
+}
+
+.footer-iconTop a:hover {
+    box-shadow: 0 0 1rem var(--main-color);
+}
+
+.footer-iconTop a i {
+    font-size: 2.4rem;
+    color: var(--second-bg-color);
+}
+
+/* --- RESPONSIVE (POUR TÉLÉPHONES ET TABLETTES) --- */
+@media (max-width: 1200px) {
+    html { font-size: 55%; }
+}
+
+@media (max-width: 991px) {
+    .header { padding: 2rem 3%; }
+    section { padding: 10rem 3% 2rem; }
+    .services { padding-bottom: 7rem; }
+    .portfolio { padding-bottom: 7rem; }
+    .contact { min-height: auto; }
+    .footer { padding: 2rem 3%; }
+}
+
+@media (max-width: 768px) {
+    #menu-icon { display: block; }
+
+    .navbar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        padding: 1rem 3%;
+        background: var(--bg-color);
+        border-top: .1rem solid rgba(0,0,0,0.2);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,0.2);
+        display: none; /* Caché par défaut */
+    }
+
+    /* Cette classe sera ajoutée via JavaScript */
+    .navbar.active {
+        display: block;
+    }
+
+    .navbar a {
+        display: block;
+        font-size: 2rem;
+        margin: 3rem 0;
+    }
+
+    .home {
+        flex-direction: column;
+    }
+
+    .home-content h3 { font-size: 2.6rem; }
+    .home-content h1 { font-size: 5rem; }
+    
+    .home-img img {
+        width: 70vw;
+        margin-top: 4rem;
+    }
+
+    .services h2 { margin-bottom: 3rem; }
+    
+    .portfolio-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 617px) {
+    .portfolio-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 450px) {
+    html { font-size: 50%; }
+    .contact form .input-box input { width: 100%; }
+}
+
+
+/* --- TÉMOIGNAGES (TESTIMONIALS) --- */
+.testimonials {
+    background: var(--bg-color); /* Retour au fond principal */
+}
+
+.testimonial-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.testimonial-box {
+    flex: 1 1 30rem;
+    background: var(--second-bg-color); /* Fond de la carte */
+    padding: 3rem 2rem 4rem;
+    border-radius: 2rem;
+    text-align: center;
+    border: .2rem solid var(--second-bg-color);
+    transition: .5s ease;
+    min-height: 350px; /* Hauteur minimale pour l'uniformité */
+    position: relative;
+}
+
+.testimonial-box:hover {
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px var(--main-color); /* Lueur au survol */
+}
+
+.testimonial-box i {
+    font-size: 3rem;
+    color: var(--main-color);
+    margin-bottom: 2rem;
+}
+
+.testimonial-box p {
+    font-size: 1.6rem;
+    margin-bottom: 3rem;
+    font-style: italic;
+    color: #ccc;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    position: absolute; /* Positionnement au bas de la carte */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
+
+.client-info img {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    border: .2rem solid var(--main-color);
+    margin-right: 1.5rem;
+    object-fit: cover;
+}
+
+.client-details h4 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--main-color);
+}
+
+.client-details p {
+    font-size: 1.4rem;
+    font-style: normal;
+    margin: 0;
+    color: var(--text-color);
+}
+
+/* --- RESPONSIVE UPDATE (Ajouter le lien "Témoignages" dans le menu) --- */
+@media (max-width: 768px) {
+    .testimonial-container {
+        flex-direction: column;
+    }
+}
+/* Appliquer la lueur au mot clé du titre des sections */
+.heading span,
+.home-content h3 span,
+.home-content h1 {
+    text-shadow: var(--neon-glow);
+}
