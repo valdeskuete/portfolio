@@ -581,3 +581,114 @@ span {
     html { font-size: 50%; }
     .contact form .input-box input { width: 100%; }
 }
+
+/* --- EDUCATION / TIMELINE --- */
+.education {
+    background: var(--bg-color); /* Utilisation de la couleur de fond principale */
+}
+
+.timeline-items {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.timeline-items::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: var(--main-color);
+    left: calc(50% - 1px); /* Centre la ligne verticale */
+    box-shadow: 0 0 10px var(--main-color);
+}
+
+.timeline-item {
+    margin-bottom: 40px;
+    width: 100%;
+    position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+    padding-right: calc(50% + 30px); /* Place l'élément à gauche */
+    text-align: right;
+}
+
+.timeline-item:nth-child(even) {
+    padding-left: calc(50% + 30px); /* Place l'élément à droite */
+}
+
+.timeline-dot {
+    height: 20px;
+    width: 20px;
+    background-color: var(--main-color);
+    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    position: absolute;
+    left: calc(50% - 10px);
+    border-radius: 50%;
+    top: 10px;
+    z-index: 10;
+}
+
+.timeline-date {
+    font-size: 1.4rem;
+    color: var(--main-color);
+    margin: 6px 0 15px;
+    font-weight: 600;
+}
+
+.timeline-content {
+    background-color: var(--second-bg-color);
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--second-bg-color);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: .3s;
+}
+
+.timeline-content:hover {
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px var(--main-color);
+    transform: translateY(-5px); /* Léger soulèvement au survol */
+}
+
+.timeline-content h3 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+.timeline-content p {
+    font-size: 1.6rem;
+    line-height: 1.5;
+}
+
+/* --- MEDIA QUERIES pour la TIMELINE --- */
+@media (max-width: 768px) {
+    .timeline-items::before {
+        left: 7px; /* Décale la ligne à gauche sur mobile */
+    }
+
+    .timeline-item {
+        padding-left: 30px; /* Réduit l'espace sur la gauche */
+        padding-right: 0;
+        width: 100%;
+    }
+    
+    .timeline-item:nth-child(odd) {
+        padding-right: 0; /* Supprime l'alignement à droite */
+        padding-left: 30px;
+        text-align: left; /* Aligne tout à gauche */
+    }
+    
+    .timeline-item:nth-child(even) {
+        padding-left: 30px; /* Aligne tout à gauche */
+    }
+    
+    .timeline-dot {
+        left: 0; /* Place le point sur la ligne */
+    }
+}
