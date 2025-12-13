@@ -294,20 +294,17 @@
             </div>
         </div>
     </section>
-
     <section class="contact" id="contact">
         <h2 class="heading">Contactez <span>Moi</span></h2>
-
+    
         <form action="https://formsubmit.co/valdeskuete8@gmail.com" method="POST">
             <div class="input-box">
                 <input type="text" name="Nom" placeholder="Nom complet" required>
-                
                 <input type="email" name="Email" placeholder="Adresse Email" required>
             </div>
             
             <div class="input-box">
                 <input type="tel" name="Telephone" placeholder="Numéro de téléphone">
-                
                 <input type="text" name="Sujet" placeholder="Sujet (ex: Dépannage, RDV)">
             </div>
             
@@ -316,17 +313,19 @@
             <input type="hidden" name="_next" value="https://valdeskuete.github.io/portfolio/">
             <input type="hidden" name="_subject" value="Nouveau message de votre Portfolio !">
             <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table"> <input type="submit" value="Envoyer le message" class="btn">
+            <input type="hidden" name="_template" value="table">
+            
+            <input type="submit" value="Envoyer le message" class="btn">
         </form>
         
         <div class="contact-info-direct" style="text-align: center; margin-top: 2rem; color: white;">
-            <p><i class="fa-solid fa-phone"></i> 681 03 15 88/ 698 33 43 81</p>
+            <p><i class="fa-solid fa-phone"></i> 681 03 15 88 / 698 33 43 81</p>
             <p><i class="fa-solid fa-location-dot"></i> Douala, Bonamoussadi</p>
         </div>
         
         <div class="map-container" style="margin-top: 2rem;">
             <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31839.20819777174!2d9.7347395!3d4.0932175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610e7561570d3d%3A0xc3b44b2046f40669!2sBonamoussadi%2C%20Douala!5e0!3m2!1sfr!2scm!4v1700000000000!5m2!1sfr!2scm" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15918.794645281985!2d9.73916325!3d4.081152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610e3037f5945b%3A0x6b978189874a9a03!2sBonamoussadi%2C%20Douala!5e0!3m2!1sfr!2scm!4v1700000000000" 
                 width="100%" 
                 height="450" 
                 style="border:0;" 
@@ -335,41 +334,30 @@
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
         </div>
+        
+        <div id="disqus_thread" class="disqus-container" style="margin-top: 3rem;"></div>
     </section>
-
+    
     <footer class="footer">
-        <div class="footer-text">
-            <p>Copyright © 2025 by Valdes | Tous droits réservés.</p>
-        </div>
-        <div class="footer-iconTop">
-            <a href="#home"><i class="fa-solid fa-arrow-up"></i></a>
-        </div>
-    </footer>
-
+        </footer>
+    
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="script.js"></script>
-
     
-    <div id="disqus_thread" class="disqus-container"></div>
-
     <script>
-        /**
-        * CONFIGURATION VARIABLES: Ceci est le code pour charger Disqus.
-        */
         var disqus_config = function () {
-            // Remplacez par l'URL de votre site publié
             this.page.url = 'https://valdeskuete.github.io/portfolio/';  
-            // Identifiant unique de la page (laisse tel quel si tu n'as qu'une seule page de portfolio)
             this.page.identifier = 'portfolio_accueil'; 
         };
         
-        (function() { // Ne pas modifier cette section
+        (function() { 
             var d = document, s = d.createElement('script');
-            // VEUILLEZ VÉRIFIER QUE L'IDENTIFIANT SUIVANT EST CORRECT
             s.src = 'https://valdeskuete.disqus.com/embed.js'; 
             s.setAttribute('data-timestamp', +new Date());
             (d.head || d.body).appendChild(s);
         })();
     </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
 </html>
+    
+    
