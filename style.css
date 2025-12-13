@@ -11,21 +11,19 @@
     outline: none;
     scroll-behavior: smooth; 
     font-family: 'Poppins', sans-serif;
-    /* Améliore le rendu de la police */
-    text-rendering: optimizeLegibility; 
 }
 
-/* --- VARIABLES DE COULEURS (Thème Dark Néon) --- */
+/* --- VARIABLES --- */
 :root {
-    --bg-color: #1f242d;       
+    --bg-color: #1f242d;        
     --second-bg-color: #323946; 
-    --text-color: #d1d1d1;    /* LÉGÈREMENT GRIS (moins agressif que le blanc pur) */
+    --text-color: #fff;     
     --main-color: #0ef;        
-    --neon-glow: 0 0 1rem var(--main-color), 0 0 2rem var(--main-color); /* Nouvelle variable de Lueur */
+    --neon-glow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
 }
 
 html {
-    font-size: 62.5%; /* Base pour les rem */
+    font-size: 62.5%; 
     overflow-x: hidden;
 }
 
@@ -34,7 +32,7 @@ body {
     color: var(--text-color);
 }
 
-/* --- HEADER / NAVIGATION --- */
+/* --- HEADER --- */
 .header {
     position: fixed;
     top: 0;
@@ -46,6 +44,14 @@ body {
     justify-content: space-between;
     align-items: center;
     z-index: 100;
+    transition: .3s;
+}
+
+/* Style quand on scrolle (ajouté) */
+.header.sticky {
+    background: var(--second-bg-color);
+    padding: 1.2rem 9%; /* Plus petit au scroll */
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
 }
 
 .logo {
@@ -55,27 +61,29 @@ body {
     cursor: default;
 }
 
-/* Effet néon sur le ".Tech" */
 .neon-text {
     color: var(--main-color);
-    text-shadow: var(--neon-glow); /* Utilisation de la nouvelle variable */
+    text-shadow: var(--neon-glow);
 }
+
 .navbar a {
     font-size: 1.7rem;
     color: var(--text-color);
     margin-left: 4rem;
     transition: .3s;
+    font-weight: 500;
 }
 
 .navbar a:hover,
 .navbar a.active {
     color: var(--main-color);
+    text-shadow: 0 0 5px var(--main-color); /* Petit effet néon au survol */
 }
 
 #menu-icon {
     font-size: 3.6rem;
     color: var(--text-color);
-    display: none; /* Caché sur PC */
+    display: none;
     cursor: pointer;
 }
 
@@ -89,7 +97,7 @@ span {
     color: var(--main-color);
 }
 
-/* --- ACCUEIL (HOME) --- */
+/* --- HOME --- */
 .home {
     display: flex;
     justify-content: center;
@@ -113,9 +121,9 @@ span {
 
 .home-content p {
     font-size: 1.6rem;
+    margin-bottom: 2rem; /* Ajout d'espace */
 }
 
-/* Boutons réseaux sociaux ronds avec effet lueur */
 .social-media a {
     display: inline-flex;
     justify-content: center;
@@ -134,7 +142,7 @@ span {
 .social-media a:hover {
     background: var(--main-color);
     color: var(--second-bg-color);
-    box-shadow: 0 0 1rem var(--main-color); /* Lueur */
+    box-shadow: 0 0 1rem var(--main-color);
 }
 
 .btn {
@@ -145,19 +153,17 @@ span {
     box-shadow: 0 0 1rem var(--main-color);
     font-size: 1.6rem;
     color: var(--second-bg-color);
-    letter-spacing: .1rem;
     font-weight: 600;
     transition: .5s ease;
 }
 
 .btn:hover {
-    box-shadow: none; /* Enlève la lueur au survol pour effet "clic" */
+    box-shadow: none;
 }
 
-/* Image profil avec animation flottante */
 .home-img img {
     width: 35vw;
-    border-radius: 50%; /* Rond si l'image est carrée, sinon mettre 20px */
+    border-radius: 50%;
     box-shadow: 0 0 25px var(--main-color);
     border: 2px solid var(--main-color);
     animation: floatImage 4s ease-in-out infinite;
@@ -169,14 +175,13 @@ span {
     100% { transform: translateY(0); }
 }
 
-/* --- TITRES DE SECTIONS --- */
+/* --- SERVICES --- */
 .heading {
     text-align: center;
     font-size: 4.5rem;
     margin-bottom: 4rem;
 }
 
-/* --- SERVICES --- */
 .services {
     background: var(--second-bg-color);
 }
@@ -211,18 +216,14 @@ span {
 
 .services-box h3 {
     font-size: 2.6rem;
+    margin: 1rem 0;
 }
 
 .services-box p {
     font-size: 1.6rem;
-    margin: 1rem 0 3rem;
 }
 
-/* --- COMPÉTENCES (SKILLS) --- */
-.skills h2 {
-    margin-bottom: 5rem;
-}
-
+/* --- SKILLS --- */
 .skills-row {
     display: flex;
     flex-wrap: wrap;
@@ -239,7 +240,7 @@ span {
 }
 
 .skills-box {
-    border: .2rem solid var(--main-color); /* Encadré néon */
+    border: .2rem solid var(--main-color);
     border-radius: .5rem;
     padding: .5rem 1.5rem;
 }
@@ -267,27 +268,26 @@ span {
     height: 100%;
     border-radius: .3rem;
     background: var(--main-color);
-    width: 0%; /* Sera rempli par l'animation ou JS plus tard, pour l'instant : */
-    animation: fillBar 2s forwards; 
+    /* Animation simple qui va de 0 à la largeur définie */
+    width: 0; 
+    animation: fillBar 1.5s forwards; 
 }
 
-/* Animation simple pour remplir les barres */
-@keyframes fillBar {
-    to { width: 80%; } /* Valeur par défaut */
-}
+/* Petite astuce CSS : On cible chaque barre pour lui donner une taille différente (optionnel) */
+.progress:nth-child(1) .bar span { animation-name: fill90; }
+.progress:nth-child(2) .bar span { animation-name: fill80; }
+.progress:nth-child(3) .bar span { animation-name: fill95; }
+.progress:nth-child(4) .bar span { animation-name: fill75; }
 
-/* Liste des qualités */
-.skills-content ul {
-    list-style: none;
-}
-.skills-content ul li {
-    font-size: 1.7rem;
-    padding: 1rem 0;
-}
-.skills-content ul li i {
-    color: var(--main-color);
-    margin-right: 1rem;
-}
+@keyframes fillBar { to { width: 80%; } } /* Fallback */
+@keyframes fill90 { to { width: 90%; } }
+@keyframes fill80 { to { width: 80%; } }
+@keyframes fill95 { to { width: 95%; } }
+@keyframes fill75 { to { width: 75%; } }
+
+.skills-content ul { list-style: none; }
+.skills-content ul li { font-size: 1.7rem; padding: 1rem 0; }
+.skills-content ul li i { color: var(--main-color); margin-right: 1rem; }
 
 /* --- PORTFOLIO --- */
 .portfolio {
@@ -307,13 +307,13 @@ span {
     box-shadow: 0 0 1rem var(--bg-color);
     overflow: hidden;
     display: flex;
-    height: 300px; /* Hauteur fixe pour uniformiser */
+    height: 300px;
 }
 
 .portfolio-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* L'image remplit la case sans se déformer */
+    object-fit: cover;
     transition: .5s ease;
 }
 
@@ -334,17 +334,17 @@ span {
     flex-direction: column;
     text-align: center;
     padding: 0 4rem;
-    transform: translateY(100%); /* Caché par défaut */
+    transform: translateY(100%);
     transition: .5s ease;
 }
 
 .portfolio-box:hover .portfolio-layer {
-    transform: translateY(0); /* Apparition au survol */
+    transform: translateY(0);
 }
 
 .portfolio-layer h4 {
     font-size: 3rem;
-    color: #fff; /* Force le blanc car le fond devient cyan */
+    color: #fff;
 }
 
 .portfolio-layer p {
@@ -368,11 +368,80 @@ span {
     color: #333;
 }
 
-/* --- CONTACT --- */
-.contact h2 {
-    margin-bottom: 3rem;
+/* --- TESTIMONIALS --- */
+.testimonials {
+    background: var(--bg-color);
 }
 
+.testimonial-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+}
+
+.testimonial-box {
+    flex: 1 1 30rem;
+    background: var(--second-bg-color);
+    padding: 3rem 2rem 4rem;
+    border-radius: 2rem;
+    text-align: center;
+    border: .2rem solid var(--second-bg-color);
+    transition: .5s ease;
+    min-height: 350px;
+    position: relative;
+}
+
+.testimonial-box:hover {
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px var(--main-color);
+}
+
+.testimonial-box i {
+    font-size: 3rem;
+    color: var(--main-color);
+    margin-bottom: 2rem;
+}
+
+.testimonial-box p {
+    font-size: 1.6rem;
+    margin-bottom: 3rem;
+    font-style: italic;
+    color: #ccc;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
+
+.client-info img {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    border: .2rem solid var(--main-color);
+    margin-right: 1.5rem;
+    object-fit: cover;
+}
+
+.client-details h4 {
+    font-size: 1.8rem;
+    color: var(--main-color);
+}
+
+.client-details p {
+    font-size: 1.4rem;
+    color: var(--text-color);
+}
+
+/* --- CONTACT --- */
 .contact form {
     max-width: 70rem;
     margin: 1rem auto;
@@ -395,26 +464,31 @@ span {
     background: var(--second-bg-color);
     border-radius: .8rem;
     margin: .7rem 0;
-    border: .2rem solid transparent;
+    border: .2rem solid transparent; 
+    /* Ajout d'une transition pour le focus */
+    transition: .3s; 
 }
 
 .contact form .input-box input {
     width: 49%;
 }
 
-/* Focus : Quand on clique dans le champ, bordure néon */
 .contact form .input-box input:focus,
 .contact form textarea:focus {
     border-color: var(--main-color);
+    background: #2b303b;
 }
 
 .contact form textarea {
     resize: none;
 }
 
-.contact form .btn {
-    margin-top: 2rem;
-    cursor: pointer;
+.map-container {
+    max-width: 70rem;
+    margin: 4rem auto 0;
+    border: .2rem solid var(--main-color);
+    border-radius: .8rem;
+    overflow: hidden; 
 }
 
 /* --- FOOTER --- */
@@ -450,17 +524,18 @@ span {
     color: var(--second-bg-color);
 }
 
-/* --- RESPONSIVE (POUR TÉLÉPHONES ET TABLETTES) --- */
+/* --- MEDIA QUERIES (RESPONSIVE) --- */
 @media (max-width: 1200px) {
     html { font-size: 55%; }
 }
 
 @media (max-width: 991px) {
     .header { padding: 2rem 3%; }
+    /* Ajustement sticky pour tablette */
+    .header.sticky { padding: 1rem 3%; }
+    
     section { padding: 10rem 3% 2rem; }
-    .services { padding-bottom: 7rem; }
-    .portfolio { padding-bottom: 7rem; }
-    .contact { min-height: auto; }
+    .services, .portfolio { padding-bottom: 7rem; }
     .footer { padding: 2rem 3%; }
 }
 
@@ -474,15 +549,12 @@ span {
         width: 100%;
         padding: 1rem 3%;
         background: var(--bg-color);
-        border-top: .1rem solid rgba(0,0,0,0.2);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,0.2);
-        display: none; /* Caché par défaut */
+        border-top: .1rem solid rgba(0,0,0,.2);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.2);
+        display: none;
     }
 
-    /* Cette classe sera ajoutée via JavaScript */
-    .navbar.active {
-        display: block;
-    }
+    .navbar.active { display: block; }
 
     .navbar a {
         display: block;
@@ -490,123 +562,22 @@ span {
         margin: 3rem 0;
     }
 
-    .home {
-        flex-direction: column;
-    }
-
+    .home { flex-direction: column; }
     .home-content h3 { font-size: 2.6rem; }
     .home-content h1 { font-size: 5rem; }
+    .home-img img { width: 70vw; margin-top: 4rem; }
     
-    .home-img img {
-        width: 70vw;
-        margin-top: 4rem;
-    }
-
-    .services h2 { margin-bottom: 3rem; }
+    .portfolio-container { grid-template-columns: 1fr 1fr; }
     
-    .portfolio-container {
-        grid-template-columns: 1fr 1fr;
-    }
+    .testimonial-container { flex-direction: column; }
+    .map-container { max-width: 100%; }
 }
 
 @media (max-width: 617px) {
-    .portfolio-container {
-        grid-template-columns: 1fr;
-    }
+    .portfolio-container { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 450px) {
     html { font-size: 50%; }
     .contact form .input-box input { width: 100%; }
-}
-
-
-/* --- TÉMOIGNAGES (TESTIMONIALS) --- */
-.testimonials {
-    background: var(--bg-color); /* Retour au fond principal */
-}
-
-.testimonial-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 3rem;
-}
-
-.testimonial-box {
-    flex: 1 1 30rem;
-    background: var(--second-bg-color); /* Fond de la carte */
-    padding: 3rem 2rem 4rem;
-    border-radius: 2rem;
-    text-align: center;
-    border: .2rem solid var(--second-bg-color);
-    transition: .5s ease;
-    min-height: 350px; /* Hauteur minimale pour l'uniformité */
-    position: relative;
-}
-
-.testimonial-box:hover {
-    border-color: var(--main-color);
-    box-shadow: 0 0 15px var(--main-color); /* Lueur au survol */
-}
-
-.testimonial-box i {
-    font-size: 3rem;
-    color: var(--main-color);
-    margin-bottom: 2rem;
-}
-
-.testimonial-box p {
-    font-size: 1.6rem;
-    margin-bottom: 3rem;
-    font-style: italic;
-    color: #ccc;
-}
-
-.client-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: auto;
-    position: absolute; /* Positionnement au bas de la carte */
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-}
-
-.client-info img {
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    border: .2rem solid var(--main-color);
-    margin-right: 1.5rem;
-    object-fit: cover;
-}
-
-.client-details h4 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--main-color);
-}
-
-.client-details p {
-    font-size: 1.4rem;
-    font-style: normal;
-    margin: 0;
-    color: var(--text-color);
-}
-
-/* --- RESPONSIVE UPDATE (Ajouter le lien "Témoignages" dans le menu) --- */
-@media (max-width: 768px) {
-    .testimonial-container {
-        flex-direction: column;
-    }
-}
-/* Appliquer la lueur au mot clé du titre des sections */
-.heading span,
-.home-content h3 span,
-.home-content h1 {
-    text-shadow: var(--neon-glow);
 }
