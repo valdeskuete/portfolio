@@ -692,3 +692,68 @@ span {
         left: 0; /* Place le point sur la ligne */
     }
 }
+/* --- STYLE DU FORMULAIRE DE TÉMOIGNAGES --- */
+.testimonial-submission {
+    max-width: 70rem;
+    margin: 5rem auto 0; /* Marge pour séparer des témoignages existants */
+    text-align: center;
+    padding: 3rem;
+    background: var(--second-bg-color);
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.testimonial-submission .heading {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.testimonial-submission form .input-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.testimonial-submission form input,
+.testimonial-submission form textarea {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    background: var(--bg-color); /* Utilisation du fond principal pour le contraste */
+    border-radius: .8rem;
+    margin: .7rem 0;
+    border: .2rem solid transparent;
+    transition: .3s;
+}
+
+.testimonial-submission form .input-box input {
+    width: 49%;
+}
+
+.testimonial-submission form input:focus,
+.testimonial-submission form textarea:focus {
+    border-color: var(--main-color);
+    background: #2b303b;
+}
+
+.testimonial-submission form textarea {
+    resize: none;
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-submission form .btn {
+    margin-top: 1rem;
+}
+
+/* RESPONSIVE (Si la largeur est petite) */
+@media (max-width: 768px) {
+    .testimonial-submission {
+        padding: 1.5rem;
+        max-width: 100%;
+    }
+    .testimonial-submission form .input-box input {
+        width: 100%;
+    }
+}
