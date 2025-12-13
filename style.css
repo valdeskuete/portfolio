@@ -774,4 +774,18 @@ span {
         max-width: 100%;
         padding: 1rem;
     }
+
+}
+/* ==================== STYLES POUR LE BOUTON D'AVIS ==================== */
+.testimonials .review-call-to-action {
+    /* Centre le bouton horizontalement sur la page */
+    text-align: center; 
+    /* Ajoute de l'espace au-dessus du bouton pour le séparer visuellement */
+    margin-top: 4rem; 
+    /* S'assure que le bouton utilise la largeur par défaut du conteneur */
+    width: 100%;
+}
+.testimonials .review-call-to-action .heading {
+    /* Marge pour séparer le titre du bouton */
+    margin-bottom: 1.5rem;
 }
