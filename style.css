@@ -757,3 +757,21 @@ span {
         width: 100%;
     }
 }
+
+/* --- STYLE DISQUS (Ajoute une bordure pour l'effet néon) --- */
+.disqus-container {
+    max-width: 90rem;
+    margin: 5rem auto;
+    padding: 2rem;
+    border: .2rem solid var(--main-color); 
+    border-radius: .8rem;
+    background: var(--second-bg-color); /* Pour qu'il se démarque */
+}
+
+/* Ajustement responsive */
+@media (max-width: 991px) {
+    .disqus-container {
+        max-width: 100%;
+        padding: 1rem;
+    }
+}

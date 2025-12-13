@@ -139,7 +139,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="testimonial-submission">
             <h3 class="heading">Partagez votre <span>Expérience</span></h3>
             <form action="https://formsubmit.co/valdeskuete8@gmail.com" method="POST">
@@ -348,5 +348,28 @@
 
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="script.js"></script>
-</body>
+
+    
+    <div id="disqus_thread" class="disqus-container"></div>
+
+    <script>
+        /**
+        * CONFIGURATION VARIABLES: Ceci est le code pour charger Disqus.
+        */
+        var disqus_config = function () {
+            // Remplacez par l'URL de votre site publié
+            this.page.url = 'https://valdeskuete.github.io/portfolio/';  
+            // Identifiant unique de la page (laisse tel quel si tu n'as qu'une seule page de portfolio)
+            this.page.identifier = 'portfolio_accueil'; 
+        };
+        
+        (function() { // Ne pas modifier cette section
+            var d = document, s = d.createElement('script');
+            // VEUILLEZ VÉRIFIER QUE L'IDENTIFIANT SUIVANT EST CORRECT
+            s.src = 'https://valdeskuete.disqus.com/embed.js'; 
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </html>
