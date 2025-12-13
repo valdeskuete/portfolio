@@ -49,6 +49,10 @@ ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
 ScrollReveal().reveal('.home-img, .services-container, .portfolio-box, .contact form', { origin: 'bottom' });
 ScrollReveal().reveal('.home-content h1, .skills-column:first-child', { origin: 'left' });
 ScrollReveal().reveal('.home-content p, .skills-column:last-child', { origin: 'right' });
+// NOUVELLES LIGNES POUR LA CHRONOLOGIE (EDUCATION)
+// Fait apparaître les conteneurs du parcours (alternance droite/gauche)
+ScrollReveal().reveal('.timeline-item:nth-child(odd)', { origin: 'left' });
+ScrollReveal().reveal('.timeline-item:nth-child(even)', { origin: 'right' });
 
 /* ==================== TYPED JS (TEXTE DYNAMIQUE) ==================== */
 // Assure-toi que la classe .multiple-text existe bien dans le HTML
