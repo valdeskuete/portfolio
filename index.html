@@ -222,18 +222,22 @@
         <form action="https://formsubmit.co/valdeskuete8@gmail.com" method="POST">
             <div class="input-box">
                 <input type="text" name="Nom" placeholder="Nom complet" required>
+                
                 <input type="email" name="Email" placeholder="Adresse Email" required>
             </div>
+            
             <div class="input-box">
                 <input type="tel" name="Telephone" placeholder="Numéro de téléphone">
+                
                 <input type="text" name="Sujet" placeholder="Sujet (ex: Dépannage, RDV)">
             </div>
+            
             <textarea name="Message" cols="30" rows="10" placeholder="Votre message..." required></textarea>
             
-            <input type="hidden" name="_next" value="https://valdeskuete.github.io/portfolio/"> 
+            <input type="hidden" name="_next" value="https://valdeskuete.github.io/portfolio/">
+            <input type="hidden" name="_subject" value="Nouveau message de votre Portfolio !">
             <input type="hidden" name="_captcha" value="false">
-            
-            <input type="submit" value="Envoyer le message" class="btn">
+            <input type="hidden" name="_template" value="table"> <input type="submit" value="Envoyer le message" class="btn">
         </form>
         
         <div class="contact-info-direct" style="text-align: center; margin-top: 2rem; color: white;">
