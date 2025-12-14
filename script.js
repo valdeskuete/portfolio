@@ -70,3 +70,21 @@ if (typeof Typed !== 'undefined' && document.querySelector('.multiple-text')) {
         loop: true
     });
 }
+
+/* ==================== GESTION DU BOUTON BOTPRESS ==================== */
+// On trouve le bouton par son ID
+let chatButton = document.querySelector('#chat-button');
+
+// On vérifie si le bouton existe et si l'objet Botpress est chargé
+if (chatButton) {
+    // Écouter le clic sur le bouton
+    chatButton.addEventListener('click', () => {
+        // Double vérification au moment du clic pour éviter l'erreur 'undefined'
+        if (typeof window.botpressWebChat !== 'undefined') {
+            window.botpressWebChat.toggle();
+        } else {
+            console.error("Botpress WebChat n'est pas encore initialisé.");
+            // Optionnel : Afficher un message d'attente à l'utilisateur
+        }
+    });
+}
