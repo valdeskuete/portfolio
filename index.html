@@ -330,20 +330,22 @@
     
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="script.js"></script>
-    
+
+    <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
     <script>
-        var disqus_config = function () {
-            this.page.url = 'https://valdeskuete.github.io/portfolio/';  
-            this.page.identifier = 'portfolio_accueil'; 
-        };
-        
-        (function() { 
-            var d = document, s = d.createElement('script');
-            s.src = 'https://valdeskuete.disqus.com/embed.js'; 
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
+        // Configuration de l'Assistant Valdes.Tech
+        window.botpressWebChat.init({
+            "botId": "b0eff90d-7b61-44b9-90e1-23106db3b385",
+            "hostUrl": "https://cdn.botpress.cloud/webchat",
+            "messagingUrl": "https://messaging.botpress.cloud",
+            "clientId": "b0eff90d-7b61-44b9-90e1-23106db3b385",
+            "webhookId": "b0eff90d-7b61-44b9-90e1-23106db3b385",
+            "locale": "fr", // Force l'interface en français
+            "composerPlaceholder": "Posez une question à Valdes.Tech (services, IUGET, AnyDesk)...",
+            "botConversationDescription": "Assistant IA spécialisé en réseau et dépannage."
+        });
     </script>
+    
 </body>
 </html>
     
