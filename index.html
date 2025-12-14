@@ -330,6 +330,20 @@
     
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="script.js"></script>
+    
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'https://valdeskuete.github.io/portfolio/';  
+            this.page.identifier = 'portfolio_accueil'; 
+        };
+        
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://valdeskuete.disqus.com/embed.js'; 
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
 
     <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
     <script>
