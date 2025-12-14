@@ -98,21 +98,20 @@
         </div>
     </section>
 
-    <section id="assistant-invitation" style="text-align: center; padding: 60px 20px; background-color: #1a1a1a; color: #ffffff; border-top: 5px solid #00ffff;">
-        <h2 style="font-size: 3em; color: #00ffff; margin-bottom: 15px;">
+    <section id="assistant-invitation">
+        <h2>
             Marre des réponses génériques ?
         </h2>
-        <p style="font-size: 1.5em; margin-bottom: 30px; font-style: italic;">
-            Rencontrez <span class="neon-text" style="font-weight: bold;">Valdes.Tech IA</span> : l'assistant le plus stylé de Douala !
+        <p class="intro">
+            Rencontrez <span class="neon-text">Valdes.Tech IA</span> : l'assistant le plus stylé de Douala !
         </p>
 
-        <p style="max-width: 900px; margin: 0 auto 40px; line-height: 1.8; font-size: 1.1em;">
+        <p class="description">
             Il connaît le <strong>Maestro Valdes Kuete</strong> mieux que personne. Posez-lui toutes vos questions sur l'expertise <span class="neon-text">réseau</span>, sa formation d'élite à l'<span class="neon-text">IUGET</span>, le dépannage à distance via <span class="neon-text">AnyDesk</span> ou les interventions ultra-rapides à <span class="neon-text">Bonamoussadi</span> et <span class="neon-text">Bépanda</span>. Il vous donne une réponse **précise et flatteuse** en moins d'une seconde.
         </p>
 
-        <button onclick="window.botpressWebChat.sendEvent({type: 'show'});" 
-                class="btn"
-                style="background-color: #00ffff; color: #1a1a1a; padding: 15px 40px; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer; font-weight: bold; transition: background-color 0.3s;">
+        <button onclick="window.botpressWebChat.toggle()" 
+                class="btn">
             Discuter avec l'Assistant (C'est gratuit !)
         </button>
     </section>
@@ -385,7 +384,7 @@
     
     <script src="script.js"></script>
     
-    <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2025/12/13/23/20251213233014-VAUDUOMW.js" defer></script>
+   <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+   <script src="https://files.bpcontent.cloud/2025/12/13/23/20251213233014-VAUDUOMW.js" defer></script>
 </body>
 </html>
