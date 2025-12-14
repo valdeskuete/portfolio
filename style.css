@@ -47,10 +47,9 @@ body {
     transition: .3s;
 }
 
-/* Style quand on scrolle (ajouté) */
 .header.sticky {
     background: var(--second-bg-color);
-    padding: 1.2rem 9%; /* Plus petit au scroll */
+    padding: 1.2rem 9%; 
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
 }
 
@@ -77,7 +76,7 @@ body {
 .navbar a:hover,
 .navbar a.active {
     color: var(--main-color);
-    text-shadow: 0 0 5px var(--main-color); /* Petit effet néon au survol */
+    text-shadow: 0 0 5px var(--main-color);
 }
 
 #menu-icon {
@@ -95,6 +94,31 @@ section {
 
 span {
     color: var(--main-color);
+}
+
+.heading {
+    text-align: center;
+    font-size: 4.5rem;
+    margin-bottom: 4rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 1rem 2.8rem;
+    background: var(--main-color);
+    border-radius: 4rem;
+    box-shadow: 0 0 1rem var(--main-color);
+    font-size: 1.6rem;
+    color: var(--second-bg-color);
+    font-weight: 600;
+    transition: .5s ease;
+    cursor: pointer;
+}
+
+.btn:hover {
+    box-shadow: none;
+    background: #0ac; /* Couleur légèrement plus sombre au survol */
+    color: #fff;
 }
 
 /* --- HOME --- */
@@ -121,7 +145,7 @@ span {
 
 .home-content p {
     font-size: 1.6rem;
-    margin-bottom: 2rem; /* Ajout d'espace */
+    margin-bottom: 2rem;
 }
 
 .social-media a {
@@ -145,22 +169,6 @@ span {
     box-shadow: 0 0 1rem var(--main-color);
 }
 
-.btn {
-    display: inline-block;
-    padding: 1rem 2.8rem;
-    background: var(--main-color);
-    border-radius: 4rem;
-    box-shadow: 0 0 1rem var(--main-color);
-    font-size: 1.6rem;
-    color: var(--second-bg-color);
-    font-weight: 600;
-    transition: .5s ease;
-}
-
-.btn:hover {
-    box-shadow: none;
-}
-
 .home-img img {
     width: 35vw;
     border-radius: 50%;
@@ -176,12 +184,6 @@ span {
 }
 
 /* --- SERVICES --- */
-.heading {
-    text-align: center;
-    font-size: 4.5rem;
-    margin-bottom: 4rem;
-}
-
 .services {
     background: var(--second-bg-color);
 }
@@ -221,6 +223,120 @@ span {
 
 .services-box p {
     font-size: 1.6rem;
+}
+
+/* --- SECTION IA (ASSISTANT) --- */
+/* Ces styles remplacent les styles inline du HTML pour plus de propreté */
+#assistant-invitation {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-top: 5px solid var(--main-color);
+    min-height: auto; /* Ajustement car ce n'est pas une section pleine page */
+}
+
+#assistant-invitation h2 {
+    font-size: 3em;
+    color: var(--main-color);
+    margin-bottom: 15px;
+}
+
+#assistant-invitation p.intro {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+#assistant-invitation p.description {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+    font-size: 1.1em;
+}
+
+/* --- EDUCATION / TIMELINE --- */
+.education {
+    background: var(--bg-color);
+}
+
+.timeline-items {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.timeline-items::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: var(--main-color);
+    left: calc(50% - 1px);
+    box-shadow: 0 0 10px var(--main-color);
+}
+
+.timeline-item {
+    margin-bottom: 40px;
+    width: 100%;
+    position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+    padding-right: calc(50% + 30px);
+    text-align: right;
+}
+
+.timeline-item:nth-child(even) {
+    padding-left: calc(50% + 30px);
+}
+
+.timeline-dot {
+    height: 20px;
+    width: 20px;
+    background-color: var(--main-color);
+    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
+    position: absolute;
+    left: calc(50% - 10px);
+    border-radius: 50%;
+    top: 10px;
+    z-index: 10;
+}
+
+.timeline-date {
+    font-size: 1.4rem;
+    color: var(--main-color);
+    margin: 6px 0 15px;
+    font-weight: 600;
+}
+
+.timeline-content {
+    background-color: var(--second-bg-color);
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--second-bg-color);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: .3s;
+}
+
+.timeline-content:hover {
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px var(--main-color);
+    transform: translateY(-5px);
+}
+
+.timeline-content h3 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+.timeline-content p {
+    font-size: 1.6rem;
+    line-height: 1.5;
 }
 
 /* --- SKILLS --- */
@@ -268,18 +384,17 @@ span {
     height: 100%;
     border-radius: .3rem;
     background: var(--main-color);
-    /* Animation simple qui va de 0 à la largeur définie */
     width: 0; 
     animation: fillBar 1.5s forwards; 
 }
 
-/* Petite astuce CSS : On cible chaque barre pour lui donner une taille différente (optionnel) */
+/* Animation des barres */
 .progress:nth-child(1) .bar span { animation-name: fill90; }
 .progress:nth-child(2) .bar span { animation-name: fill80; }
 .progress:nth-child(3) .bar span { animation-name: fill95; }
 .progress:nth-child(4) .bar span { animation-name: fill75; }
 
-@keyframes fillBar { to { width: 80%; } } /* Fallback */
+@keyframes fillBar { to { width: 80%; } }
 @keyframes fill90 { to { width: 90%; } }
 @keyframes fill80 { to { width: 80%; } }
 @keyframes fill95 { to { width: 95%; } }
@@ -441,6 +556,16 @@ span {
     color: var(--text-color);
 }
 
+/* Call to Action Avis */
+.testimonials .review-call-to-action {
+    text-align: center; 
+    margin-top: 4rem; 
+    width: 100%;
+}
+.testimonials .review-call-to-action .heading {
+    margin-bottom: 1.5rem;
+}
+
 /* --- CONTACT --- */
 .contact form {
     max-width: 70rem;
@@ -465,7 +590,6 @@ span {
     border-radius: .8rem;
     margin: .7rem 0;
     border: .2rem solid transparent; 
-    /* Ajout d'une transition pour le focus */
     transition: .3s; 
 }
 
@@ -489,6 +613,16 @@ span {
     border: .2rem solid var(--main-color);
     border-radius: .8rem;
     overflow: hidden; 
+}
+
+/* Disqus */
+.disqus-container {
+    max-width: 90rem;
+    margin: 5rem auto;
+    padding: 2rem;
+    border: .2rem solid var(--main-color); 
+    border-radius: .8rem;
+    background: var(--second-bg-color);
 }
 
 /* --- FOOTER --- */
@@ -531,12 +665,16 @@ span {
 
 @media (max-width: 991px) {
     .header { padding: 2rem 3%; }
-    /* Ajustement sticky pour tablette */
     .header.sticky { padding: 1rem 3%; }
     
     section { padding: 10rem 3% 2rem; }
     .services, .portfolio { padding-bottom: 7rem; }
     .footer { padding: 2rem 3%; }
+    
+    .disqus-container {
+        max-width: 100%;
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -571,6 +709,25 @@ span {
     
     .testimonial-container { flex-direction: column; }
     .map-container { max-width: 100%; }
+    
+    /* TIMELINE MOBILE FIX */
+    .timeline-items::before {
+        left: 7px; 
+    }
+    .timeline-item {
+        padding-left: 37px; 
+        padding-right: 0;
+    }
+    .timeline-item:nth-child(odd) {
+        padding-right: 0;
+        text-align: left;
+    }
+    .timeline-item:nth-child(even) {
+        padding-left: 37px;
+    }
+    .timeline-dot {
+        left: 0;
+    }
 }
 
 @media (max-width: 617px) {
@@ -581,212 +738,3 @@ span {
     html { font-size: 50%; }
     .contact form .input-box input { width: 100%; }
 }
-
-/* --- EDUCATION / TIMELINE --- */
-.education {
-    background: var(--bg-color); /* Utilisation de la couleur de fond principale */
-}
-
-.timeline-items {
-    max-width: 1000px;
-    margin: auto;
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
-}
-
-.timeline-items::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    background-color: var(--main-color);
-    left: calc(50% - 1px); /* Centre la ligne verticale */
-    box-shadow: 0 0 10px var(--main-color);
-}
-
-.timeline-item {
-    margin-bottom: 40px;
-    width: 100%;
-    position: relative;
-}
-
-.timeline-item:nth-child(odd) {
-    padding-right: calc(50% + 30px); /* Place l'élément à gauche */
-    text-align: right;
-}
-
-.timeline-item:nth-child(even) {
-    padding-left: calc(50% + 30px); /* Place l'élément à droite */
-}
-
-.timeline-dot {
-    height: 20px;
-    width: 20px;
-    background-color: var(--main-color);
-    box-shadow: 0 0 10px var(--main-color), 0 0 20px var(--main-color);
-    position: absolute;
-    left: calc(50% - 10px);
-    border-radius: 50%;
-    top: 10px;
-    z-index: 10;
-}
-
-.timeline-date {
-    font-size: 1.4rem;
-    color: var(--main-color);
-    margin: 6px 0 15px;
-    font-weight: 600;
-}
-
-.timeline-content {
-    background-color: var(--second-bg-color);
-    padding: 30px;
-    border-radius: 10px;
-    border: 2px solid var(--second-bg-color);
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    transition: .3s;
-}
-
-.timeline-content:hover {
-    border-color: var(--main-color);
-    box-shadow: 0 0 15px var(--main-color);
-    transform: translateY(-5px); /* Léger soulèvement au survol */
-}
-
-.timeline-content h3 {
-    font-size: 2rem;
-    color: var(--text-color);
-    margin: 0 0 10px;
-    font-weight: 700;
-}
-
-.timeline-content p {
-    font-size: 1.6rem;
-    line-height: 1.5;
-}
-
-/* --- MEDIA QUERIES pour la TIMELINE --- */
-@media (max-width: 768px) {
-    .timeline-items::before {
-        left: 7px; /* Décale la ligne à gauche sur mobile */
-    }
-
-    .timeline-item {
-        padding-left: 30px; /* Réduit l'espace sur la gauche */
-        padding-right: 0;
-        width: 100%;
-    }
-    
-    .timeline-item:nth-child(odd) {
-        padding-right: 0; /* Supprime l'alignement à droite */
-        padding-left: 30px;
-        text-align: left; /* Aligne tout à gauche */
-    }
-    
-    .timeline-item:nth-child(even) {
-        padding-left: 30px; /* Aligne tout à gauche */
-    }
-    
-    .timeline-dot {
-        left: 0; /* Place le point sur la ligne */
-    }
-}
-/* --- STYLE DU FORMULAIRE DE TÉMOIGNAGES --- */
-.testimonial-submission {
-    max-width: 70rem;
-    margin: 5rem auto 0; /* Marge pour séparer des témoignages existants */
-    text-align: center;
-    padding: 3rem;
-    background: var(--second-bg-color);
-    border-radius: 1rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-.testimonial-submission .heading {
-    font-size: 3rem;
-    margin-bottom: 2rem;
-}
-
-.testimonial-submission form .input-box {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
-
-.testimonial-submission form input,
-.testimonial-submission form textarea {
-    width: 100%;
-    padding: 1.5rem;
-    font-size: 1.6rem;
-    color: var(--text-color);
-    background: var(--bg-color); /* Utilisation du fond principal pour le contraste */
-    border-radius: .8rem;
-    margin: .7rem 0;
-    border: .2rem solid transparent;
-    transition: .3s;
-}
-
-.testimonial-submission form .input-box input {
-    width: 49%;
-}
-
-.testimonial-submission form input:focus,
-.testimonial-submission form textarea:focus {
-    border-color: var(--main-color);
-    background: #2b303b;
-}
-
-.testimonial-submission form textarea {
-    resize: none;
-    margin-bottom: 1.5rem;
-}
-
-.testimonial-submission form .btn {
-    margin-top: 1rem;
-}
-
-/* RESPONSIVE (Si la largeur est petite) */
-@media (max-width: 768px) {
-    .testimonial-submission {
-        padding: 1.5rem;
-        max-width: 100%;
-    }
-    .testimonial-submission form .input-box input {
-        width: 100%;
-    }
-}
-
-/* --- STYLE DISQUS (Ajoute une bordure pour l'effet néon) --- */
-.disqus-container {
-    max-width: 90rem;
-    margin: 5rem auto;
-    padding: 2rem;
-    border: .2rem solid var(--main-color); 
-    border-radius: .8rem;
-    background: var(--second-bg-color); /* Pour qu'il se démarque */
-}
-
-/* Ajustement responsive */
-@media (max-width: 991px) {
-    .disqus-container {
-        max-width: 100%;
-        padding: 1rem;
-    }
-
-}
-/* ==================== STYLES POUR LE BOUTON D'AVIS ==================== */
-.testimonials .review-call-to-action {
-    /* Centre le bouton horizontalement sur la page */
-    text-align: center; 
-    /* Ajoute de l'espace au-dessus du bouton pour le séparer visuellement */
-    margin-top: 4rem; 
-    /* S'assure que le bouton utilise la largeur par défaut du conteneur */
-    width: 100%;
-}
-.testimonials .review-call-to-action .heading {
-    /* Marge pour séparer le titre du bouton */
-    margin-bottom: 1.5rem;
-}
-
