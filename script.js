@@ -71,20 +71,27 @@ if (document.querySelector('.multiple-text')) {
     });
 }
 
-/* ==================== BOTPRESS CHAT CUSTOM FUNCTION ==================== */
-// Fonction pour ouvrir le chat de manière sécurisée, en attendant que Botpress soit prêt.
-window.openBotpressChat = function() {
-    // Vérifie si l'objet Botpress est déjà prêt
-    if (window.botpressWebChat && window.botpressWebChat.sendEvent) {
-        window.botpressWebChat.sendEvent({type: 'show'});
-    } else {
-        // Optionnel : Tentative de forcer l'ouverture après un court délai si le chargement est en cours
-        setTimeout(() => {
-            if (window.botpressWebChat && window.botpressWebChat.sendEvent) {
-                window.botpressWebChat.sendEvent({type: 'show'});
-            } else {
-                console.error("Botpress WebChat n'est pas encore chargé.");
+/* ==================== BOTPRESS CHAT CUSTOM FUNCTION (ROBUSTE) ==================== */
+document.addEventListener('DOMContentLoaded', () => {
+    const chatButton = document.getElementById('open-chat-button');
+    
+    if (chatButton) {
+        chatButton.addEventListener('click', () => {
+            function showBotpressChat() {
+                // Vérifie si l'objet Botpress est chargé et prêt
+                if (window.botpressWebChat && window.botpressWebChat.sendEvent) {
+                    // C'est l'appel API qui ouvre la fenêtre de chat
+                    window.botpressWebChat.sendEvent({type: 'show'}); 
+                } else {
+                    // Si l'objet n'est pas encore prêt, on réessaie après un court délai
+                    console.warn("Botpress n'est pas prêt, réessai...");
+                    setTimeout(showBotpressChat, 100); 
+                }
             }
-        }, 500); // Essayer à nouveau après 500ms
+            // Lance la vérification
+            showBotpressChat();
+        });
+    } else {
+        console.error("Erreur critique : Bouton #open-chat-button non trouvé.");
     }
-}
+});
