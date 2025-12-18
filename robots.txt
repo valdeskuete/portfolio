@@ -15,4 +15,4 @@ User-agent: Googlebot-Image
 Allow: /img/
 
 # Lien vers le plan du site pour aider l'indexation
-Sitemap: https://valdes-tech.firebaseapp.com/sitemap.xml
+Sitemap: Sitemap: https://valdeskuete.github.io/portfolio/sitemap.xml
