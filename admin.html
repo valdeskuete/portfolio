@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin | Valdes.Tech</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #080808; color: white; padding: 20px; font-family: 'Poppins', sans-serif; }
+        .admin-container { max-width: 600px; margin: auto; background: #121212; padding: 30px; border-radius: 15px; border: 1px solid #00ffee; box-shadow: 0 0 20px rgba(0, 255, 238, 0.2); }
+        h2 { color: #00ffee; text-align: center; margin-bottom: 20px; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 8px; }
+        .btn-admin { width: 100%; background: #00ffee; color: black; font-weight: bold; cursor: pointer; border: none; padding: 15px; border-radius: 8px; transition: 0.3s; }
+        .btn-admin:hover { background: #00cca3; box-shadow: 0 0 15px #00ffee; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #888; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h2>🚀 Ajouter un Projet Tech</h2>
+        <form id="add-project-form">
+            <input type="text" id="proj-title" placeholder="Titre (ex: Audit Réseau IUGET)" required>
+            <textarea id="proj-desc" rows="4" placeholder="Description technique (Matériel utilisé, solution apportée...)" required></textarea>
+            <input type="text" id="proj-img-url" placeholder="URL de l'image (Lien direct .jpg)" required>
+            <button type="submit" class="btn-admin">Publier sur le Portfolio</button>
+        </form>
+        <a href="index.html" class="back-link">← Retour au site</a>
+    </div>
+
+    <script type="module">
+        import { db, collection, addDoc } from './firebase-config.js';
+
+        const form = document.getElementById('add-project-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await addDoc(collection(db, "projets"), {
+                    titre: document.getElementById('proj-title').value,
+                    description: document.getElementById('proj-desc').value,
+                    image: document.getElementById('proj-img-url').value,
+                    date: new Date()
+                });
+                alert("Projet Informatique publié !");
+                form.reset();
+            } catch (error) {
+                alert("Erreur de publication : " + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>

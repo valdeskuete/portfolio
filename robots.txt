@@ -1,0 +1,18 @@
+# ==========================================
+# ROBOTS.TXT POUR VALDES.TECH
+# ==========================================
+
+User-agent: *
+Allow: /
+
+# Interdire l'exploration des fichiers de configuration sensibles
+Disallow: /firebase-config.js
+Disallow: /admin.html
+Disallow: /private/
+
+# Optimisation pour les images
+User-agent: Googlebot-Image
+Allow: /img/
+
+# Lien vers le plan du site pour aider l'indexation
+Sitemap: https://valdes-tech.firebaseapp.com/sitemap.xml
