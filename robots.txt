@@ -5,14 +5,13 @@
 User-agent: *
 Allow: /
 
-# Interdire l'exploration des fichiers de configuration sensibles
+# Sécurité : On ne veut pas que ces fichiers soient indexés
 Disallow: /firebase-config.js
-Disallow: /admin.html
 Disallow: /private/
 
-# Optimisation pour les images
+# Optimisation Images
 User-agent: Googlebot-Image
 Allow: /img/
 
-# Lien vers le plan du site pour aider l'indexation
-Sitemap: Sitemap: https://valdeskuete.github.io/portfolio/sitemap.xml
+# Lien vers le plan du site officiel
+Sitemap: https://valdeskuete.github.io/portfolio/sitemap.xml
