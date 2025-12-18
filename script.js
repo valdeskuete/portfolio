@@ -156,3 +156,32 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+// Envoi du témoignage par le client
+const reviewFormElement = document.getElementById('client-review-form');
+if (reviewFormElement) {
+    reviewFormElement.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('rev-name').value;
+        const msg = document.getElementById('rev-message').value;
+        const rate = document.getElementById('rev-rating').value;
+        const success = await window.submitReview(name, msg, rate);
+        if (success) {
+            reviewFormElement.reset();
+            reviewFormElement.classList.add('hidden');
+        }
+    };
+}
+
+// Envoi du projet par l'admin
+const projectFormElement = document.getElementById('admin-add-project');
+if (projectFormElement) {
+    projectFormElement.onsubmit = (e) => {
+        e.preventDefault();
+        const title = document.getElementById('new-proj-title').value;
+        const desc = document.getElementById('new-proj-desc').value;
+        const cat = "Hardware"; // Tu peux ajouter un select pour la catégorie
+        const img = document.getElementById('new-proj-img').value;
+        window.addProject(title, desc, cat, img);
+        e.target.reset();
+    };
+}
