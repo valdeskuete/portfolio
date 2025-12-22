@@ -782,3 +782,16 @@ span {
     background: #00cc00; color: white; padding: 5px 10px;
     cursor: pointer; border-radius: 5px; margin-right: 5px;
 }
+
+#open-chat-button {
+    background: linear-gradient(45deg, var(--main-color), #0088aa);
+    color: white;
+    border: none;
+    animation: pulseBtn 2s infinite;
+}
+
+@keyframes pulseBtn {
+    0% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 238, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0); }
+}
