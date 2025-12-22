@@ -298,6 +298,34 @@ window.sendComment = async (projId, input) => {
     if(!isAdmin) alert("Merci ! Votre commentaire sera visible après validation.");
 };
 
+// Afficher/Masquer la zone de commentaires
+window.toggleComments = (id) => {
+    const area = document.getElementById(`comment-area-${id}`);
+    area.classList.toggle('hidden');
+    if(!area.classList.contains('hidden')) {
+        loadProjectComments(id);
+    }
+};
+
+// Charger les commentaires d'un projet spécifique
+function loadProjectComments(projId) {
+    const list = document.getElementById(`list-${projId}`);
+    const q = query(collection(db, "comments"), where("projectId", "==", projId), orderBy("date", "asc"));
+
+    onSnapshot(q, (snapshot) => {
+        list.innerHTML = '';
+        snapshot.forEach(d => {
+            const c = d.data();
+            // On ne montre que si approuvé OU si c'est un comm admin
+            if(c.approved || c.isAdmin) {
+                const isAdminClass = c.isAdmin ? 'admin-comment' : '';
+                const adminBadge = c.isAdmin ? '<span class="admin-badge">⭐ Valdes.Tech</span> ' : '';
+                list.innerHTML += `<p class="comment-text ${isAdminClass}">${adminBadge}${c.text}</p>`;
+            }
+        });
+    });
+}
+
 // Filtrage des projets
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -353,3 +381,4 @@ async function loadTips() {
 
 // Appeler la fonction au chargement
 loadTips();
+
