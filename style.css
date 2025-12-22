@@ -590,46 +590,65 @@ span {
     padding: 0 2%; /* Evite que le formulaire colle aux bords sur mobile */
 }
 
+/* --- FORMULAIRES (CONTACT & AVIS) --- */
+.contact form, 
+#review-form { /* AJOUT : On applique le style au conteneur du formulaire d'avis */
+    max-width: 70rem;
+    margin: 1rem auto;
+    text-align: center;
+    width: 100%; /* S'assure qu'il prend la place */
+}
+
 .contact form .input-box {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
+/* On regroupe tous les champs (Contact, Admin, Modal ET Avis) */
 .contact form .input-box input,
 .contact form textarea,
 .admin-section input,
-.admin-section textarea {
+.admin-section textarea,
+.modal-content input,
+#review-form input,    /* <--- AJOUT */
+#review-form textarea  /* <--- AJOUT */
+{
     width: 100%;
     padding: 1.5rem;
     font-size: 1.6rem;
     color: var(--text-color);
     background: var(--second-bg-color);
     border-radius: .8rem;
-    margin: 1rem 0;
-    border: .2rem solid transparent;
+    margin: 0.7rem 0;
+    border: 1px solid rgba(255,255,255,0.1); 
     transition: .3s;
 }
 
-/* Largeur 49% uniquement sur grand écran, sinon 100% */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
     .contact form .input-box input {
         width: 49%;
     }
 }
 
+/* Effet Focus (Néon) pour tous les formulaires */
 .contact form input:focus,
-.contact form textarea:focus {
+.contact form textarea:focus,
+#review-form input:focus,      /* <--- AJOUT */
+#review-form textarea:focus    /* <--- AJOUT */
+{
     border-color: var(--main-color);
-    box-shadow: 0 0 1rem var(--main-color);
     background: #2b303b;
+    transform: scale(1.01); 
+    box-shadow: 0 0 1rem rgba(0, 238, 255, 0.2); /* Petit ajout de glow */
+    outline: none;
 }
 
-.contact form textarea {
+.contact form textarea,
+#review-form textarea { /* <--- AJOUT */
     resize: none;
-    height: 15rem;
+    height: 18rem;
 }
-
 /* Disqus 
 .disqus-container {
     max-width: 90rem;
