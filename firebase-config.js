@@ -121,21 +121,31 @@ function loadProjects() {
         container.innerHTML = '';
         
         snapshot.forEach((d) => {
-            const data = d.data();
-            // Le bouton supprimer n'apparait que si isAdmin est vrai
-            const deleteBtn = isAdmin ? 
-                `<button onclick="window.deleteItem('projets', '${d.id}')" class="delete-btn" style="position:absolute; top:10px; right:10px; z-index:100;"><i class="fa-solid fa-trash"></i></button>` : '';
-            
-            container.innerHTML += `
-                <div class="portfolio-box" style="position:relative;">
-                    <img src="${data.image}" alt="${data.titre}">
+         // Dans la fonction loadProjects, à l'intérieur du snapshot.forEach :
+            const p = docSnap.data();
+            const id = docSnap.id;
+
+            list.innerHTML += `
+                <div class="portfolio-box" data-category="${p.tag}">
+                    <img src="${p.img}" alt="">
                     <div class="portfolio-layer">
-                        <h4>${data.titre}</h4>
-                        <p>${data.description}</p>
-                        <a href="#"><i class="fa-solid fa-up-right-from-square"></i></a>
+                        <h4>${p.title}</h4>
+                        <p>${p.desc}</p>
+                        <div class="project-footer">
+                            <span onclick="window.likeProject('${id}')" style="cursor:pointer">
+                                <i class="fa-solid fa-heart"></i> ${p.likes || 0}
+                            </span>
+                            <span onclick="window.toggleComments('${id}')" style="cursor:pointer">
+                                <i class="fa-solid fa-comment"></i> Commenter
+                            </span>
+                        </div>
                     </div>
-                    ${deleteBtn}
-                </div>`;
+                    <div id="comment-area-${id}" class="comment-area hidden">
+                        <div class="comments-list" id="list-${id}"></div>
+                        <input type="text" placeholder="Votre commentaire..." onkeydown="if(event.key==='Enter') window.sendComment('${id}', this)">
+                    </div>
+                </div>
+            `;
         }); // <--- On ferme le forEach ici
 
         // On synchronise ScrollReveal UNE SEULE FOIS après avoir généré tous les éléments
