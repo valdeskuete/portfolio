@@ -74,8 +74,12 @@ if(loginForm) {
             await signInWithEmailAndPassword(auth, email, pwd);
             loginModal.classList.add('hidden');
             loginForm.reset();
+        // Remplace le catch du loginForm
         } catch (err) { 
-            alert("Erreur d'identification : " + err.message); 
+            let msg = "Erreur inconnue";
+            if(err.code === "auth/invalid-credential") msg = "Email ou mot de passe incorrect.";
+            if(err.code === "auth/too-many-requests") msg = "Trop de tentatives. Réessayez plus tard.";
+            alert("Erreur : " + msg); 
         }
     });
 }

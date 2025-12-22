@@ -267,6 +267,14 @@ span {
     flex-wrap: wrap;
     position: relative;
 }
+@media (max-width: 768px) {
+    .skills-row {
+        gap: 2rem; /* Réduit l'espace entre les colonnes sur mobile */
+    }
+    .skills-content .progress h3 {
+        font-size: 1.4rem; /* Légèrement plus petit sur mobile */
+    }
+}
 
 .timeline-items::before {
     content: '';
