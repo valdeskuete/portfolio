@@ -275,3 +275,42 @@ function loadAdminReviews() {
         });
     });
 }
+
+// Gestion des Likes
+window.likeProject = async (id) => {
+    const docRef = doc(db, "projects", id);
+    await updateDoc(docRef, { likes: increment(1) });
+};
+
+// Envoi de commentaire (Contrôlé)
+window.sendComment = async (projId, input) => {
+    if(!input.value.trim()) return;
+    
+    await addDoc(collection(db, "comments"), {
+        projectId: projId,
+        text: input.value,
+        isAdmin: isAdmin, // Si tu es connecté en admin, isAdmin sera true
+        approved: isAdmin, // Les comms admin sont approuvés d'office, sinon false
+        date: new Date()
+    });
+    
+    input.value = "";
+    if(!isAdmin) alert("Merci ! Votre commentaire sera visible après validation.");
+};
+
+// Filtrage des projets
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        document.querySelector('.filter-btn.active').classList.remove('active');
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.portfolio-box').forEach(box => {
+            if(filter === 'all' || box.getAttribute('data-category') === filter) {
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        });
+    });
+});
