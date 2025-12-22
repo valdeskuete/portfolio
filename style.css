@@ -631,7 +631,7 @@ span {
     overflow: hidden; 
 }
 
-/* Disqus */
+/* Disqus 
 .disqus-container {
     max-width: 90rem;
     margin: 5rem auto;
@@ -639,7 +639,7 @@ span {
     border: .2rem solid var(--main-color); 
     border-radius: .8rem;
     background: var(--second-bg-color);
-}
+}*/
 
 /* --- FOOTER --- */
 .footer {
