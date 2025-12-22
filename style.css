@@ -747,13 +747,8 @@ span {
     .contact form .input-box input { width: 100%; }
 }
 
-/* ==========================================================================
-   SECTION SYSTÈME ADMIN & MODAL (NETTOYAGE ET HARMONISATION)
-   ========================================================================== */
-
-.hidden { 
-    display: none !important; 
-}
+/* --- SYSTÈME ADMIN (Version Corrigée Anti-Débordement) --- */
+.hidden { display: none !important; }
 
 /* Fenêtre de connexion (Modal) */
 .admin-modal {
@@ -762,151 +757,61 @@ span {
     left: 0; 
     width: 100%; 
     height: 100%;
-    background: rgba(0, 0, 0, 0.95); /* Plus sombre pour focus */
+    background: rgba(0,0,0,0.95); 
     z-index: 2000;
     display: flex; 
     justify-content: center; 
     align-items: center;
-    padding: 2rem;
+    padding: 15px; /* Evite que la modal touche les bords sur petit mobile */
 }
 
 .modal-content {
-    background: var(--bg-color); 
-    padding: 3rem; 
-    border: .2rem solid var(--main-color);
-    border-radius: 1.2rem; 
+    background: #111; 
+    padding: 2.5rem; 
+    border: 2px solid var(--main-color);
+    border-radius: 15px; 
     text-align: center; 
     width: 100%;
-    max-width: 400px;
-    box-shadow: var(--neon-glow);
+    max-width: 350px; /* Largeur max fixée pour ne pas déborder */
+    box-sizing: border-box; /* IMPORTANT : inclut le padding dans le calcul de la largeur */
 }
 
 /* Panneau Admin (Dashboard) */
 #admin-panel {
     background: #0a0a0a; 
-    border-top: .3rem solid var(--main-color);
-    padding: 6rem 9% 2rem; /* Ajusté pour le sticky header */
+    border-top: 3px solid var(--main-color);
+    padding: 4rem 5%; /* Padding réduit pour plus de place sur mobile */
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Sécurité anti-scroll */
 }
 
 .admin-section {
-    margin-bottom: 4rem;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 3rem auto;
 }
 
 .admin-box {
-    background: var(--second-bg-color); 
-    padding: 2rem; 
-    margin-bottom: 1.5rem;
-    border-left: .5rem solid var(--main-color); 
-    border-radius: .8rem;
-    color: var(--text-color);
-    font-size: 1.4rem;
+    background: #1a1a1a; 
+    padding: 15px; 
+    margin-bottom: 15px;
+    border-left: 4px solid var(--main-color); 
+    border-radius: 8px;
+    word-wrap: break-word; /* Force le texte long à revenir à la ligne */
+    overflow: hidden;
 }
 
-/* Boutons d'action Admin */
+/* Boutons Admin Responsives */
 .delete-btn, .approve-btn {
-    padding: .8rem 1.6rem;
-    cursor: pointer; 
-    border-radius: .5rem;
-    font-weight: 600;
-    transition: .3s ease;
     display: inline-block;
-    margin-top: 1rem;
-}
-
-.delete-btn { background: #ff3333; color: #fff; }
-.delete-btn:hover { background: #cc0000; }
-
-.approve-btn { background: #00cc00; color: #fff; margin-right: 1rem; }
-.approve-btn:hover { background: #008800; }
-
-/* ==========================================================================
-   CORRECTION DES CHAMPS DE SAISIE (INPUTS & TEXTAREA)
-   ========================================================================== */
-
-input[type="text"], 
-input[type="email"], 
-input[type="password"], 
-textarea, 
-.input-field {
-    width: 100%;
-    padding: 1.5rem;
-    font-size: 1.6rem;
-    color: var(--text-color);
-    background: var(--second-bg-color); 
-    border-radius: .8rem;
-    margin: 1rem 0;
-    border: .2rem solid transparent;
-    transition: .3s ease;
-}
-
-/* Effet au focus (Look Cyber) */
-input:focus, 
-textarea:focus {
-    border-color: var(--main-color);
-    box-shadow: 0 0 1rem var(--main-color);
-}
-
-/* Correction spécifique Textarea */
-textarea {
-    resize: none; 
-    height: 15rem;
-}
-
-/* ==========================================================================
-   BOUTON ASSISTANT IA (ANIMATION)
-   ========================================================================== */
-
-#open-chat-button {
-    background: linear-gradient(45deg, var(--main-color), #0088aa);
-    color: #000; /* Texte noir pour lisibilité sur cyan */
-    font-weight: 700;
+    padding: 8px 12px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    margin: 5px 5px 5px 0;
+    font-size: 1.2rem;
     border: none;
-    padding: 1.2rem 2.8rem;
-    border-radius: 4rem;
-    cursor: pointer;
-    animation: pulseBtn 2s infinite;
-    transition: .3s ease;
 }
 
-@keyframes pulseBtn {
-    0% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(0, 238, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0); }
-}
-
-/* ==========================================================================
-   CORRECTION RESPONSIVE & DÉBORDEMENT (MOBILE)
-   ========================================================================== */
-
-@media (max-width: 768px) {
-    .admin-section, .contact form {
-        padding: 0 2rem; 
-        width: 100%;
-    }
-
-    .heading {
-        font-size: 3.5rem; 
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    /* Ajustement Assistant IA Mobile */
-    #open-chat-button {
-        font-size: 1.4rem;
-        width: 90%; 
-        margin: 2rem auto;
-        display: block;
-    }
-
-    /* Ajustement des boites de message admin sur mobile */
-    .admin-box {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 450px) {
-    .modal-content {
-        width: 95%;
-        padding: 2rem;
-    }
-}
+.delete-btn { background: #ff3333; color: white; }
+.approve-btn { background: #00cc00; color: white; }
