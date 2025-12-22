@@ -307,6 +307,10 @@ window.toggleComments = (id) => {
     }
 };
 
+window.approveComment = async (id) => {
+    await updateDoc(doc(db, "comments", id), { approved: true });
+};
+
 // Charger les commentaires d'un projet spécifique
 function loadProjectComments(projId) {
     const list = document.getElementById(`list-${projId}`);
