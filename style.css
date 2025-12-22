@@ -825,3 +825,24 @@ textarea {
     resize: none; /* Empêche l'utilisateur de déformer le design */
     height: 15rem;
 }
+
+/* Correction du débordement sur mobile */
+@media (max-width: 768px) {
+    .admin-section, .contact form {
+        padding: 0 5%; /* Donne de l'air sur les côtés */
+        width: 100%;
+    }
+
+    .heading {
+        font-size: 3.5rem; /* Réduit la taille des titres qui dépassent */
+        text-align: center;
+    }
+
+    /* Empêche le bouton de l'assistant de déborder */
+    #open-chat-button {
+        font-size: 1.4rem;
+        width: 90%; 
+        margin: 0 auto 2rem auto;
+        display: block;
+    }
+}
