@@ -314,3 +314,42 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
         });
     });
 });
+
+/* --- CHARGEMENT DYNAMIQUE DES CONSEILS --- */
+async function loadTips() {
+    const osList = document.getElementById('os-tips-list');
+    const hwList = document.getElementById('hardware-tips-list');
+    const errorList = document.getElementById('errors-list');
+
+    if(!osList || !hwList || !errorList) return;
+
+    // On écoute la collection "tips" sur Firebase
+    onSnapshot(collection(db, "tips"), (snapshot) => {
+        // Si vide, on affiche des conseils par défaut (Maintenance Préventive)
+        if(snapshot.empty) {
+            osList.innerHTML = `
+                <div class="tip-item"><i class="fa-solid fa-check"></i> Activez les mises à jour de sécurité Windows/Linux.</div>
+                <div class="tip-item"><i class="fa-solid fa-check"></i> Nettoyez les fichiers temporaires une fois par mois.</div>`;
+            hwList.innerHTML = `
+                <div class="tip-item"><i class="fa-solid fa-check"></i> Gardez vos pilotes (drivers) à jour pour la stabilité.</div>
+                <div class="tip-item"><i class="fa-solid fa-check"></i> Évitez de boucher les aérations de votre PC portable.</div>`;
+            errorList.innerHTML = `
+                <li><i class="fa-solid fa-xmark"></i> Éteindre son PC brutalement par le bouton d'alimentation.</li>
+                <li><i class="fa-solid fa-xmark"></i> Utiliser un chargeur universel de mauvaise qualité.</li>`;
+            return;
+        }
+
+        // Si des données existent sur Firebase, on les affiche
+        osList.innerHTML = ''; hwList.innerHTML = ''; errorList.innerHTML = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const item = `<div class="tip-item"><i class="fa-solid fa-lightbulb"></i> ${data.text}</div>`;
+            if(data.type === 'os') osList.innerHTML += item;
+            else if(data.type === 'hardware') hwList.innerHTML += item;
+            else if(data.type === 'error') errorList.innerHTML += `<li><i class="fa-solid fa-triangle-exclamation"></i> ${data.text}</li>`;
+        });
+    });
+}
+
+// Appeler la fonction au chargement
+loadTips();
