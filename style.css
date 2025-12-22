@@ -795,3 +795,33 @@ span {
     70% { box-shadow: 0 0 0 15px rgba(0, 238, 255, 0); }
     100% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0); }
 }
+
+/* Correction pour tous les champs de saisie du site (Contact + Admin + Avis) */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+textarea, 
+.input-field {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    background: var(--second-bg-color); /* Fond gris foncé cohérent */
+    border-radius: .8rem;
+    margin: 1rem 0;
+    border: .2rem solid transparent;
+    transition: .3s;
+}
+
+/* Effet au survol/focus pour le look Cyber */
+input:focus, 
+textarea:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 1rem var(--main-color);
+}
+
+/* Correction spécifique pour le textarea (le message) */
+textarea {
+    resize: none; /* Empêche l'utilisateur de déformer le design */
+    height: 15rem;
+}
