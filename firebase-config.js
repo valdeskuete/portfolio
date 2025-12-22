@@ -88,77 +88,74 @@ if(loginForm) {
 const logoutBtn = document.getElementById('logout-btn');
 if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 
-// SURVEILLANCE DE L'ÉTAT (Le Cerveau central)
+// 1. LES FONCTIONS (Définies à l'extérieur pour être propres)
+function loadAdminReviews() {
+    const box = document.getElementById('admin-reviews-list');
+    if(!box) return;
+
+    onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), (snapshot) => {
+        box.innerHTML = '';
+        snapshot.forEach(d => {
+            const t = d.data();
+            const status = t.approved ? '<span style="color:#00cc00">Public</span>' : '<span style="color:orange">En attente</span>';
+            
+            box.innerHTML += `
+                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid ${t.approved ? '#0ef' : 'orange'}">
+                    <p><strong>${t.nom}</strong> - ${status}</p>
+                    <p>"${t.texte}"</p>
+                    <div style="margin-top:10px;">
+                        <button onclick="window.toggleReview('${d.id}', ${!t.approved})" class="btn" style="padding:5px 10px; font-size:1.2rem;">
+                            ${t.approved ? 'Masquer' : 'Approuver'}
+                        </button>
+                        <button onclick="window.deleteDocGeneric('testimonials', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-left:10px; cursor:pointer;">Supprimer</button>
+                    </div>
+                </div>`;
+        });
+    });
+}
+
+function loadAdminMessages() {
+    const box = document.getElementById('admin-messages-list');
+    if(!box) return;
+
+    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snapshot) => {
+        box.innerHTML = '';
+        if(snapshot.empty) box.innerHTML = "<p>Aucun message reçu.</p>";
+        
+        snapshot.forEach(d => {
+            const m = d.data();
+            box.innerHTML += `
+                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px;">
+                    <p><strong>De:</strong> ${m.nom} (${m.email})</p>
+                    <p><strong>Sujet:</strong> ${m.sujet || 'Sans sujet'}</p>
+                    <p><strong>Message:</strong> ${m.message}</p>
+                    <p style="font-size:1rem; color:gray;">Reçu le: ${m.date?.toDate().toLocaleString()}</p>
+                    <button onclick="window.deleteDocGeneric('messages', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Supprimer</button>
+                </div>`;
+        });
+    });
+}
+
+// 2. LES ACTIONS WINDOW (Pour les boutons HTML)
+window.toggleReview = async (id, newState) => {
+    await updateDoc(doc(db, "testimonials", id), { approved: newState });
+};
+
+// 3. LA SURVEILLANCE (Le Cerveau qui appelle les fonctions)
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // --- MODE ADMIN ---
         isAdmin = true;
         if(adminPanel) adminPanel.classList.remove('hidden');
         if(adminTrigger) adminTrigger.classList.add('hidden');
         
-        loadAdminMessages(); // Charger la boîte de réception
-        loadAdminReviews();  // Charger la modération
+        loadAdminMessages(); 
+        loadAdminReviews();  
     } else {
-        // --- MODE PUBLIC ---
         isAdmin = false;
         if(adminPanel) adminPanel.classList.add('hidden');
         if(adminTrigger) adminTrigger.classList.remove('hidden');
     }
-    // Recharger les projets pour afficher/cacher les poubelles
     loadProjects(); 
-
-    // Afficher les avis dans le panneau Admin pour modération
-    function loadAdminReviews() {
-        const box = document.getElementById('admin-reviews-list');
-        if(!box) return;
-
-        // On écoute tous les avis (approuvés ou non)
-        onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), (snapshot) => {
-            box.innerHTML = '';
-            snapshot.forEach(d => {
-                const t = d.data();
-                const status = t.approved ? '<span style="color:#00cc00">Public</span>' : '<span style="color:orange">En attente</span>';
-                
-                box.innerHTML += `
-                    <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid ${t.approved ? '#0ef' : 'orange'}">
-                        <p><strong>${t.nom}</strong> - ${status}</p>
-                        <p>"${t.texte}"</p>
-                        <div style="margin-top:10px;">
-                            <button onclick="window.toggleReview('${d.id}', ${!t.approved})" class="btn" style="padding:5px 10px; font-size:1.2rem;">
-                                ${t.approved ? 'Masquer' : 'Approuver'}
-                            </button>
-                            <button onclick="window.deleteDocGeneric('testimonials', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-left:10px; cursor:pointer;">Supprimer</button>
-                        </div>
-                    </div>`;
-            });
-        });
-    }
-    function loadAdminMessages() {
-        const box = document.getElementById('admin-messages-list');
-        if(!box) return;
-
-        onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snapshot) => {
-            box.innerHTML = '';
-            if(snapshot.empty) box.innerHTML = "<p>Aucun message reçu.</p>";
-            
-            snapshot.forEach(d => {
-                const m = d.data();
-                box.innerHTML += `
-                    <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px;">
-                        <p><strong>De:</strong> ${m.nom} (${m.email})</p>
-                        <p><strong>Sujet:</strong> ${m.sujet || 'Sans sujet'}</p>
-                        <p><strong>Message:</strong> ${m.message}</p>
-                        <p style="font-size:1rem; color:gray;">Reçu le: ${m.date?.toDate().toLocaleString()}</p>
-                        <button onclick="window.deleteDocGeneric('messages', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Supprimer</button>
-                    </div>`;
-            });
-        });
-    }
-
-    // Fonction pour Approuver/Masquer
-    window.toggleReview = async (id, newState) => {
-        await updateDoc(doc(db, "testimonials", id), { approved: newState });
-    };
 });
 
 // ============================================================
