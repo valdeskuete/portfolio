@@ -12,25 +12,21 @@
 
     <meta property="og:title" content="Valdes.Tech | Solutions Informatiques sur Mesure à Douala">
     <meta property="og:description" content="Maintenance, Réseaux et Sécurité. Service rapide à domicile ou en entreprise.">
-    <meta property="og:image" content="https://valdeskuete.github.io/portfolio/images/og-image.jpg"> <meta property="og:url" content="https://valdeskuete.github.io/portfolio/">
+    <meta property="og:image" content="https://valdeskuete.github.io/portfolio/images/og-image.jpg"> 
+    <meta property="og:url" content="https://valdeskuete.github.io/portfolio/">
     <meta property="og:type" content="website">
-    <meta property="og:locale" content="fr_FR">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Valdes.Tech | Expert IT au Cameroun">
-    <meta name="twitter:description" content="Dépannage PC, Réseau et Sécurité Informatique. Intervention rapide sur Douala.">
+    <meta name="twitter:title" content="Valdes.Tech | Expert IT Douala">
+    <meta name="twitter:description" content="Réparation Ordinateur, Configuration Réseau et Assistance à Distance.">
     <meta name="twitter:image" content="https://valdeskuete.github.io/portfolio/images/og-image.jpg">
 
-    <meta name="theme-color" content="#00ffee"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="img/favicon.ico">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://www.gstatic.com">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -47,8 +43,8 @@
             <a href="#services">Services</a>
             <a href="#skills">Compétences</a>
             <a href="#testimonials">Témoignages</a>
-            <a href="#education">Mon Parcours</a>
-            <a href="#portfolio">Réalisations</a>
+            <a href="#education">Parcours</a>
+            <a href="#portfolio">Projets</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
@@ -64,9 +60,10 @@
             </p>
             
             <div class="social-media">
-                <a href="https://wa.me/237681031588" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://wa.me/237681031588" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                 <a href="tel:+237681031588" aria-label="Téléphone"><i class="fa-solid fa-phone"></i></a>
                 <a href="mailto:valdeskuete8@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://linkedin.com/in/valdes-kuete" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
             </div>
             
             <a href="#contact" class="btn">Prendre Rendez-vous</a>
@@ -117,53 +114,45 @@
 
     <section id="assistant-invitation">
             <h2>
-                Marre des réponses génériques ?
+                Besoin d'une réponse <span class="neon-text">immédiate</span> ?
             </h2>
             <p class="intro">
-                Rencontrez <span class="neon-text">Valdes.Tech IA</span> : l'assistant le plus stylé de Douala !
+                Rencontrez <span class="neon-text">Valdes.IA</span> : Mon assistant virtuel intelligent.
             </p>
 
             <p class="description">
-                Il connaît le <strong>Maestro Valdes Kuete</strong> mieux que personne. Posez-lui toutes vos questions sur l'expertise <span class="neon-text">réseau</span>, sa formation d'élite à l'<span class="neon-text">IUGET</span>, le dépannage à distance via <span class="neon-text">AnyDesk</span> ou les interventions ultra-rapides à <span class="neon-text">Bonamoussadi</span> et <span class="neon-text">Bépanda</span>. Il vous donne une réponse **précise et flatteuse** en moins d'une seconde.
+                Il connaît mon expertise par cœur : configuration réseau, formation à l'<span class="neon-text">IUGET</span>, dépannage à distance via <span class="neon-text">AnyDesk</span> ou intervention à <span class="neon-text">Bonamoussadi</span>. Posez-lui votre question maintenant !
             </p>
-            <button id="open-chat-button"
-                    class="btn"
-                    style="/* style inline */">
-                Discuter avec l'Assistant (C'est gratuit !)
+            <button id="open-chat-button" class="btn">
+                Discuter avec l'Assistant (Gratuit)
             </button>
     </section>
 
     <section class="testimonials" id="testimonials">
         <h2 class="heading">Avis de <span>Clients</span></h2>
-
         <div class="testimonial-container" id="testimonials-list">
             </div>
 
         <div class="review-call-to-action">
-            <h3 class="heading">Vous avez aimé mes services ? <span>Partagez votre Expérience</span></h3>
+            <h3 class="heading">Satisfait ? <span>Laissez un avis</span></h3>
             <form id="review-form" style="max-width: 500px; margin: 2rem auto; display: flex; flex-direction: column; gap: 1rem;">
                 <input type="text" id="rev-name" placeholder="Votre Prénom" required class="input-field">
-                <textarea id="rev-text" placeholder="Votre témoignage..." required class="input-field"></textarea>
+                <textarea id="rev-text" placeholder="Votre expérience..." required class="input-field"></textarea>
                 <button type="submit" class="btn">Publier mon avis</button>
             </form>
         </div>
     </section>
 
-    
-
     <section class="education" id="education">
         <h2 class="heading">Mon <span>Parcours</span></h2>
-    
         <div class="timeline-items">
-            <div class="timeline-item">
+             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-date">2025 - Encours</div>
                 <div class="timeline-content">
                     <h3>BTS Réseaux et Sécurité (Niveau 2)</h3>
                     <h4><span class="neon-text">IUGET</span>, Douala</h4>
-                    <p>
-                        Approfondissement en <strong>Administration Système</strong> (Windows Server et Linux) pour la gestion des services d'entreprise. Spécialisation en Téléphonie IP et RTC : mise en place de serveurs de communication unifiée et gestion des flux voix sur IP (<span class="neon-text">VoIP</span>).
-                    </p>
+                    <p>Approfondissement en Administration Système (Windows Server/Linux). Spécialisation VoIP et serveurs de communication.</p>
                 </div>
             </div>
 
@@ -172,42 +161,18 @@
                 <div class="timeline-date">2024 - 2025</div>
                 <div class="timeline-content">
                     <h3>BTS Réseaux et Sécurité (Niveau 1)</h3>
-                    <h4><span class="neon-text">IUGET</span>, Douala</h4>
-                    <p>
-                        Spécialisation en <strong>administration réseau</strong>, sécurité des systèmes, et virtualisation. Acquisition de compétences avancées en <span class="neon-text">DNS, DHCP et Routage</span>.
-                    </p>
+                    <h4>IUGET, Douala</h4>
+                    <p>Installation de réseaux locaux, câblage structuré et configuration de routeurs Cisco.</p>
                 </div>
             </div>
-    
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">2020 - 2024</div>
-                <div class="timeline-content">
-                    <h3>Bénévolat et Support Technique</h3>
-                    <h4>Lycée Technique de Balepo</h4>
-                    <p>
-                        <strong>Maintenance préventive</strong> des ordinateurs du lycée, assistance aux enseignants, et <strong>dépannage rapide</strong> de pannes logicielles et matérielles.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
+
+             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-date">2023 - 2024</div>
                 <div class="timeline-content">
                     <h3>Baccalauréat Technique</h3>
-                    <h4>Lycée Technique de Balelo</h4>
-                    <p>Base solide en mathématiques, sciences et technologies, préparant aux études supérieures en informatique.</p>
-                </div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">2019 - 2020</div>
-                <div class="timeline-content">
-                    <h3>CAP</h3>
                     <h4>Lycée Technique de Balepo</h4>
-                    <p>Acquisition des premières compétences pratiques en maintenance et dépannage général.</p>
+                    <p>Base solide en mathématiques, sciences et technologies.</p>
                 </div>
             </div>
         </div>
@@ -215,43 +180,39 @@
 
     <section class="skills" id="skills">
         <h2 class="heading">Outils & <span>Compétences</span></h2>
-        
         <div class="skills-row">
             <div class="skills-column">
-                <h3 class="title">Outils Maîtrisés</h3>
+                <h3 class="title">Technique</h3>
                 <div class="skills-box">
                     <div class="skills-content">
-                        
                         <div class="progress">
-                            <h3>Configuration Réseau (<span class="neon-text">DNS, DHCP, Routage</span>) <span>85%</span></h3>
+                            <h3>Réseau (DNS, DHCP, Routage) <span>85%</span></h3>
                             <div class="bar"><span></span></div>
                         </div>
                         <div class="progress">
-                            <h3>Dépannage Hardware & Optimisation PC <span>95%</span></h3>
+                            <h3>Hardware & Optimisation <span>95%</span></h3>
                             <div class="bar"><span></span></div>
                         </div>
                         <div class="progress">
-                            <h3>Virtualisation (VirtualBox) & Réseaux Cisco (Packet Tracer) <span>80%</span></h3>
+                            <h3>Windows / Ubuntu / Server <span>90%</span></h3>
                             <div class="bar"><span></span></div>
                         </div>
                         <div class="progress">
-                            <h3>Systèmes d'exploitation (<span class="neon-text">Windows / Ubuntu</span>) <span>90%</span></h3>
+                            <h3>HTML / CSS / JS (Web Basics) <span>75%</span></h3>
                             <div class="bar"><span></span></div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
-
-            <div class="skills-column">
-                <h3 class="title">Qualités Pro</h3>
+             <div class="skills-column">
+                <h3 class="title">Soft Skills</h3>
                 <div class="skills-box">
                     <div class="skills-content">
                         <ul>
-                            <li><i class="fa-solid fa-check"></i> <strong>Sérieux & Fiable</strong></li>
-                            <li><i class="fa-solid fa-check"></i> <span class="neon-text">Rapidité d’exécution</span></li>
-                            <li><i class="fa-solid fa-check"></i> Pédagogie (<span class="neon-text">Explications simples</span>)</li>
-                            <li><i class="fa-solid fa-check"></i> <strong>Orienté Solution</strong></li>
+                            <li><i class="fa-solid fa-check"></i> Rigueur & Fiabilité</li>
+                            <li><i class="fa-solid fa-check"></i> <span class="neon-text">Intervention Rapide</span></li>
+                            <li><i class="fa-solid fa-check"></i> Pédagogie</li>
+                            <li><i class="fa-solid fa-check"></i> Confidentialité</li>
                         </ul>
                     </div>
                 </div>
@@ -262,7 +223,7 @@
    <section class="portfolio" id="portfolio">
         <h2 class="heading">Derniers <span>Projets</span></h2>
         <div class="portfolio-container" id="portfolio-list">
-            </div>
+             </div>
     </section>
     
     <section class="contact" id="contact">
@@ -274,21 +235,21 @@
                 <input type="email" id="contact-email" placeholder="Email" required>
             </div>
             <div class="input-box">
-                <input type="tel" id="contact-phone" placeholder="Numéro">
-                <input type="text" id="contact-subject" placeholder="Sujet">
+                <input type="tel" id="contact-phone" placeholder="Numéro de téléphone">
+                <input type="text" id="contact-subject" placeholder="Sujet de la demande">
             </div>
-            <textarea id="contact-message" cols="30" rows="10" placeholder="Message..." required></textarea>
-            <button type="submit" class="btn">Envoyer via Valdes.Tech</button>
+            <textarea id="contact-message" cols="30" rows="10" placeholder="Votre message..." required></textarea>
+            <button type="submit" class="btn">Envoyer</button>
         </form>
         
-        <div class="contact-info-direct" style="text-align: center; margin-top: 2rem; color: white;">
+        <div class="contact-info-direct" style="text-align: center; margin-top: 3rem; color: white;">
             <p><i class="fa-solid fa-phone"></i> <strong>681 03 15 88</strong> / 698 33 43 81</p>
             <p><i class="fa-solid fa-location-dot"></i> Douala, <span class="neon-text">Bonamoussadi</span></p>
         </div>
         
-        <div class="map-container" style="margin-top: 2rem;">
+        <div class="map-container" style="margin-top: 2rem; border-radius: 1rem; overflow: hidden; box-shadow: 0 0 15px var(--main-color);">
             <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.6!2d9.7!3d4.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMDInNDguMCJOIDnCsDQ0JzEyLjAiRQ!5e0!3m2!1sfr!2scm!4v1600000000000" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63615.15647717468!2d9.724213758203126!3d4.095759999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610d4862590d97%3A0xc6222c544d673199!2sBonamoussadi%2C%20Douala!5e0!3m2!1sfr!2scm!4v1703000000000!5m2!1sfr!2scm" 
                 width="100%" 
                 height="450" 
                 style="border:0;" 
@@ -297,55 +258,54 @@
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
         </div>
-        
     </section>
 
-    <div id="admin-trigger" style="text-align: center; margin: 20px; cursor: pointer; color: #333;">
-        <i class="fa-solid fa-lock"></i> Accès Valdes
+    <div id="admin-trigger" style="text-align: center; margin: 30px; cursor: pointer; color: #555; font-size: 0.8em; opacity: 0.5;">
+        <i class="fa-solid fa-lock"></i> Administration
     </div>
 
     <div id="login-modal" class="admin-modal hidden">
         <div class="modal-content">
-            <h3 style="color:#00ffee">Connexion Admin</h3>
+            <h3 style="color:var(--main-color)">Connexion Admin</h3>
             <form id="login-form">
                 <input type="email" id="login-email" placeholder="Email" required>
                 <input type="password" id="login-password" placeholder="Mot de passe" required>
                 <button type="submit" class="btn">Entrer</button>
-                <button type="button" id="close-modal" style="background:transparent; color:white; margin-top:10px; cursor:pointer;">Annuler</button>
+                <button type="button" id="close-modal" style="margin-top: 15px;">Fermer</button>
             </form>
         </div>
     </div>
 
     <section id="admin-panel" class="hidden">
-    <div class="heading">
-        <h2>Tableau de <span>Bord</span></h2>
-        <button id="logout-btn" class="btn" style="background:red;">Déconnexion</button>
-    </div>
+        <div class="heading">
+            <h2>Tableau de <span>Bord</span></h2>
+            <button id="logout-btn" class="btn" style="background:#ff3333; box-shadow:none;">Déconnexion</button>
+        </div>
 
-    <div class="admin-section">
-        <h3>➕ Ajouter un Projet</h3>
-        <form id="add-project-form">
-            <input type="text" id="proj-title" placeholder="Titre" required class="input-field">
-            <textarea id="proj-desc" placeholder="Description" required class="input-field"></textarea>
-            <input type="text" id="proj-img" placeholder="URL Image" required class="input-field">
-            <button type="submit" class="btn">Publier</button>
-        </form>
-    </div>
+        <div class="admin-section">
+            <h3>➕ Ajouter un Projet</h3>
+            <form id="add-project-form">
+                <input type="text" id="proj-title" placeholder="Titre" required class="input-field">
+                <textarea id="proj-desc" placeholder="Description" required class="input-field"></textarea>
+                <input type="text" id="proj-img" placeholder="URL Image" required class="input-field">
+                <button type="submit" class="btn">Publier</button>
+            </form>
+        </div>
 
-    <div class="admin-section" style="margin-top:3rem;">
-        <h3>📩 Messages Reçus</h3>
-        <div id="admin-messages-list"></div>
-    </div>
+        <div class="admin-section" style="margin-top:3rem;">
+            <h3>📩 Messages Reçus</h3>
+            <div id="admin-messages-list"></div>
+        </div>
 
-    <div class="admin-section" style="margin-top:3rem;">
-        <h3>⭐ Avis à valider</h3>
-        <div id="admin-reviews-list"></div>
-    </div>
-</section>
+        <div class="admin-section" style="margin-top:3rem;">
+            <h3>⭐ Avis à valider</h3>
+            <div id="admin-reviews-list"></div>
+        </div>
+    </section>
     
     <footer class="footer">
         <div class="footer-text">
-            <p>Copyright &copy; 2025 by Valdes.Tech | Tous droits réservés.</p>
+            <p>Copyright © 2025 by Valdes.Tech | Tous droits réservés.</p>
         </div>
         <div class="footer-iconTop">
             <a href="#home"><i class="fa-solid fa-angle-up"></i></a>
@@ -354,8 +314,8 @@
 
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    
     <script src="script.js"></script>
-
     <script type="module" src="firebase-config.js"></script>
 </body>
-    
+</html>
