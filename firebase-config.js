@@ -194,12 +194,8 @@ if(loginForm) {
 // Déconnexion
 if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 
-// ============================================================
-// 5. PROJETS & PORTFOLIO
-// ============================================================
-
-function loadProjects() {
-  // --- CONFIGURATION & ENVOI PROJET ---
+// --- CONFIGURATION DU FORMULAIRE ADMIN (À renommer pour éviter le conflit) ---
+function setupAdminProjectForm() {
     const addProjForm = document.getElementById('add-project-form');
     if (addProjForm) {
         addProjForm.onsubmit = async (e) => {
@@ -220,14 +216,19 @@ function loadProjects() {
     }
 }
 
-// --- CHARGEMENT PUBLIC AVEC FILTRES ---
+// --- CHARGEMENT DES PROJETS (FONCTION UNIQUE) ---
 window.loadProjects = (filter = "all") => {
     const portfolioList = document.getElementById('portfolio-list');
     if (!portfolioList) return;
 
-    const q = (filter === "all") 
-        ? query(collection(db, "projets"), orderBy("date", "desc"))
-        : query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
+    let q;
+    if (filter === "all") {
+        q = query(collection(db, "projets"), orderBy("date", "desc"));
+    } else {
+        // ATTENTION : Si cela ne s'affiche pas, vérifiez la console F12. 
+        // Firebase affichera un lien pour créer l'index manquant.
+        q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
+    }
 
     onSnapshot(q, (snapshot) => {
         portfolioList.innerHTML = '';
@@ -241,19 +242,16 @@ window.loadProjects = (filter = "all") => {
                         <h4>${p.titre}</h4>
                         <p>${p.description}</p>
                         <div class="project-interactions">
-                            <span onclick="window.likeProject('${id}')">❤️ ${p.likes || 0}</span>
+                            <span onclick="window.likeProject('${id}')" style="cursor:pointer">❤️ ${p.likes || 0}</span>
                         </div>
                     </div>
                 </div>`;
         });
-    }, (error) => {
-        if (error.code === 'failed-precondition') {
-            alert("⚠️ Index manquant. Vérifie la console (F12).");
-        }
     });
 };
 
-// Initialisation au démarrage
+// Appels initiaux
+setupAdminProjectForm();
 window.loadProjects();
 
 // GESTION FORMULAIRE : CONTACT (CLIENT)
