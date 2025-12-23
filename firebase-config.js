@@ -20,124 +20,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let isAdmin = false;
-
-// ============================================================
-// 2. FONCTIONS DE CHARGEMENT (DÉFINIES UNE SEULE FOIS)
-// ============================================================
-
-function loadAdminReviews() {
-    const box = document.getElementById('admin-reviews-list');
-    if(!box) return;
-
-    onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), (snapshot) => {
-        box.innerHTML = '';
-        snapshot.forEach(d => {
-            const t = d.data();
-            const status = t.approved ? '<span style="color:#00cc00">Public</span>' : '<span style="color:orange">En attente</span>';
-            const actionBtn = t.approved ? 
-                `<button onclick="window.toggleReview('${d.id}', false)" style="background:orange; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Masquer</button>` : 
-                `<button onclick="window.toggleReview('${d.id}', true)" style="background:green; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Valider</button>`;
-
-            box.innerHTML += `
-                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid ${t.approved ? '#0ef' : 'orange'}">
-                    <p><strong>${t.nom}</strong> - ${status}</p>
-                    <p>"${t.texte}"</p>
-                    <div style="margin-top:10px;">
-                        ${actionBtn}
-                        <button onclick="window.deleteItem('testimonials', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-left:10px; cursor:pointer;">Supprimer</button>
-                    </div>
-                </div>`;
-        });
-    });
-}
-
-function loadAdminMessages() {
-    const box = document.getElementById('admin-messages-list');
-    if(!box) return;
-
-    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snapshot) => {
-        box.innerHTML = '';
-        if(snapshot.empty) { box.innerHTML = "<p>Aucun message reçu.</p>"; return; }
-        
-        snapshot.forEach(d => {
-            const m = d.data();
-            const dateStr = m.date?.toDate ? m.date.toDate().toLocaleString() : 'Date inconnue';
-            box.innerHTML += `
-                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid var(--main-color);">
-                    <p><strong>De:</strong> ${m.nom} (${m.email})</p>
-                    <p><strong>Sujet:</strong> ${m.sujet || 'Sans sujet'}</p>
-                    <p><strong>Message:</strong> ${m.message}</p>
-                    <p style="font-size:0.9rem; color:gray;">Reçu le: ${dateStr}</p>
-                    <button onclick="window.deleteItem('messages', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Supprimer</button>
-                </div>`;
-        });
-    });
-}
-
-// ============================================================
-// 3. ACTIONS GLOBALES (window.xxx)
-// ============================================================
-
-window.deleteItem = async (col, id) => {
-    if(confirm("⚠️ Supprimer définitivement ?")) {
-        try {
-            await deleteDoc(doc(db, col, id));
-        } catch (e) { alert("Erreur: " + e.message); }
-    }
-};
-
-window.toggleReview = async (id, status) => {
-    try {
-        await updateDoc(doc(db, "testimonials", id), { approved: status });
-    } catch (e) { alert("Erreur: " + e.message); }
-};
-
-window.likeProject = async (id) => {
-    try {
-        const docRef = doc(db, "projets", id); // Vérifie que ta collection s'appelle "projets"
-        await updateDoc(docRef, { likes: increment(1) });
-    } catch (e) { console.error("Erreur like:", e); }
-};
-
-window.toggleComments = (id) => {
-    const area = document.getElementById(`comment-area-${id}`);
-    if(area) {
-        area.classList.toggle('hidden');
-        if(!area.classList.contains('hidden')) loadProjectComments(id);
-    }
-};
-
-window.sendComment = async (projId, input) => {
-    if(!input.value.trim()) return;
-    try {
-        await addDoc(collection(db, "comments"), {
-            projectId: projId,
-            text: input.value,
-            isAdmin: isAdmin,
-            approved: isAdmin,
-            date: new Date()
-        });
-        input.value = "";
-        if(!isAdmin) alert("Merci ! Votre commentaire sera visible après validation.");
-    } catch (e) { alert("Erreur commentaire."); }
-};
-
-// ============================================================
-// ============================================================
-// 3. GESTION DE L'AUTHENTIFICATION & SÉCURITÉ UI
-// ============================================================
-
-const adminPanel = document.getElementById('admin-panel');
-const loginModal = document.getElementById('login-modal');
-const adminTrigger = document.getElementById('admin-trigger');
-const closeModalBtn = document.getElementById('close-modal');
-const loginForm = document.getElementById('login-form');
-const logoutBtn = document.getElementById('logout-btn');
-
 /* ============================================================
-   SYSTÈME D'AUTHENTIFICATION & ADMINISTRATION
+   CONFIG & LOGIQUE ADMINISTRATIVE UNIFIÉE
    ============================================================ */
+
+// --- 1. CONFIGURATION FIREBASE (Garde tes imports ici) ---
+// import { ... } from "..."
+
+let isAdmin = false; 
 
 const el = {
     adminPanel: document.getElementById('admin-panel'),
@@ -148,7 +38,7 @@ const el = {
     closeModal: document.getElementById('close-modal')
 };
 
-// --- LE CERVEAU ---
+// --- 2. SURVEILLANCE DE L'AUTHENTIFICATION ---
 onAuthStateChanged(auth, (user) => {
     isAdmin = !!user; 
 
@@ -158,44 +48,56 @@ onAuthStateChanged(auth, (user) => {
         el.adminTrigger?.classList.add('hidden');
         el.loginModal?.classList.add('hidden');
         
-        if(typeof loadAdminMessages === 'function') loadAdminMessages();
-        if(typeof loadAdminReviews === 'function') loadAdminReviews();
+        loadAdminMessages();
+        loadAdminReviews();
     } else {
         console.log("🔓 Mode Public : Activé");
         el.adminPanel?.classList.add('hidden');
         el.adminTrigger?.classList.remove('hidden');
     }
 
-    // Mise à jour automatique de la galerie pour afficher/masquer les outils admin
+    // Recharge la galerie pour appliquer les droits (boutons trash/xmark)
     window.loadProjects();
 });
 
-// --- GESTION DES FENÊTRES ---
+/* ============================================================
+   3. ACTIONS GLOBALES (ADMINISTRATION & LIKES)
+   ============================================================ */
+
+// Connexion / Déconnexion
 el.adminTrigger && (el.adminTrigger.onclick = () => el.loginModal.classList.remove('hidden'));
 el.closeModal && (el.closeModal.onclick = () => el.loginModal.classList.add('hidden'));
 
-// --- LOGIQUE DE CONNEXION ---
 el.loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const pwd = document.getElementById('login-password').value;
-    
     try {
         await signInWithEmailAndPassword(auth, email, pwd);
         el.loginForm.reset();
-    } catch (err) { 
-        const errors = {
-            "auth/too-many-requests": "Trop de tentatives.",
-            "auth/invalid-credential": "Identifiants incorrects."
-        };
-        alert(errors[err.code] || "Accès refusé."); 
-    }
+    } catch (err) { alert("Erreur : Identifiants incorrects."); }
 });
 
 if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 
+// Système de Suppression Universel (Messages, Témoignages)
+window.deleteItem = async (col, id) => {
+    if(confirm("⚠️ Supprimer définitivement ?")) {
+        try { await deleteDoc(doc(db, col, id)); } 
+        catch (e) { alert("Erreur: " + e.message); }
+    }
+};
+
+// Système de Like
+window.likeProject = async (id) => {
+    try {
+        const docRef = doc(db, "projets", id);
+        await updateDoc(docRef, { likes: increment(1) });
+    } catch (e) { console.error("Erreur like:", e); }
+};
+
 /* ============================================================
-   GESTION DES PROJETS & COMMENTAIRES
+   4. GESTION DES PROJETS (GALERIE)
    ============================================================ */
 
 window.loadProjects = (filter = "all") => {
@@ -226,19 +128,16 @@ window.loadProjects = (filter = "all") => {
                                 <i class="fa-solid fa-comment"></i> <small id="count-${id}">0</small>
                             </span>
                         </div>
-                        
                         ${isAdmin ? `
-                            <button onclick="window.deleteProject('${id}')" class="admin-del-btn">
+                            <button onclick="window.deleteItem('projets', '${id}')" class="admin-del-btn">
                                 <i class="fa-solid fa-trash"></i>
-                            </button>
-                        ` : ''}
+                            </button>` : ''}
                     </div>
 
                     <div class="portfolio-layer">
                         <h4>${p.titre}</h4>
                         <div class="comments-container">
-                            <div class="comments-list" id="comments-${id}">
-                                </div>
+                            <div class="comments-list" id="comments-${id}"></div>
                             <div class="comment-input-group">
                                 <input type="text" id="input-${id}" placeholder="Votre avis...">
                                 <button onclick="window.addComment('${id}')"><i class="fa-solid fa-paper-plane"></i></button>
@@ -246,14 +145,15 @@ window.loadProjects = (filter = "all") => {
                         </div>
                     </div>
                 </div>`;
-            
-            // Lancer le chargement des commentaires pour ce projet précis
             window.loadComments(id);
         });
     });
 };
 
-// --- FONCTION : CHARGER LES COMMENTAIRES AVEC OPTION DE MODÉRATION ---
+/* ============================================================
+   5. GESTION DES COMMENTAIRES (AFFICHAGE & MODÉRATION)
+   ============================================================ */
+
 window.loadComments = (projId) => {
     const commList = document.getElementById(`comments-${projId}`);
     const commCount = document.getElementById(`count-${projId}`);
@@ -267,55 +167,100 @@ window.loadComments = (projId) => {
         
         snapshot.forEach(d => {
             const c = d.data();
-            const commentId = d.id; // On récupère l'ID du commentaire pour la suppression
-
             commList.innerHTML += `
                 <div class="comment-item">
                     <div class="comment-content">
                         <span class="comment-text">${c.text}</span>
-                        <small class="comment-date">${new Date(c.date.seconds * 1000).toLocaleDateString()}</small>
                     </div>
-                    
                     ${isAdmin ? `
-                        <button onclick="window.deleteComment('${commentId}')" class="admin-comm-del-btn" title="Supprimer ce commentaire">
+                        <button onclick="window.deleteItem('comments', '${d.id}')" class="admin-comm-del-btn">
                             <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    ` : ''}
+                        </button>` : ''}
                 </div>`;
         });
     });
 };
 
-// --- FONCTION : SUPPRIMER UN COMMENTAIRE (ADMIN UNIQUEMENT) ---
-window.deleteComment = async (commentId) => {
-    if(confirm("❌ Supprimer définitivement ce commentaire ?")) {
-        try {
-            await deleteDoc(doc(db, "comments", commentId));
-            // La mise à jour est instantanée grâce au onSnapshot
-        } catch (e) {
-            console.error("Erreur suppression :", e);
-            alert("Impossible de supprimer le commentaire.");
-        }
-    }
-};
-
-// --- FONCTION : AJOUTER UN COMMENTAIRE ---
 window.addComment = async (projId) => {
     const input = document.getElementById(`input-${projId}`);
     if (!input.value.trim()) return;
-
     try {
         await addDoc(collection(db, "comments"), {
             projectId: projId,
             text: input.value,
-            date: new Date(),
-            approved: true // On peut ajouter un système de validation plus tard
+            date: new Date()
         });
-        input.value = ''; // Vider le champ
-    } catch (e) {
-        alert("Erreur lors de l'envoi du commentaire.");
-    }
+        input.value = '';
+    } catch (e) { alert("Erreur d'envoi."); }
 };
+
+/* ============================================================
+   6. ADMIN : MESSAGES & TÉMOIGNAGES
+   ============================================================ */
+
+function loadAdminMessages() {
+    const box = document.getElementById('admin-messages-list');
+    if(!box) return;
+    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snap) => {
+        box.innerHTML = snap.empty ? "<p>Aucun message.</p>" : "";
+        snap.forEach(d => {
+            const m = d.data();
+            box.innerHTML += `
+                <div class="admin-box" style="border-left:4px solid var(--main-color); background:#1a1a1a; padding:1rem; margin-bottom:1rem; border-radius:10px;">
+                    <p><strong>${m.nom}</strong> (${m.email})</p>
+                    <p>${m.message}</p>
+                    <button onclick="window.deleteItem('messages', '${d.id}')" style="color:red; cursor:pointer; background:none; margin-top:10px;">Supprimer</button>
+                </div>`;
+        });
+    });
+}
+
+function loadAdminReviews() {
+    const box = document.getElementById('admin-reviews-list');
+    if(!box) return;
+    onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), (snap) => {
+        box.innerHTML = '';
+        snap.forEach(d => {
+            const t = d.data();
+            box.innerHTML += `
+                <div class="admin-box" style="border-left:4px solid ${t.approved ? '#0ef' : 'orange'}; background:#1a1a1a; padding:1rem; margin-bottom:1rem; border-radius:10px;">
+                    <p><strong>${t.nom}</strong> [${t.approved ? 'Public' : 'Attente'}]</p>
+                    <p>"${t.texte}"</p>
+                    <button onclick="window.toggleReview('${d.id}', ${!t.approved})" style="color:white; background:${t.approved?'orange':'green'}; padding:5px; border-radius:5px; cursor:pointer;">
+                        ${t.approved ? 'Masquer' : 'Valider'}
+                    </button>
+                    <button onclick="window.deleteItem('testimonials', '${d.id}')" style="color:red; background:none; margin-left:10px; cursor:pointer;">Supprimer</button>
+                </div>`;
+        });
+    });
+}
+
+window.toggleReview = async (id, status) => {
+    await updateDoc(doc(db, "testimonials", id), { approved: status });
+};
+
+function setupAdminProjectForm() {
+    const form = document.getElementById('add-project-form');
+    if (!form) return;
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const newProject = {
+            titre: document.getElementById('proj-title').value,
+            description: document.getElementById('proj-desc').value,
+            image: document.getElementById('proj-img').value,
+            tag: document.getElementById('proj-tag').value,
+            likes: 0,
+            date: new Date()
+        };
+        try {
+            await addDoc(collection(db, "projets"), newProject);
+            alert("🚀 Projet publié !");
+            form.reset();
+        } catch (err) { alert("Erreur."); }
+    };
+}
+
+// Lancement
 setupAdminProjectForm();
 
 // GESTION FORMULAIRE : CONTACT (CLIENT)
