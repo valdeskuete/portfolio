@@ -963,3 +963,61 @@ span {
 .filter-btn {
     cursor: pointer;
 }
+
+/* --- BARRE DE LIKES PERMANENTE --- */
+.project-info-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.7); /* Fond sombre transparent */
+    backdrop-filter: blur(8px);    /* Effet de flou moderne */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10; /* Toujours au-dessus de l'image */
+    border-top: 1px solid var(--main-color);
+}
+
+/* Style du compteur de Likes */
+.like-counter {
+    color: #ff4757;
+    font-size: 1.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+}
+
+.like-counter:hover {
+    transform: scale(1.1);
+    color: #ff6b81;
+}
+
+/* Style du bouton supprimer (Admin) */
+.admin-trash-btn {
+    background: rgba(255, 51, 51, 0.2);
+    color: #ff3333;
+    border: 1px solid #ff3333;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.admin-trash-btn:hover {
+    background: #ff3333;
+    color: white;
+    box-shadow: 0 0 15px #ff3333;
+}
+
+/* --- AJUSTEMENT DE LA LAYER DE SURVOL --- */
+.portfolio-layer {
+    /* On remonte la couche de description pour qu'elle ne cache pas la barre de likes */
+    height: calc(100% - 4.5rem); 
+    bottom: 4.5rem; 
+}
