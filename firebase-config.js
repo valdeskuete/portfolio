@@ -491,3 +491,74 @@ window.addEmoji = (emoji) => {
         }
     });
 };
+
+/* ==================== LOGIQUE ADMIN & CRUD ==================== */
+
+// 1. Navigation entre onglets
+window.openTab = (tabId) => {
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).style.display = 'block';
+    event.currentTarget.classList.add('active');
+};
+
+// 2. Écouter l'état de connexion pour afficher/cacher l'admin
+onAuthStateChanged(auth, (user) => {
+    const adminPanel = document.getElementById('admin-panel');
+    if (user) {
+        adminPanel.classList.remove('hidden');
+        loadMessagesAdmin(); // Charge les messages si connecté
+    } else {
+        adminPanel.classList.add('hidden');
+    }
+});
+
+// 3. Charger les messages dynamiquement (pour l'admin)
+function loadMessagesAdmin() {
+    const container = document.getElementById('admin-messages-list');
+    if (!container) return;
+    
+    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snap) => {
+        container.innerHTML = '';
+        snap.forEach(d => {
+            const m = d.data();
+            container.innerHTML += `
+                <div class="admin-box">
+                    <p><strong>De:</strong> ${m.nom} (${m.email})</p>
+                    <p><strong>Sujet:</strong> ${m.sujet}</p>
+                    <p style="margin: 10px 0;">${m.message}</p>
+                    <button onclick="deleteItem('messages', '${d.id}')" style="color:#ff4757; cursor:pointer; background:none; font-weight:bold;">🗑️ Supprimer</button>
+                </div>
+            `;
+        });
+    });
+}
+
+// 4. Fonction de suppression universelle
+window.deleteItem = async (colName, id) => {
+    if(confirm("Confirmer la suppression définitive ?")) {
+        try {
+            await deleteDoc(doc(db, colName, id));
+            alert("Supprimé !");
+        } catch(e) { console.error(e); }
+    }
+};
+
+// 5. Ajout de Projet via Admin
+const projForm = document.getElementById('project-form');
+if (projForm) {
+    projForm.onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await addDoc(collection(db, "projets"), {
+                titre: document.getElementById('p-title').value,
+                tag: document.getElementById('p-tag').value,
+                description: document.getElementById('p-desc').value,
+                image: document.getElementById('p-image').value || 'images/portfolio1.jpg',
+                date: serverTimestamp()
+            });
+            projForm.reset();
+            alert("Projet publié avec succès !");
+        } catch(e) { alert("Erreur d'ajout"); }
+    };
+}

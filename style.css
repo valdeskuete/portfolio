@@ -1393,3 +1393,48 @@ span {
     margin-bottom: 1rem;
     text-transform: uppercase;
 }
+
+/* --- OPTIMISATION LISIBILITÉ (Min 14px) --- */
+p, input, textarea, button, a, span, label {
+    font-size: 1.5rem !important; /* Force min 15px pour le confort visuel */
+}
+
+/* --- DESIGN ADMIN --- */
+.hidden { display: none !important; }
+
+.tab-btn {
+    padding: 1.2rem 2.5rem;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--main-color);
+    border-radius: .8rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.tab-btn.active {
+    background: var(--main-color);
+    color: var(--bg-color);
+    box-shadow: var(--neon-glow);
+}
+
+.admin-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid var(--main-color);
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Modal responsive */
+.modal-content input {
+    background: var(--bg-color);
+    color: white;
+    border: 1px solid #444;
+}

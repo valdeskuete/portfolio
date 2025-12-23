@@ -103,3 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+
+/* ==================== INTERACTION ADMIN ==================== */
+const adminLoginLink = document.getElementById('admin-login-link');
+const loginModal = document.getElementById('login-modal');
+
+if (adminLoginLink) {
+    adminLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.classList.toggle('hidden');
+    });
+}
+
+// Fermer le modal si on clique en dehors du contenu
+window.addEventListener('click', (e) => {
+    if (e.target == loginModal) {
+        loginModal.classList.add('hidden');
+    }
+});
+
+/* ==================== ANIMATIONS FLUIDES ==================== */
+ScrollReveal().reveal('.admin-section, .admin-box', { origin: 'bottom', distance: '50px' });
