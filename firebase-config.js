@@ -82,8 +82,36 @@ window.approveItem = async (col, id) => {
   await updateDoc(doc(db, col, id), { approved: true });
 };
 
-window.likeProject = async (id) => {
+/*window.likeProject = async (id) => {
   await updateDoc(doc(db, "projets", id), { likes: increment(1) });
+};*/
+
+/* ==================== SYSTÈME DE LIKE SÉCURISÉ ==================== */
+window.likeProject = async (projectId) => {
+    // 1. Vérifier si l'utilisateur a déjà liké ce projet (via localStorage)
+    const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
+
+    if (likedProjects.includes(projectId)) {
+        alert("Vous avez déjà aimé ce projet ! 😉");
+        return; // On arrête la fonction ici
+    }
+
+    try {
+        const projectRef = doc(db, "projets", projectId);
+        
+        // 2. Mise à jour atomique dans Firestore
+        await updateDoc(projectRef, {
+            likes: increment(1)
+        });
+
+        // 3. Enregistrer le like localement pour bloquer les futurs clics
+        likedProjects.push(projectId);
+        localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
+
+        console.log("✅ Like enregistré pour le projet:", projectId);
+    } catch (error) {
+        console.error("Erreur lors du like :", error);
+    }
 };
 
 /* ==================== PROJETS (RENDU CSS OPTIMISÉ) ==================== */
