@@ -202,39 +202,44 @@ function loadProjects() {
    // ============================================================
 // LOGIQUE D'ENVOI DES PROJETS (ADMIN)
 // ============================================================
+    // --- LOGIQUE D'ENVOI (ADMIN) ---
     const addProjForm = document.getElementById('add-project-form');
-
     if (addProjForm) {
-        addProjForm.addEventListener('submit', async (e) => {
+        addProjForm.onsubmit = async (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation(); // Évite les conflits avec le formulaire de contact
-
-            // Récupération précise des champs
-            const title = document.getElementById('proj-title').value;
-            const desc = document.getElementById('proj-desc').value;
-            const img = document.getElementById('proj-img').value;
-            const tag = document.getElementById('proj-tag').value; // Récupère la catégorie choisie
-
             try {
-                // Envoi vers la collection "projets"
                 await addDoc(collection(db, "projets"), {
-                    titre: title,
-                    description: desc,
-                    image: img,
-                    tag: tag,
+                    titre: document.getElementById('proj-title').value,
+                    description: document.getElementById('proj-desc').value,
+                    image: document.getElementById('proj-img').value,
+                    tag: document.getElementById('proj-tag').value,
                     likes: 0,
-                    date: new Date() // Important pour le tri (orderBy)
+                    date: new Date()
                 });
+                alert("🚀 Projet ajouté ! Il apparaîtra dès que l'index sera prêt.");
+                addProjForm.reset();
+            } catch (err) { alert("Erreur d'envoi : " + err.message); }
+        };
+    }
 
-                alert("🚀 Projet '" + title + "' ajouté avec succès !");
-                addProjForm.reset(); // Vide le formulaire après succès
-                
-            } catch (error) {
-                console.error("Erreur lors de l'ajout du projet :", error);
-                alert("Erreur : " + error.message);
+    // --- CHARGEMENT AVEC ALERTE INDEX ---
+    const loadProjects = (filter = "all") => {
+        const portfolioList = document.getElementById('portfolio-list');
+        let q = (filter === "all") 
+            ? query(collection(db, "projets"), orderBy("date", "desc"))
+            : query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            portfolioList.innerHTML = '';
+            snapshot.forEach(docSnap => {
+                // ... ton code d'affichage (innerHTML) ...
+            });
+        }, (error) => {
+            if (error.code === 'failed-precondition') {
+                alert("⚠️ L'affichage nécessite un INDEX. Cliquez sur le lien dans la console (F12).");
             }
         });
-    }
+    };
 }
 
 // --- GESTION DES BOUTONS DE FILTRE ---
