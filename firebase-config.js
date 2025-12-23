@@ -195,14 +195,12 @@ el.loginForm?.addEventListener('submit', async (e) => {
 if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 
 /* ============================================================
-   GESTION DES PROJETS (AFFICHAGE CUSTOMISÉ)
+   GESTION DES PROJETS & COMMENTAIRES
    ============================================================ */
 
 window.loadProjects = (filter = "all") => {
     const list = document.getElementById('portfolio-list');
     if (!list) return;
-
-    list.innerHTML = '<div class="loader">Chargement...</div>';
 
     let q = query(collection(db, "projets"), orderBy("date", "desc"));
     if (filter !== "all") {
@@ -220,9 +218,13 @@ window.loadProjects = (filter = "all") => {
                     <img src="${p.image}" alt="${p.titre}">
                     
                     <div class="project-info-bar">
-                        <div class="like-counter" onclick="window.likeProject('${id}')">
-                            <i class="fa-solid fa-heart"></i>
-                            <span>${p.likes || 0}</span>
+                        <div class="stats-group">
+                            <span class="like-counter" onclick="window.likeProject('${id}')">
+                                <i class="fa-solid fa-heart"></i> ${p.likes || 0}
+                            </span>
+                            <span class="comment-trigger">
+                                <i class="fa-solid fa-comment"></i> <small id="count-${id}">0</small>
+                            </span>
                         </div>
                         
                         ${isAdmin ? `
@@ -234,21 +236,63 @@ window.loadProjects = (filter = "all") => {
 
                     <div class="portfolio-layer">
                         <h4>${p.titre}</h4>
-                        <p>${p.description}</p>
+                        <div class="comments-container">
+                            <div class="comments-list" id="comments-${id}">
+                                </div>
+                            <div class="comment-input-group">
+                                <input type="text" id="input-${id}" placeholder="Votre avis...">
+                                <button onclick="window.addComment('${id}')"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                        </div>
                     </div>
+                </div>`;
+            
+            // Lancer le chargement des commentaires pour ce projet précis
+            window.loadComments(id);
+        });
+    });
+};
+
+// --- FONCTION : CHARGER LES COMMENTAIRES ---
+window.loadComments = (projId) => {
+    const commList = document.getElementById(`comments-${projId}`);
+    const commCount = document.getElementById(`count-${projId}`);
+    if (!commList) return;
+
+    const q = query(collection(db, "comments"), where("projectId", "==", projId), orderBy("date", "asc"));
+    
+    onSnapshot(q, (snapshot) => {
+        commList.innerHTML = '';
+        commCount.innerText = snapshot.size; // Met à jour le nombre de commentaires
+        
+        snapshot.forEach(d => {
+            const c = d.data();
+            commList.innerHTML += `
+                <div class="comment-item">
+                    <span class="comment-text">${c.text}</span>
+                    <small class="comment-date">${new Date(c.date.seconds * 1000).toLocaleDateString()}</small>
                 </div>`;
         });
     });
 };
 
-// Suppression
-window.deleteProject = async (id) => {
-    if(confirm("⚠️ Supprimer définitivement ce projet ?")) {
-        try { await deleteDoc(doc(db, "projets", id)); } 
-        catch (e) { alert("Erreur : " + e.message); }
+// --- FONCTION : AJOUTER UN COMMENTAIRE ---
+window.addComment = async (projId) => {
+    const input = document.getElementById(`input-${projId}`);
+    if (!input.value.trim()) return;
+
+    try {
+        await addDoc(collection(db, "comments"), {
+            projectId: projId,
+            text: input.value,
+            date: new Date(),
+            approved: true // On peut ajouter un système de validation plus tard
+        });
+        input.value = ''; // Vider le champ
+    } catch (e) {
+        alert("Erreur lors de l'envoi du commentaire.");
     }
 };
-
 setupAdminProjectForm();
 
 // GESTION FORMULAIRE : CONTACT (CLIENT)
