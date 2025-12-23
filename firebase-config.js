@@ -217,17 +217,32 @@ function loadAdminReviews() {
   });
 }
 
+/* ==================== ADMIN : CHARGEMENT DES COMMENTAIRES (CORRIGÉ) ==================== */
 function loadAdminComments() {
   const box = document.getElementById("admin-comments-list");
   if (!box) return;
-  const q = query(collection(db, "comments"), where("approved", "==", false));
+
+  // On récupère TOUS les commentaires
+  const q = query(collection(db, "comments"), orderBy("date", "desc"));
+
   onSnapshot(q, snap => {
     box.innerHTML = '';
     snap.forEach(d => {
       const c = d.data();
-      box.innerHTML += `<div class="admin-box"><p>${c.text} (Projet: ${c.projectId})</p>
-      <button class="approve-btn" onclick="approveItem('comments','${d.id}')">Approuver</button>
-      <button class="delete-btn" onclick="deleteItem('comments','${d.id}')">Supprimer</button></div>`;
+      const isApproved = c.approved === true;
+
+      box.innerHTML += `
+        <div class="admin-box">
+            <p><strong>Projet ID:</strong> ${c.projectId.substring(0,6)}... | <strong>Texte:</strong> ${c.text}</p>
+            <div class="admin-actions">
+                ${!isApproved ? 
+                    `<button class="approve-btn" onclick="approveItem('comments','${d.id}')">✅ Valider</button>` : 
+                    `<span class="badge-published">Visible</span>`
+                }
+                <button class="delete-btn" onclick="deleteItem('comments','${d.id}')">🗑️ Supprimer</button>
+            </div>
+        </div>
+      `;
     });
   });
 }
