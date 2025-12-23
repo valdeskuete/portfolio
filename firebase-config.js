@@ -181,6 +181,24 @@ function loadProjects() {
     });
 }
 
+// --- ENVOI DE COMMENTAIRE ---
+window.sendComment = async (projId, inputElement) => {
+    const text = inputElement.value.trim();
+    if(!text) return;
+
+    try {
+        await addDoc(collection(db, "comments"), {
+            projectId: projId,
+            texte: text,
+            date: new Date(),
+            isAdmin: isAdmin, // Pour savoir si c'est toi qui réponds
+            approved: isAdmin // Tes commentaires sont auto-approuvés
+        });
+        inputElement.value = ""; // Vide le champ
+        if(!isAdmin) alert("Commentaire reçu, en attente de validation !");
+    } catch (e) { alert("Erreur commentaire."); }
+};
+
 // Formulaire contact
 const contactForm = document.getElementById('firebase-contact-form');
 if(contactForm) {
