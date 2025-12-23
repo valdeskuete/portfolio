@@ -332,7 +332,7 @@ function loadTips() {
 
 /* ============================================================
    SCRIPT DE PEUPLEMENT AUTO-EXÉCUTABLE
-   ============================================================ */
+   ============================================================ 
 
 const runSeeding = async () => {
     console.log("🚀 Tentative de peuplement de la base de données...");
@@ -379,4 +379,4 @@ const runSeeding = async () => {
 window.forceSeed = runSeeding;
 
 // Exécuter immédiatement au chargement (Une seule fois)
-// runSeeding();
+// runSeeding();*/
