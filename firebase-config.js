@@ -161,64 +161,37 @@ window.loadProjects = (filter = "all") => {
 
 /* ==================== COMMENTAIRES ==================== */
 /* ==================== AFFICHAGE DES COMMENTAIRES STYLE TELEGRAM ==================== */
-function loadComments(projectId, containerId) {
+window.loadComments = (projectId, containerId) => {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Suppression du filtre 'approved' pour un affichage instantané
+    // On récupère TOUS les commentaires du projet, classés par date
     const q = query(
-        collection(db, "comments"),
-        where("projectId", "==", projectId),
-        orderBy("date", "asc") // 'asc' pour avoir le fil de discussion comme Telegram
+        collection(db, "comments"), 
+        where("projectId", "==", projectId), 
+        orderBy("date", "asc")
     );
 
     onSnapshot(q, (snap) => {
         container.innerHTML = '';
-        snap.forEach((doc) => {
+        snap.forEach(doc => {
             const c = doc.data();
-            const date = c.date?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || "";
+            const time = c.date?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "--:--";
             
-            // Structure de bulle Telegram
             container.innerHTML += `
-                <div class="tg-message">
-                    <div class="tg-content">
-                        <p>${c.text}</p>
-                        <span class="tg-time">${date}</span>
+                <div class="tg-msg">
+                    <div class="tg-text">${c.text}</div>
+                    <div class="tg-meta">
+                        <span>${time}</span>
+                        <i class='bx bx-check-double tg-check'></i>
                     </div>
                 </div>
             `;
         });
+        // Auto-scroll vers le bas pour voir le dernier message
+        container.scrollTop = container.scrollHeight;
     });
-}
-
-window.addComment = async (projId) => {
-  const input = document.getElementById(`input-${projId}`);
-  if (!input.value.trim()) return;
-
-  await addDoc(collection(db, "comments"), {
-    projectId: projId,
-    text: input.value,
-    approved: true, // Auto-approuvé si admin
-    isAdmin: isAdmin,
-    date: serverTimestamp()
-  });
-  input.value = '';
-  if(!isAdmin) alert("Votre commentaire sera visible après validation.");
 };
-
-/* ==================== ADMIN : CHARGEMENT LISTES ==================== */
-function loadAdminMessages() {
-  const box = document.getElementById('admin-messages-list');
-  if (!box) return;
-  onSnapshot(collection(db, "messages"), snap => {
-    box.innerHTML = '';
-    snap.forEach(d => {
-      const m = d.data();
-      box.innerHTML += `<div class="admin-box"><b>${m.nom}</b> (${m.email}): ${m.message} 
-      <button class="delete-btn" onclick="deleteItem('messages','${d.id}')">Supprimer</button></div>`;
-    });
-  });
-}
 
 /* ==================== ADMIN : CHARGEMENT DES AVIS (CORRIGÉ) ==================== */
 function loadAdminReviews() {
