@@ -135,7 +135,7 @@ const closeModalBtn = document.getElementById('close-modal');
 const loginForm = document.getElementById('login-form');
 const logoutBtn = document.getElementById('logout-btn');
 
-//* ============================================================
+/* ============================================================
    SYSTÈME D'AUTHENTIFICATION & ADMINISTRATION
    ============================================================ */
 
