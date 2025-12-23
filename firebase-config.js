@@ -160,27 +160,36 @@ window.loadProjects = (filter = "all") => {
 };
 
 /* ==================== COMMENTAIRES ==================== */
-window.loadComments = (projId) => {
-  const commList = document.getElementById(`comments-${projId}`);
-  if (!commList) return;
+/* ==================== AFFICHAGE DES COMMENTAIRES STYLE TELEGRAM ==================== */
+function loadComments(projectId, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
-  const q = query(collection(db, "comments"), where("projectId", "==", projId), where("approved", "==", true), orderBy("date", "asc"));
+    // Suppression du filtre 'approved' pour un affichage instantané
+    const q = query(
+        collection(db, "comments"),
+        where("projectId", "==", projectId),
+        orderBy("date", "asc") // 'asc' pour avoir le fil de discussion comme Telegram
+    );
 
-  onSnapshot(q, (snapshot) => {
-    commList.innerHTML = '';
-    snapshot.forEach(d => {
-      const c = d.data();
-      commList.innerHTML += `
-        <div class="comment-item ${c.isAdmin ? 'admin-comment' : ''}">
-            <div class="comment-content">
-                <span class="comment-text">${c.text}</span>
-            </div>
-            ${isAdmin ? `<button class="admin-comm-del-btn" onclick="deleteItem('comments','${d.id}')">×</button>` : ''}
-        </div>
-      `;
+    onSnapshot(q, (snap) => {
+        container.innerHTML = '';
+        snap.forEach((doc) => {
+            const c = doc.data();
+            const date = c.date?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || "";
+            
+            // Structure de bulle Telegram
+            container.innerHTML += `
+                <div class="tg-message">
+                    <div class="tg-content">
+                        <p>${c.text}</p>
+                        <span class="tg-time">${date}</span>
+                    </div>
+                </div>
+            `;
+        });
     });
-  });
-};
+}
 
 window.addComment = async (projId) => {
   const input = document.getElementById(`input-${projId}`);
@@ -189,7 +198,7 @@ window.addComment = async (projId) => {
   await addDoc(collection(db, "comments"), {
     projectId: projId,
     text: input.value,
-    approved: isAdmin, // Auto-approuvé si admin
+    approved: true, // Auto-approuvé si admin
     isAdmin: isAdmin,
     date: serverTimestamp()
   });
