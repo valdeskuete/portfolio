@@ -1,7 +1,3 @@
-/* ============================================================
-   CONFIG & LOGIQUE PRINCIPALE (firebase-config.js)
-   ============================================================ */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot, query,
@@ -26,11 +22,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let isAdmin = false;
+// Rendre isAdmin accessible globalement pour les fonctions onclick du HTML
+window.isAdmin = false;
 
 const el = {
   adminPanel: document.getElementById('admin-panel'),
-  adminTrigger: document.getElementById('admin-login-trigger'),
+  adminTrigger: document.getElementById('admin-login-link'), // Corrigé pour correspondre au HTML
   loginModal: document.getElementById('login-modal'),
   loginForm: document.getElementById('login-form'),
   logoutBtn: document.getElementById('logout-btn'),
@@ -38,234 +35,137 @@ const el = {
 };
 
 /* ==================== AUTH + INITIALISATION ==================== */
-function initAdminSystem() {
-  onAuthStateChanged(auth, (user) => {
-    isAdmin = !!user;
+onAuthStateChanged(auth, (user) => {
+    window.isAdmin = !!user;
     if (user) {
-      el.adminPanel?.classList.remove('hidden');
-      el.adminTrigger?.classList.add('hidden');
-      el.loginModal?.classList.add('hidden');
-      loadAdminMessages();
-      loadAdminReviews();
-      loadAdminComments();
+        el.adminPanel?.classList.remove('hidden');
+        el.loginModal?.classList.add('hidden');
+        loadAdminReviews();
+        loadAdminComments();
+        loadAdminTips();
     } else {
-      el.adminPanel?.classList.add('hidden');
-      el.adminTrigger?.classList.remove('hidden');
+        el.adminPanel?.classList.add('hidden');
     }
     window.loadProjects(); 
-    loadTips(); // Charger les conseils
-  });
+    loadPublicTips();
+});
 
-  if(el.adminTrigger) el.adminTrigger.onclick = () => el.loginModal.classList.remove('hidden');
-  if(el.closeModal) el.closeModal.onclick = () => el.loginModal.classList.add('hidden');
+// Gestion des fenêtres Modales
+if(el.adminTrigger) el.adminTrigger.onclick = (e) => { e.preventDefault(); el.loginModal.classList.remove('hidden'); };
+if(el.closeModal) el.closeModal.onclick = () => el.loginModal.classList.add('hidden');
 
-  el.loginForm?.addEventListener('submit', async (e) => {
+el.loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
-      el.loginForm.reset();
+        await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+        el.loginForm.reset();
     } catch { alert("Identifiants incorrects"); }
-  });
-
-  if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
-}
-initAdminSystem();
-/* ==================== INITIALISATION DES VARIABLES ET SÉLECTEURS ==================== */
-const sections = document.querySelectorAll('section');
-const navLinks = document.querySelectorAll('header nav a');
-const isAdmin = window.isAdmin || false; // Assurez-vous que cette variable est définie lors de la connexion
-
-/* ==================== ANIMATIONS SCROLLREVEAL ==================== */
-ScrollReveal({
-    reset: false,
-    distance: '80px',
-    duration: 2000,
-    delay: 200
 });
 
-ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
-ScrollReveal().reveal('.home-img, .services-container, .portfolio-box, .contact form', { origin: 'bottom' });
-ScrollReveal().reveal('.home-content h1, .about-img', { origin: 'left' });
-ScrollReveal().reveal('.home-content p, .about-content', { origin: 'right' });
+if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 
-/* ==================== GESTION ACTIVE DES LIENS (SCROLL SPY) ==================== */
-window.addEventListener('scroll', () => {
-    let current = "";
-    sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.scrollY >= sectionTop - 200) {
-            current = section.getAttribute("id");
-        }
-    });
-
-    navLinks.forEach((link) => {
-        link.classList.remove("active");
-        if (link.getAttribute("href").includes(current)) {
-            link.classList.add("active");
-        }
-    });
-});
-
-/* ==================== OUTILS GLOBAUX (ADMIN & LIKES) ==================== */
+/* ==================== OUTILS GLOBAUX ==================== */
 window.deleteItem = async (col, id) => {
-    if (!isAdmin) return;
-    if (confirm("Supprimer définitivement ?")) {
-        try {
-            await deleteDoc(doc(db, col, id));
-        } catch (error) {
-            console.error("Erreur de suppression:", error);
-        }
-    }
+    if (!window.isAdmin) return;
+    if (confirm("Supprimer définitivement ?")) await deleteDoc(doc(db, col, id));
 };
 
 window.approveItem = async (col, id) => {
-    if (!isAdmin) return;
+    if (!window.isAdmin) return;
     await updateDoc(doc(db, col, id), { approved: true });
 };
 
-/* ==================== SYSTÈME DE LIKE SÉCURISÉ ==================== */
+/* ==================== SYSTÈME DE LIKE & PROJETS ==================== */
 window.likeProject = async (projectId) => {
     const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
+    if (likedProjects.includes(projectId)) return alert("Déjà aimé ! 😉");
 
-    if (likedProjects.includes(projectId)) {
-        alert("Vous avez déjà aimé ce projet ! 😉");
-        return;
-    }
-
-    try {
-        const projectRef = doc(db, "projets", projectId);
-        await updateDoc(projectRef, {
-            likes: increment(1)
-        });
-
-        likedProjects.push(projectId);
-        localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
-        console.log("✅ Like enregistré");
-    } catch (error) {
-        console.error("Erreur lors du like :", error);
-    }
+    await updateDoc(doc(db, "projets", projectId), { likes: increment(1) });
+    likedProjects.push(projectId);
+    localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
 };
 
-/* ==================== PROJETS (RENDU DYNAMIQUE) ==================== */
 window.loadProjects = (filter = "all") => {
     const list = document.getElementById('portfolio-list');
     if (!list) return;
 
     let q = query(collection(db, "projets"), orderBy("date", "desc"));
-    if (filter !== "all") {
-        q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
-    }
+    if (filter !== "all") q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
 
     onSnapshot(q, (snapshot) => {
         list.innerHTML = '';
         snapshot.forEach(docSnap => {
             const p = docSnap.data();
             const id = docSnap.id;
-
             list.innerHTML += `
                 <div class="portfolio-box">
-                    <img src="${p.image || 'images/default-project.jpg'}" alt="${p.titre}">
+                    <img src="${p.image || 'images/default.jpg'}" alt="${p.titre}">
                     <div class="portfolio-layer">
                         <h4>${p.titre}</h4>
                         <p>${p.description}</p>
                         <div class="comments-container">
                             <div class="comments-list" id="comments-${id}"></div>
                             <div class="comment-input-group">
-                                <input type="text" id="input-${id}" placeholder="Votre commentaire...">
+                                <input type="text" id="input-${id}" placeholder="Commenter...">
                                 <button onclick="addComment('${id}')"><i class='bx bxs-send'></i></button>
                             </div>
                         </div>
                     </div>
                     <div class="project-info-bar">
-                        <div class="stats-group">
-                            <span class="like-counter" onclick="likeProject('${id}')">
-                                <i class='bx bxs-heart'></i> ${p.likes || 0}
-                            </span>
-                        </div>
-                        ${isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
+                        <span class="like-counter" onclick="likeProject('${id}')"><i class='bx bxs-heart'></i> ${p.likes || 0}</span>
+                        ${window.isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
                     </div>
-                </div>
-            `;
-            // On passe l'ID deux fois : une pour la requête, une pour cibler le container HTML
+                </div>`;
             loadComments(id, `comments-${id}`);
         });
     });
 };
 
 /* ==================== GESTION DES COMMENTAIRES ==================== */
-window.addComment = async (projectId) => {
-    const input = document.getElementById(`input-${projectId}`);
-    if (!input || !input.value.trim()) return;
-
-    try {
-        await addDoc(collection(db, "comments"), {
-            projectId: projectId,
-            text: input.value,
-            approved: false, // En attente de modération admin
-            date: serverTimestamp()
-        });
-        input.value = "";
-    } catch (e) {
-        console.error("Erreur ajout commentaire:", e);
-    }
+window.addComment = async (id) => {
+    const input = document.getElementById(`input-${id}`);
+    if (!input.value.trim()) return;
+    await addDoc(collection(db, "comments"), {
+        projectId: id,
+        text: input.value,
+        approved: false,
+        date: serverTimestamp()
+    });
+    input.value = "";
+    alert("Commentaire envoyé pour validation !");
 };
 
 window.loadComments = (projectId, containerId) => {
     const container = document.getElementById(containerId);
-    if (!container) return;
-
-    const q = query(
-        collection(db, "comments"), 
-        where("projectId", "==", projectId), 
-        orderBy("date", "asc")
-    );
-
+    const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("date", "asc"));
     onSnapshot(q, (snap) => {
         container.innerHTML = '';
         snap.forEach(doc => {
             const c = doc.data();
-            // N'afficher que si approuvé ou si on est admin
-            if (c.approved || isAdmin) {
-                const time = c.date?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "--:--";
-                container.innerHTML += `
-                    <div class="tg-msg ${!c.approved ? 'pending-msg' : ''}">
-                        <div class="tg-text">${c.text}</div>
-                        <div class="tg-meta">
-                            <span>${time}</span>
-                            <i class='bx bx-check-double tg-check'></i>
-                        </div>
-                    </div>
-                `;
+            if (c.approved || window.isAdmin) {
+                container.innerHTML += `<div class="tg-msg"><div>${c.text}</div></div>`;
             }
         });
-        container.scrollTop = container.scrollHeight;
     });
 };
 
-/* ==================== SECTIONS ADMIN (CHARGEMENT) ==================== */
-window.loadAdminReviews = () => {
-    const box = document.getElementById('admin-reviews-list');
-    if (!box) return;
-
-    const q = query(collection(db, "testimonials"), orderBy("date", "desc"));
-    onSnapshot(q, snap => {
+/* ==================== FONCTIONS ADMINS (SIMPLIFIÉES) ==================== */
+function loadAdminReviews() {
+    onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), snap => {
+        const box = document.getElementById('admin-reviews-list');
+        if(!box) return;
         box.innerHTML = '';
         snap.forEach(d => {
             const r = d.data();
-            const isApproved = r.approved === true;
-            box.innerHTML += `
-                <div class="admin-box ${isApproved ? 'status-published' : 'status-pending'}">
-                    <p><strong>${r.nom}:</strong> ${r.texte}</p>
-                    <div class="admin-actions">
-                        ${!isApproved ? `<button class="approve-btn" onclick="approveItem('testimonials','${d.id}')">✅ Approuver</button>` : `<span class="badge-published">✅ En ligne</span>`}
-                        <button class="delete-btn" onclick="deleteItem('testimonials','${d.id}')">🗑️ Supprimer</button>
-                    </div>
-                </div>`;
+            box.innerHTML += `<div class="admin-box">
+                <p>${r.nom}: ${r.texte}</p>
+                ${!r.approved ? `<button onclick="approveItem('testimonials','${d.id}')">Approuver</button>` : '✅'}
+                <button onclick="deleteItem('testimonials','${d.id}')">Supprimer</button>
+            </div>`;
         });
     });
-};
-
+}
+// ... (Ajoute loadAdminComments et loadAdminTips de la même manière)
 window.loadAdminComments = () => {
     const box = document.getElementById("admin-comments-list");
     if (!box) return;
