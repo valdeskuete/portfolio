@@ -124,25 +124,75 @@ window.sendComment = async (projId, input) => {
 };
 
 // ============================================================
-// 4. SURVEILLANCE AUTH & CHARGEMENT INITIAL
+// ============================================================
+// 3. GESTION DE L'AUTHENTIFICATION & SÉCURITÉ UI
 // ============================================================
 
 const adminPanel = document.getElementById('admin-panel');
+const loginModal = document.getElementById('login-modal');
 const adminTrigger = document.getElementById('admin-trigger');
+const closeModalBtn = document.getElementById('close-modal');
+const loginForm = document.getElementById('login-form');
+const logoutBtn = document.getElementById('logout-btn');
 
+// --- LE CERVEAU (Surveillance en temps réel de la connexion) ---
 onAuthStateChanged(auth, (user) => {
-    isAdmin = !!user;
     if (user) {
-        if(adminPanel) adminPanel.classList.remove('hidden');
-        if(adminTrigger) adminTrigger.classList.add('hidden');
+        // L'utilisateur est connecté avec succès
+        isAdmin = true;
+        console.log("Accès Admin : Validé");
+        
+        if(adminPanel) adminPanel.classList.remove('hidden'); // On montre le panneau
+        if(adminTrigger) adminTrigger.classList.add('hidden'); // On cache le bouton "Administrateur"
+        if(loginModal) loginModal.classList.add('hidden');    // On ferme la fenêtre de login
+        
+        // On lance le chargement des données privées
         loadAdminMessages(); 
-        loadAdminReviews();  
+        loadAdminReviews(); 
+        loadProjects(); // Recharge pour afficher les options de suppression
     } else {
-        if(adminPanel) adminPanel.classList.add('hidden');
-        if(adminTrigger) adminTrigger.classList.remove('hidden');
+        // L'utilisateur est déconnecté
+        isAdmin = false;
+        console.log("Accès Admin : Déconnecté");
+        
+        if(adminPanel) adminPanel.classList.add('hidden');    // On cache le panneau
+        if(adminTrigger) adminTrigger.classList.remove('hidden'); // On remet le bouton login
     }
-    loadProjects(); 
 });
+
+// --- LE BOUTON : Déclenche uniquement la demande de mot de passe ---
+if(adminTrigger) {
+    adminTrigger.onclick = () => {
+        // Ce bouton ne montre JAMAIS le panneau directement.
+        // Il ouvre seulement la petite fenêtre pour taper l'email/password.
+        loginModal.classList.remove('hidden');
+    };
+}
+
+// Fermer la fenêtre de login
+if(closeModalBtn) closeModalBtn.onclick = () => loginModal.classList.add('hidden');
+
+// --- LOGIQUE DE CONNEXION (Formulaire) ---
+if(loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pwd = document.getElementById('login-password').value;
+        
+        try {
+            // Firebase vérifie si l'email et le mot de passe sont corrects
+            await signInWithEmailAndPassword(auth, email, pwd);
+            loginForm.reset();
+        } catch (err) { 
+            let msg = "Identifiants incorrects.";
+            if(err.code === "auth/too-many-requests") msg = "Trop de tentatives. Réessayez plus tard.";
+            alert("Accès refusé : " + msg); 
+        }
+    });
+}
+
+// Déconnexion
+if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 
 // ============================================================
 // 5. PROJETS & PORTFOLIO
