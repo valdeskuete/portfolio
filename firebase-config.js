@@ -199,41 +199,60 @@ if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 // ============================================================
 
 function loadProjects() {
-    // GESTION FORMULAIRE : AJOUT PROJET (ADMIN)
+   // ============================================================
+// LOGIQUE D'ENVOI DES PROJETS (ADMIN)
 // ============================================================
-   // --- AJOUT DE PROJET (ADMIN) ---
     const addProjForm = document.getElementById('add-project-form');
 
-    if(addProjForm) {
+    if (addProjForm) {
         addProjForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation(); // Sécurité anti-conflit
+            e.stopImmediatePropagation(); // Évite les conflits avec le formulaire de contact
 
-            // Récupération des valeurs
-            const titre = document.getElementById('proj-title').value;
-            const description = document.getElementById('proj-desc').value;
-            const image = document.getElementById('proj-img').value;
-            const tag = document.getElementById('proj-tag').value; // <--- La modif est ici
+            // Récupération précise des champs
+            const title = document.getElementById('proj-title').value;
+            const desc = document.getElementById('proj-desc').value;
+            const img = document.getElementById('proj-img').value;
+            const tag = document.getElementById('proj-tag').value; // Récupère la catégorie choisie
 
             try {
+                // Envoi vers la collection "projets"
                 await addDoc(collection(db, "projets"), {
-                    titre: titre,
-                    description: description,
-                    image: image,
-                    tag: tag,           // Enregistre la catégorie choisie
-                    likes: 0,           // Initialise les likes à zéro
-                    date: new Date()    // Date pour l'ordre d'affichage
+                    titre: title,
+                    description: desc,
+                    image: img,
+                    tag: tag,
+                    likes: 0,
+                    date: new Date() // Important pour le tri (orderBy)
                 });
 
-                alert("✅ Projet '" + titre + "' publié avec succès !");
-                addProjForm.reset();
-            } catch (err) {
-                console.error("Erreur lors de l'ajout :", err);
-                alert("Erreur : " + err.message);
+                alert("🚀 Projet '" + title + "' ajouté avec succès !");
+                addProjForm.reset(); // Vide le formulaire après succès
+                
+            } catch (error) {
+                console.error("Erreur lors de l'ajout du projet :", error);
+                alert("Erreur : " + error.message);
             }
         });
     }
 }
+
+// --- GESTION DES BOUTONS DE FILTRE ---
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = (e) => {
+        // Gérer l'apparence des boutons
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Filtrer les données
+        const category = e.target.getAttribute('data-filter');
+        loadProjects(category);
+    };
+});
+
+// Lancement automatique au chargement de la page
+loadProjects();
+
 
 // --- ENVOI DE COMMENTAIRE ---
 window.sendComment = async (projId, inputElement) => {
@@ -299,6 +318,8 @@ if(reviewForm) {
         }
     });
 }
+
+
 
 // --- AFFICHAGE PUBLIC DES TÉMOIGNAGES ---
 const reviewList = document.getElementById('testimonials-list');
@@ -375,4 +396,4 @@ function loadProjectComments(projId) {
     });
 }
 
-loadTips();
+
