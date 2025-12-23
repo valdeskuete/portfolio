@@ -70,102 +70,151 @@ function initAdminSystem() {
   if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 }
 initAdminSystem();
+/* ==================== INITIALISATION DES VARIABLES ET SÉLECTEURS ==================== */
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('header nav a');
+const isAdmin = window.isAdmin || false; // Assurez-vous que cette variable est définie lors de la connexion
 
-/* ==================== OUTILS GLOBAUX ==================== */
+/* ==================== ANIMATIONS SCROLLREVEAL ==================== */
+ScrollReveal({
+    reset: false,
+    distance: '80px',
+    duration: 2000,
+    delay: 200
+});
+
+ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
+ScrollReveal().reveal('.home-img, .services-container, .portfolio-box, .contact form', { origin: 'bottom' });
+ScrollReveal().reveal('.home-content h1, .about-img', { origin: 'left' });
+ScrollReveal().reveal('.home-content p, .about-content', { origin: 'right' });
+
+/* ==================== GESTION ACTIVE DES LIENS (SCROLL SPY) ==================== */
+window.addEventListener('scroll', () => {
+    let current = "";
+    sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 200) {
+            current = section.getAttribute("id");
+        }
+    });
+
+    navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href").includes(current)) {
+            link.classList.add("active");
+        }
+    });
+});
+
+/* ==================== OUTILS GLOBAUX (ADMIN & LIKES) ==================== */
 window.deleteItem = async (col, id) => {
-  if (!isAdmin) return;
-  if (confirm("Supprimer définitivement ?")) await deleteDoc(doc(db, col, id));
+    if (!isAdmin) return;
+    if (confirm("Supprimer définitivement ?")) {
+        try {
+            await deleteDoc(doc(db, col, id));
+        } catch (error) {
+            console.error("Erreur de suppression:", error);
+        }
+    }
 };
 
 window.approveItem = async (col, id) => {
-  if (!isAdmin) return;
-  await updateDoc(doc(db, col, id), { approved: true });
+    if (!isAdmin) return;
+    await updateDoc(doc(db, col, id), { approved: true });
 };
-
-/*window.likeProject = async (id) => {
-  await updateDoc(doc(db, "projets", id), { likes: increment(1) });
-};*/
 
 /* ==================== SYSTÈME DE LIKE SÉCURISÉ ==================== */
 window.likeProject = async (projectId) => {
-    // 1. Vérifier si l'utilisateur a déjà liké ce projet (via localStorage)
     const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
 
     if (likedProjects.includes(projectId)) {
         alert("Vous avez déjà aimé ce projet ! 😉");
-        return; // On arrête la fonction ici
+        return;
     }
 
     try {
         const projectRef = doc(db, "projets", projectId);
-        
-        // 2. Mise à jour atomique dans Firestore
         await updateDoc(projectRef, {
             likes: increment(1)
         });
 
-        // 3. Enregistrer le like localement pour bloquer les futurs clics
         likedProjects.push(projectId);
         localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
-
-        console.log("✅ Like enregistré pour le projet:", projectId);
+        console.log("✅ Like enregistré");
     } catch (error) {
         console.error("Erreur lors du like :", error);
     }
 };
 
-/* ==================== PROJETS (RENDU CSS OPTIMISÉ) ==================== */
+/* ==================== PROJETS (RENDU DYNAMIQUE) ==================== */
 window.loadProjects = (filter = "all") => {
-  const list = document.getElementById('portfolio-list');
-  if (!list) return;
+    const list = document.getElementById('portfolio-list');
+    if (!list) return;
 
-  let q = query(collection(db, "projets"), orderBy("date", "desc"));
-  if (filter !== "all") {
-    q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
-  }
+    let q = query(collection(db, "projets"), orderBy("date", "desc"));
+    if (filter !== "all") {
+        q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
+    }
 
-  onSnapshot(q, (snapshot) => {
-    list.innerHTML = '';
-    snapshot.forEach(docSnap => {
-      const p = docSnap.data();
-      const id = docSnap.id;
+    onSnapshot(q, (snapshot) => {
+        list.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const id = docSnap.id;
 
-      list.innerHTML += `
-        <div class="portfolio-box">
-            <img src="${p.image || 'images/default-project.jpg'}" alt="${p.titre}">
-            <div class="portfolio-layer">
-                <h4>${p.titre}</h4>
-                <p>${p.description}</p>
-                <div class="comments-container">
-                    <div class="comments-list" id="comments-${id}"></div>
-                    <div class="comment-input-group">
-                        <input type="text" id="input-${id}" placeholder="Votre commentaire...">
-                        <button onclick="addComment('${id}')"><i class='bx bxs-send'></i></button>
+            list.innerHTML += `
+                <div class="portfolio-box">
+                    <img src="${p.image || 'images/default-project.jpg'}" alt="${p.titre}">
+                    <div class="portfolio-layer">
+                        <h4>${p.titre}</h4>
+                        <p>${p.description}</p>
+                        <div class="comments-container">
+                            <div class="comments-list" id="comments-${id}"></div>
+                            <div class="comment-input-group">
+                                <input type="text" id="input-${id}" placeholder="Votre commentaire...">
+                                <button onclick="addComment('${id}')"><i class='bx bxs-send'></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info-bar">
+                        <div class="stats-group">
+                            <span class="like-counter" onclick="likeProject('${id}')">
+                                <i class='bx bxs-heart'></i> ${p.likes || 0}
+                            </span>
+                        </div>
+                        ${isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
                     </div>
                 </div>
-            </div>
-            <div class="project-info-bar">
-                <div class="stats-group">
-                    <span class="like-counter" onclick="likeProject('${id}')">
-                        <i class='bx bxs-heart'></i> ${p.likes || 0}
-                    </span>
-                </div>
-                ${isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
-            </div>
-        </div>
-      `;
-      loadComments(id);
+            `;
+            // On passe l'ID deux fois : une pour la requête, une pour cibler le container HTML
+            loadComments(id, `comments-${id}`);
+        });
     });
-  });
 };
 
-/* ==================== COMMENTAIRES ==================== */
-/* ==================== AFFICHAGE DES COMMENTAIRES STYLE TELEGRAM ==================== */
+/* ==================== GESTION DES COMMENTAIRES ==================== */
+window.addComment = async (projectId) => {
+    const input = document.getElementById(`input-${projectId}`);
+    if (!input || !input.value.trim()) return;
+
+    try {
+        await addDoc(collection(db, "comments"), {
+            projectId: projectId,
+            text: input.value,
+            approved: false, // En attente de modération admin
+            date: serverTimestamp()
+        });
+        input.value = "";
+    } catch (e) {
+        console.error("Erreur ajout commentaire:", e);
+    }
+};
+
 window.loadComments = (projectId, containerId) => {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // On récupère TOUS les commentaires du projet, classés par date
     const q = query(
         collection(db, "comments"), 
         where("projectId", "==", projectId), 
@@ -176,169 +225,147 @@ window.loadComments = (projectId, containerId) => {
         container.innerHTML = '';
         snap.forEach(doc => {
             const c = doc.data();
-            const time = c.date?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "--:--";
-            
-            container.innerHTML += `
-                <div class="tg-msg">
-                    <div class="tg-text">${c.text}</div>
-                    <div class="tg-meta">
-                        <span>${time}</span>
-                        <i class='bx bx-check-double tg-check'></i>
+            // N'afficher que si approuvé ou si on est admin
+            if (c.approved || isAdmin) {
+                const time = c.date?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "--:--";
+                container.innerHTML += `
+                    <div class="tg-msg ${!c.approved ? 'pending-msg' : ''}">
+                        <div class="tg-text">${c.text}</div>
+                        <div class="tg-meta">
+                            <span>${time}</span>
+                            <i class='bx bx-check-double tg-check'></i>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         });
-        // Auto-scroll vers le bas pour voir le dernier message
         container.scrollTop = container.scrollHeight;
     });
 };
 
-/* ==================== ADMIN : CHARGEMENT DES AVIS (CORRIGÉ) ==================== */
-function loadAdminReviews() {
-  const box = document.getElementById('admin-reviews-list');
-  if (!box) return;
+/* ==================== SECTIONS ADMIN (CHARGEMENT) ==================== */
+window.loadAdminReviews = () => {
+    const box = document.getElementById('admin-reviews-list');
+    if (!box) return;
 
-  // On récupère TOUS les avis, sans filtrer par 'approved'
-  const q = query(collection(db, "testimonials"), orderBy("date", "desc"));
-
-  onSnapshot(q, snap => {
-    box.innerHTML = '';
-    snap.forEach(d => {
-      const r = d.data();
-      const isApproved = r.approved === true;
-
-      box.innerHTML += `
-        <div class="admin-box ${isApproved ? 'status-published' : 'status-pending'}">
-            <p><strong>${r.nom}:</strong> ${r.texte}</p>
-            <div class="admin-actions">
-                ${!isApproved ? 
-                    `<button class="approve-btn" onclick="approveItem('testimonials','${d.id}')">
-                        <i class='bx bx-check'></i> Approuver
-                    </button>` : 
-                    `<span class="badge-published">✅ En ligne</span>`
-                }
-                <button class="delete-btn" onclick="deleteItem('testimonials','${d.id}')">
-                    <i class='bx bx-trash'></i> Supprimer
-                </button>
-            </div>
-        </div>
-      `;
+    const q = query(collection(db, "testimonials"), orderBy("date", "desc"));
+    onSnapshot(q, snap => {
+        box.innerHTML = '';
+        snap.forEach(d => {
+            const r = d.data();
+            const isApproved = r.approved === true;
+            box.innerHTML += `
+                <div class="admin-box ${isApproved ? 'status-published' : 'status-pending'}">
+                    <p><strong>${r.nom}:</strong> ${r.texte}</p>
+                    <div class="admin-actions">
+                        ${!isApproved ? `<button class="approve-btn" onclick="approveItem('testimonials','${d.id}')">✅ Approuver</button>` : `<span class="badge-published">✅ En ligne</span>`}
+                        <button class="delete-btn" onclick="deleteItem('testimonials','${d.id}')">🗑️ Supprimer</button>
+                    </div>
+                </div>`;
+        });
     });
-  });
-}
+};
 
-/* ==================== ADMIN : CHARGEMENT DES COMMENTAIRES (CORRIGÉ) ==================== */
-function loadAdminComments() {
-  const box = document.getElementById("admin-comments-list");
-  if (!box) return;
+window.loadAdminComments = () => {
+    const box = document.getElementById("admin-comments-list");
+    if (!box) return;
 
-  // On récupère TOUS les commentaires
-  const q = query(collection(db, "comments"), orderBy("date", "desc"));
-
-  onSnapshot(q, snap => {
-    box.innerHTML = '';
-    snap.forEach(d => {
-      const c = d.data();
-      const isApproved = c.approved === true;
-
-      box.innerHTML += `
-        <div class="admin-box">
-            <p><strong>Projet ID:</strong> ${c.projectId.substring(0,6)}... | <strong>Texte:</strong> ${c.text}</p>
-            <div class="admin-actions">
-                ${!isApproved ? 
-                    `<button class="approve-btn" onclick="approveItem('comments','${d.id}')">✅ Valider</button>` : 
-                    `<span class="badge-published">Visible</span>`
-                }
-                <button class="delete-btn" onclick="deleteItem('comments','${d.id}')">🗑️ Supprimer</button>
-            </div>
-        </div>
-      `;
+    const q = query(collection(db, "comments"), orderBy("date", "desc"));
+    onSnapshot(q, snap => {
+        box.innerHTML = '';
+        snap.forEach(d => {
+            const c = d.data();
+            const isApproved = c.approved === true;
+            box.innerHTML += `
+                <div class="admin-box">
+                    <p><strong>ID Projet:</strong> ${c.projectId.substring(0,6)}... | <strong>Texte:</strong> ${c.text}</p>
+                    <div class="admin-actions">
+                        ${!isApproved ? `<button class="approve-btn" onclick="approveItem('comments','${d.id}')">✅ Valider</button>` : `<span class="badge-published">Visible</span>`}
+                        <button class="delete-btn" onclick="deleteItem('comments','${d.id}')">🗑️ Supprimer</button>
+                    </div>
+                </div>`;
+        });
     });
-  });
-}
+};
 
-/* ==================== FORMULAIRES ==================== */
-const projectForm = document.getElementById('add-project-form');
-projectForm?.addEventListener('submit', async (e) => {
+/* ==================== FORMULAIRES (SUBMITS) ==================== */
+document.getElementById('add-project-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     await addDoc(collection(db, "projets"), {
-      titre: document.getElementById('proj-title').value,
-      description: document.getElementById('proj-desc').value,
-      image: document.getElementById('proj-img').value,
-      tag: document.getElementById('proj-tag').value,
-      likes: 0,
-      date: serverTimestamp()
+        titre: document.getElementById('proj-title').value,
+        description: document.getElementById('proj-desc').value,
+        image: document.getElementById('proj-img').value,
+        tag: document.getElementById('proj-tag').value,
+        likes: 0,
+        date: serverTimestamp()
     });
-    projectForm.reset();
+    e.target.reset();
     alert("Projet ajouté !");
 });
 
-const contactForm = document.getElementById('firebase-contact-form');
-contactForm?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  await addDoc(collection(db, "messages"), {
-    nom: document.getElementById('contact-name').value,
-    email: document.getElementById('contact-email').value,
-    tel: document.getElementById('contact-phone').value,
-    sujet: document.getElementById('contact-subject').value,
-    message: document.getElementById('contact-message').value,
-    date: serverTimestamp()
-  });
-  alert("Message envoyé");
-  contactForm.reset();
+document.getElementById('firebase-contact-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await addDoc(collection(db, "messages"), {
+        nom: document.getElementById('contact-name').value,
+        email: document.getElementById('contact-email').value,
+        tel: document.getElementById('contact-phone').value,
+        sujet: document.getElementById('contact-subject').value,
+        message: document.getElementById('contact-message').value,
+        date: serverTimestamp()
+    });
+    alert("Message envoyé !");
+    e.target.reset();
 });
 
-const reviewForm = document.getElementById('review-form');
-reviewForm?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  await addDoc(collection(db, "testimonials"), {
-    nom: document.getElementById('review-name').value,
-    texte: document.getElementById('review-text').value,
-    approved: false,
-    date: serverTimestamp()
-  });
-  alert("Merci ! Votre avis est en attente de validation.");
-  reviewForm.reset();
+document.getElementById('review-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await addDoc(collection(db, "testimonials"), {
+        nom: document.getElementById('review-name').value,
+        texte: document.getElementById('review-text').value,
+        approved: false,
+        date: serverTimestamp()
+    });
+    alert("Merci ! Votre avis est en attente de validation.");
+    e.target.reset();
 });
 
-/* ==================== TÉMOIGNAGES PUBLICS ==================== */
+/* ==================== AFFICHAGE PUBLIC (TÉMOIGNAGES & TIPS) ==================== */
 const reviewList = document.getElementById('testimonials-list');
 if (reviewList) {
-  const q = query(collection(db, "testimonials"), where("approved", "==", true), orderBy("date", "desc"));
-  onSnapshot(q, snap => {
-    reviewList.innerHTML = '';
-    snap.forEach(d => {
-      const t = d.data();
-      reviewList.innerHTML += `<div class="testimonial-box">
-          <i class='bx bxs-quote-alt-left'></i>
-          <p>${t.texte}</p>
-          <div class="client-details"><h4>${t.nom}</h4></div>
-      </div>`;
+    const q = query(collection(db, "testimonials"), where("approved", "==", true), orderBy("date", "desc"));
+    onSnapshot(q, snap => {
+        reviewList.innerHTML = '';
+        snap.forEach(d => {
+            const t = d.data();
+            reviewList.innerHTML += `
+                <div class="testimonial-box">
+                    <i class='bx bxs-quote-alt-left'></i>
+                    <p>${t.texte}</p>
+                    <div class="client-details"><h4>${t.nom}</h4></div>
+                </div>`;
+        });
     });
-  });
 }
 
-/* ==================== TIPS (CONSEILS) ==================== */
-function loadTips() {
-  const osList = document.getElementById('os-tips-list');
-  const hardList = document.getElementById('hardware-tips-list');
-  const errList = document.getElementById('errors-list');
+window.loadTips = () => {
+    const osList = document.getElementById('os-tips-list');
+    const hardList = document.getElementById('hardware-tips-list');
+    const errList = document.getElementById('errors-list');
 
-  onSnapshot(collection(db, "tips"), snap => {
-    if(osList) osList.innerHTML = '';
-    if(hardList) hardList.innerHTML = '';
-    if(errList) errList.innerHTML = '';
+    onSnapshot(collection(db, "tips"), snap => {
+        if(osList) osList.innerHTML = '';
+        if(hardList) hardList.innerHTML = '';
+        if(errList) errList.innerHTML = '';
 
-    snap.forEach(d => {
-      const tip = d.data();
-      const html = `<div class="tip-item"><i class="fa-solid fa-check"></i><span>${tip.text}</span></div>`;
-      if(tip.type === 'os') osList.innerHTML += html;
-      else if(tip.type === 'hardware') hardList.innerHTML += html;
-      else if(tip.type === 'error') errList.innerHTML += `<li>${tip.text}</li>`;
+        snap.forEach(d => {
+            const tip = d.data();
+            const html = `<div class="tip-item"><i class="fa-solid fa-check"></i><span>${tip.text}</span></div>`;
+            if(tip.type === 'os' && osList) osList.innerHTML += html;
+            else if(tip.type === 'hardware' && hardList) hardList.innerHTML += html;
+            else if(tip.type === 'error' && errList) errList.innerHTML += `<li>${tip.text}</li>`;
+        });
     });
-  });
-}
-
+};
 
 /* ============================================================
    SCRIPT DE PEUPLEMENT AUTO-EXÉCUTABLE
@@ -492,73 +519,3 @@ window.addEmoji = (emoji) => {
     });
 };
 
-/* ==================== LOGIQUE ADMIN & CRUD ==================== */
-
-// 1. Navigation entre onglets
-window.openTab = (tabId) => {
-    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).style.display = 'block';
-    event.currentTarget.classList.add('active');
-};
-
-// 2. Écouter l'état de connexion pour afficher/cacher l'admin
-onAuthStateChanged(auth, (user) => {
-    const adminPanel = document.getElementById('admin-panel');
-    if (user) {
-        adminPanel.classList.remove('hidden');
-        loadMessagesAdmin(); // Charge les messages si connecté
-    } else {
-        adminPanel.classList.add('hidden');
-    }
-});
-
-// 3. Charger les messages dynamiquement (pour l'admin)
-function loadMessagesAdmin() {
-    const container = document.getElementById('admin-messages-list');
-    if (!container) return;
-    
-    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snap) => {
-        container.innerHTML = '';
-        snap.forEach(d => {
-            const m = d.data();
-            container.innerHTML += `
-                <div class="admin-box">
-                    <p><strong>De:</strong> ${m.nom} (${m.email})</p>
-                    <p><strong>Sujet:</strong> ${m.sujet}</p>
-                    <p style="margin: 10px 0;">${m.message}</p>
-                    <button onclick="deleteItem('messages', '${d.id}')" style="color:#ff4757; cursor:pointer; background:none; font-weight:bold;">🗑️ Supprimer</button>
-                </div>
-            `;
-        });
-    });
-}
-
-// 4. Fonction de suppression universelle
-window.deleteItem = async (colName, id) => {
-    if(confirm("Confirmer la suppression définitive ?")) {
-        try {
-            await deleteDoc(doc(db, colName, id));
-            alert("Supprimé !");
-        } catch(e) { console.error(e); }
-    }
-};
-
-// 5. Ajout de Projet via Admin
-const projForm = document.getElementById('project-form');
-if (projForm) {
-    projForm.onsubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await addDoc(collection(db, "projets"), {
-                titre: document.getElementById('p-title').value,
-                tag: document.getElementById('p-tag').value,
-                description: document.getElementById('p-desc').value,
-                image: document.getElementById('p-image').value || 'images/portfolio1.jpg',
-                date: serverTimestamp()
-            });
-            projForm.reset();
-            alert("Projet publié avec succès !");
-        } catch(e) { alert("Erreur d'ajout"); }
-    };
-}

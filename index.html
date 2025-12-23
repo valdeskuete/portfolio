@@ -47,6 +47,7 @@
             <a href="#portfolio">Projets</a>
             <a href="#tips">Conseils</a>
             <a href="#contact">Contact</a>
+            <a href="#" id="admin-login-link" title="Admin"><i class="fa-solid fa-user-shield"></i></a>
         </nav>
     </header>
 
@@ -284,79 +285,75 @@
         </div>
     </section>
 
-    <div id="admin-login-trigger" style="text-align: center; margin: 30px; cursor: pointer; color: #555; font-size: 0.8em; opacity: 0.5;">
+   <div id="admin-login-trigger" style="text-align: center; margin: 30px; cursor: pointer; color: #555; font-size: 1.4rem; opacity: 0.5; transition: 0.3s;">
+    <div id="admin-login-trigger" style="text-align: center; margin: 30px; cursor: pointer; color: #555; font-size: 1.4rem; opacity: 0.5;">
         <i class="fa-solid fa-lock"></i> Administration
     </div>
 
-    <div id="login-modal" class="admin-modal hidden">
+    <div id="admin-panel" class="admin-section hidden">
+        <div class="admin-container">
+            <h2 class="heading">Tableau de <span>Bord Admin</span></h2>
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="openTab('tab-projets')">🚀 Projets</button>
+                <button class="tab-btn" onclick="openTab('tab-messages')">📩 Messages</button>
+                <button class="tab-btn" onclick="openTab('tab-tips')">💡 Astuces</button>
+                <button class="tab-btn" onclick="openTab('tab-reviews')">⭐ Avis</button>
+            </div>
+
+            <div id="tab-projets" class="tab-content active">
+                <h3>Ajouter un Nouveau Projet</h3>
+                <form id="project-form" class="admin-form">
+                    <div class="input-box">
+                        <input type="text" id="p-title" placeholder="Titre du projet" required>
+                        <select id="p-tag" required>
+                            <option value="Mise à jour">Mise à jour</option>
+                            <option value="Reprogrammation">Reprogrammation</option>
+                            <option value="Récupération">Récupération de données</option>
+                            <option value="Sécurité">Sécurité & Stérilisation</option>
+                        </select>
+                    </div>
+                    <input type="url" id="p-image" placeholder="Lien de l'image (URL)">
+                    <textarea id="p-desc" placeholder="Description du projet" required></textarea>
+                    <button type="submit" class="btn">Publier le Projet</button>
+                </form>
+                <div id="admin-portfolio-list" class="admin-grid-list"></div>
+            </div>
+
+            <div id="tab-messages" class="tab-content">
+                <h3>Derniers Contacts</h3>
+                <div id="admin-messages-list" class="admin-message-container"></div>
+            </div>
+
+            <div id="tab-tips" class="tab-content">
+                <h3>Gérer les Conseils Pro</h3>
+                <form id="tip-form" class="admin-form">
+                    <input type="text" id="tip-title" placeholder="Titre (ex: Booster Windows)" required>
+                    <textarea id="tip-content" placeholder="Contenu du conseil..." required></textarea>
+                    <button type="submit" class="btn">Ajouter l'astuce</button>
+                </form>
+                <div id="admin-tips-list"></div>
+            </div>
+
+            <div id="tab-reviews" class="tab-content">
+                <h3>Modération des Avis</h3>
+                <div id="admin-reviews-list"></div>
+            </div>
+
+            <button id="logout-btn" class="btn logout" style="background:#ff3333; margin-top:20px;">Se Déconnecter</button>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal hidden">
         <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
             <h3 style="color:var(--main-color)">Connexion Admin</h3>
             <form id="login-form">
                 <input type="email" id="login-email" placeholder="Email" required>
                 <input type="password" id="login-password" placeholder="Mot de passe" required>
                 <button type="submit" class="btn">Entrer</button>
-                <button type="button" id="close-modal" style="margin-top: 15px;">Fermer</button>
             </form>
         </div>
-    </div>
-
-    <section id="admin-panel" class="hidden">
-        <div class="heading">
-            <h2>Tableau de <span>Bord</span></h2>
-            <button id="logout-btn" class="btn" style="background:#ff3333; box-shadow:none;">Déconnexion</button>
-        </div>
-
-        <div class="admin-section">
-            <h3>➕ Ajouter un Projet</h3>
-            <form id="add-project-form">
-                <input type="text" id="proj-title" placeholder="Titre du projet" required>
-                <textarea id="proj-desc" placeholder="Description" required></textarea>
-                <input type="text" id="proj-img" placeholder="URL de l'image" required>
-                
-                <select id="proj-tag" required>
-                    <option value="Mise à jour">Mise à jour</option>
-                    <option value="Reprogrammation">Reprogrammation</option>
-                    <option value="Récupération">Récupération de données</option>
-                    <option value="Sécurité">Sécurité & Stérilisation</option>
-                </select>
-                
-                <button type="submit" class="btn">Publier le projet</button>
-            </form>
-        </div>
-
-        <div class="admin-section" style="margin-top:3rem;">
-            <h3>📩 Messages Reçus</h3>
-            <div id="admin-messages-list"></div>
-        </div>
-
-        <div class="admin-section" style="margin-top:3rem;">
-            <h3>⭐ Avis à valider</h3>
-            <div id="admin-reviews-list"></div>
-        </div>
-
-        <div class="admin-section" style="margin-top:3rem;">
-            <h3>💬 Commentaires à modérer</h3>
-            <div id="admin-comments-list"></div>
-        </div>
-        
-    </section>
-
-    <div class="admin-section" style="margin-top:3rem; border-top: 1px solid #0ef; pt-3">
-        <h3>🛠️ Gérer les Conseils Pro</h3>
-        <form id="tip-form" class="admin-form">
-            <div class="input-box">
-                <input type="text" id="tip-title" placeholder="Titre de l'astuce (ex: Booster Windows)" required>
-                <select id="tip-category">
-                    <option value="os">Système (OS)</option>
-                    <option value="hardware">Hardware</option>
-                    <option value="security">Sécurité</option>
-                    <option value="network">Réseau</option>
-                </select>
-            </div>
-            <textarea id="tip-content" cols="30" rows="5" placeholder="Description détaillée du conseil..." required></textarea>
-            <button type="submit" class="btn">Ajouter le conseil</button>
-        </form>
-        <div id="admin-tips-list" style="margin-top:2rem;"></div>
     </div>
     
     <footer class="footer">
