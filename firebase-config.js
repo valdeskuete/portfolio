@@ -201,25 +201,35 @@ if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 function loadProjects() {
     // GESTION FORMULAIRE : AJOUT PROJET (ADMIN)
 // ============================================================
+   // --- AJOUT DE PROJET (ADMIN) ---
     const addProjForm = document.getElementById('add-project-form');
+
     if(addProjForm) {
         addProjForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation(); // EMPÊCHE DE DÉCLENCHER LE CONTACT FORM
+            e.stopImmediatePropagation(); // Sécurité anti-conflit
+
+            // Récupération des valeurs
+            const titre = document.getElementById('proj-title').value;
+            const description = document.getElementById('proj-desc').value;
+            const image = document.getElementById('proj-img').value;
+            const tag = document.getElementById('proj-tag').value; // <--- La modif est ici
 
             try {
                 await addDoc(collection(db, "projets"), {
-                    titre: document.getElementById('proj-title').value,
-                    description: document.getElementById('proj-desc').value,
-                    image: document.getElementById('proj-img').value,
-                    date: new Date(),
-                    likes: 0
+                    titre: titre,
+                    description: description,
+                    image: image,
+                    tag: tag,           // Enregistre la catégorie choisie
+                    likes: 0,           // Initialise les likes à zéro
+                    date: new Date()    // Date pour l'ordre d'affichage
                 });
-                alert("✅ Projet publié avec succès !");
+
+                alert("✅ Projet '" + titre + "' publié avec succès !");
                 addProjForm.reset();
             } catch (err) {
-                console.error(err);
-                alert("Erreur lors de la publication du projet.");
+                console.error("Erreur lors de l'ajout :", err);
+                alert("Erreur : " + err.message);
             }
         });
     }
