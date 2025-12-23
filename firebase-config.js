@@ -294,3 +294,72 @@ function loadTips() {
     });
   });
 }
+
+
+/* ============================================================
+   SCRIPT DE PEUPLEMENT (SEEDING) - VALDES.TECH
+   ============================================================ */
+
+async function seedDatabase() {
+    console.log("🚀 Début du peuplement de la base de données...");
+
+    const projects = [
+        {
+            titre: "Optimisation Système IUGET",
+            description: "Maintenance préventive et curative du parc informatique. Optimisation des performances de 15% sur les postes de travail.",
+            tag: "Maintenance",
+            image: "https://images.unsplash.com/photo-1588702547919-26089e690ecc?q=80&w=500",
+            likes: 12,
+            date: serverTimestamp()
+        },
+        {
+            titre: "Déploiement Réseau Cisco",
+            description: "Configuration de commutateurs et routeurs pour une architecture réseau sécurisée en entreprise.",
+            tag: "Réseaux",
+            image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=500",
+            likes: 8,
+            date: serverTimestamp()
+        },
+        {
+            titre: "Récupération de Données Critiques",
+            description: "Intervention sur un disque dur endommagé physiquement. Récupération de 98% des données professionnelles.",
+            tag: "Récupération",
+            image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=500",
+            likes: 25,
+            date: serverTimestamp()
+        }
+    ];
+
+    const tips = [
+        // OS
+        { text: "Désactivez les applications de démarrage inutiles pour booster Windows.", type: "os" },
+        { text: "Utilisez la commande 'sfc /scannow' pour réparer les fichiers système corrompus.", type: "os" },
+        // Hardware
+        { text: "Nettoyez vos ventilateurs tous les 6 mois pour éviter le 'Thermal Throttling'.", type: "hardware" },
+        { text: "Vérifiez l'état de santé de votre SSD avec CrystalDiskInfo.", type: "hardware" },
+        // Erreurs
+        { text: "Écran Bleu (BSOD) : Vérifiez souvent vos pilotes graphiques.", type: "error" },
+        { text: "Erreur 0x80070005 : Problème de permissions Windows Update.", type: "error" }
+    ];
+
+    try {
+        // Injection Projets
+        for (const p of projects) {
+            await addDoc(collection(db, "projets"), p);
+        }
+        console.log("✅ Projets injectés avec succès.");
+
+        // Injection Tips
+        for (const t of tips) {
+            await addDoc(collection(db, "tips"), t);
+        }
+        console.log("✅ Conseils (Tips) injectés avec succès.");
+
+        alert("Base de données peuplée ! Actualisez la page pour voir les résultats.");
+    } catch (error) {
+        console.error("❌ Erreur lors du peuplement :", error);
+    }
+}
+
+// Pour lancer le peuplement, décommentez la ligne suivante une seule fois :
+// seedDatabase();
