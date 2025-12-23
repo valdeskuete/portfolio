@@ -299,5 +299,6 @@ function loadProjectComments(projId) {
         });
     });
 }
+loadTips();
 
 
