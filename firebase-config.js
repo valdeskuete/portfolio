@@ -135,11 +135,10 @@ const closeModalBtn = document.getElementById('close-modal');
 const loginForm = document.getElementById('login-form');
 const logoutBtn = document.getElementById('logout-btn');
 
-/* ============================================================
+//* ============================================================
    SYSTÈME D'AUTHENTIFICATION & ADMINISTRATION
    ============================================================ */
 
-// Sélections des éléments DOM (une seule fois pour tout le script)
 const el = {
     adminPanel: document.getElementById('admin-panel'),
     adminTrigger: document.getElementById('admin-login-trigger'),
@@ -149,9 +148,9 @@ const el = {
     closeModal: document.getElementById('close-modal')
 };
 
-// --- LE CERVEAU (Surveillance de l'état de connexion) ---
+// --- LE CERVEAU ---
 onAuthStateChanged(auth, (user) => {
-    isAdmin = !!user; // true si user existe, false sinon
+    isAdmin = !!user; 
 
     if (user) {
         console.log("🔐 Mode Admin : Activé");
@@ -159,7 +158,6 @@ onAuthStateChanged(auth, (user) => {
         el.adminTrigger?.classList.add('hidden');
         el.loginModal?.classList.add('hidden');
         
-        // Chargement des données privées
         if(typeof loadAdminMessages === 'function') loadAdminMessages();
         if(typeof loadAdminReviews === 'function') loadAdminReviews();
     } else {
@@ -168,11 +166,11 @@ onAuthStateChanged(auth, (user) => {
         el.adminTrigger?.classList.remove('hidden');
     }
 
-    // On recharge les projets pour afficher/masquer les boutons de suppression
+    // Mise à jour automatique de la galerie pour afficher/masquer les outils admin
     window.loadProjects();
 });
 
-// --- GESTION DES FENÊTRES (MODALES) ---
+// --- GESTION DES FENÊTRES ---
 el.adminTrigger && (el.adminTrigger.onclick = () => el.loginModal.classList.remove('hidden'));
 el.closeModal && (el.closeModal.onclick = () => el.loginModal.classList.add('hidden'));
 
@@ -187,60 +185,19 @@ el.loginForm?.addEventListener('submit', async (e) => {
         el.loginForm.reset();
     } catch (err) { 
         const errors = {
-            "auth/too-many-requests": "Trop de tentatives. Réessayez plus tard.",
-            "auth/invalid-credential": "Email ou mot de passe incorrect."
+            "auth/too-many-requests": "Trop de tentatives.",
+            "auth/invalid-credential": "Identifiants incorrects."
         };
-        alert("Erreur : " + (errors[err.code] || "Accès refusé.")); 
+        alert(errors[err.code] || "Accès refusé."); 
     }
 });
 
-// Déconnexion
-el.logoutBtn && (el.logoutBtn.onclick = () => signOut(auth));
+if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 
 /* ============================================================
-   GESTION DES PROJETS (CRUD)
+   GESTION DES PROJETS (AFFICHAGE CUSTOMISÉ)
    ============================================================ */
 
-// --- AJOUT DE PROJET ---
-function setupAdminProjectForm() {
-    const form = document.getElementById('add-project-form');
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        
-        const newProject = {
-            titre: document.getElementById('proj-title').value,
-            description: document.getElementById('proj-desc').value,
-            image: document.getElementById('proj-img').value,
-            tag: document.getElementById('proj-tag').value,
-            likes: 0,
-            date: new Date()
-        };
-
-        try {
-            await addDoc(collection(db, "projets"), newProject);
-            alert("🚀 Projet publié avec succès !");
-            form.reset();
-        } catch (err) { 
-            alert("Erreur lors de la publication : " + err.message); 
-        }
-    };
-}
-
-// --- SUPPRESSION DE PROJET ---
-window.deleteProject = async (id) => {
-    if(confirm("⚠️ Confirmer la suppression définitive ?")) {
-        try {
-            await deleteDoc(doc(db, "projets", id));
-            // Pas besoin d'alerte, onSnapshot mettra à jour l'UI
-        } catch (e) { 
-            alert("Erreur : " + e.message); 
-        }
-    }
-};
-
-// --- CHARGEMENT & AFFICHAGE ---
 window.loadProjects = (filter = "all") => {
     const list = document.getElementById('portfolio-list');
     if (!list) return;
@@ -254,37 +211,44 @@ window.loadProjects = (filter = "all") => {
 
     onSnapshot(q, (snapshot) => {
         list.innerHTML = '';
-        if (snapshot.empty) {
-            list.innerHTML = '<p class="no-data">Aucune réalisation trouvée.</p>';
-            return;
-        }
-
         snapshot.forEach(docSnap => {
             const p = docSnap.data();
             const id = docSnap.id;
 
-            // Template du projet
             list.innerHTML += `
                 <div class="portfolio-box">
                     <img src="${p.image}" alt="${p.titre}">
+                    
+                    <div class="project-info-bar">
+                        <div class="like-counter" onclick="window.likeProject('${id}')">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>${p.likes || 0}</span>
+                        </div>
+                        
+                        ${isAdmin ? `
+                            <button onclick="window.deleteProject('${id}')" class="admin-del-btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+
                     <div class="portfolio-layer">
                         <h4>${p.titre}</h4>
                         <p>${p.description}</p>
-                        <div class="project-actions">
-                            <span onclick="window.likeProject('${id}')" class="like-btn">❤️ ${p.likes || 0}</span>
-                            ${isAdmin ? `
-                                <button onclick="window.deleteProject('${id}')" class="admin-del-btn">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            ` : ''}
-                        </div>
                     </div>
                 </div>`;
         });
     });
 };
 
-// Initialisation
+// Suppression
+window.deleteProject = async (id) => {
+    if(confirm("⚠️ Supprimer définitivement ce projet ?")) {
+        try { await deleteDoc(doc(db, "projets", id)); } 
+        catch (e) { alert("Erreur : " + e.message); }
+    }
+};
+
 setupAdminProjectForm();
 
 // GESTION FORMULAIRE : CONTACT (CLIENT)
