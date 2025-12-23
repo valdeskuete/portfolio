@@ -1115,3 +1115,51 @@ span {
     align-items: center;
     gap: 0.5rem;
 }
+/* Ajustement de l'item commentaire pour l'alignement */
+.comment-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.8rem;
+    border-left: 3px solid var(--main-color);
+    display: flex; /* Aligne le texte à gauche et la croix à droite */
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: 0.3s;
+}
+
+.comment-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.comment-content {
+    flex: 1; /* Prend tout l'espace disponible */
+}
+
+/* Bouton de suppression de commentaire (Style Admin) */
+.admin-comm-del-btn {
+    background: transparent;
+    color: #ff4757;
+    font-size: 1.4rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: 0.3s;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-comm-del-btn:hover {
+    opacity: 1;
+    color: #ff6b81;
+    transform: scale(1.2);
+}
+
+/* On s'assure que le formulaire de saisie reste en bas */
+.comment-input-group {
+    position: sticky;
+    bottom: 0;
+    background: var(--second-bg-color); /* Pour ne pas voir les messages derrière en défilant */
+    padding-top: 1rem;
+}
