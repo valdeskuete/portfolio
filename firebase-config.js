@@ -183,17 +183,36 @@ function loadAdminMessages() {
   });
 }
 
+/* ==================== ADMIN : CHARGEMENT DES AVIS (CORRIGÉ) ==================== */
 function loadAdminReviews() {
   const box = document.getElementById('admin-reviews-list');
   if (!box) return;
-  const q = query(collection(db, "testimonials"), where("approved", "==", false));
+
+  // On récupère TOUS les avis, sans filtrer par 'approved'
+  const q = query(collection(db, "testimonials"), orderBy("date", "desc"));
+
   onSnapshot(q, snap => {
     box.innerHTML = '';
     snap.forEach(d => {
       const r = d.data();
-      box.innerHTML += `<div class="admin-box"><p>${r.nom}: ${r.texte}</p>
-      <button class="approve-btn" onclick="approveItem('testimonials','${d.id}')">Approuver</button>
-      <button class="delete-btn" onclick="deleteItem('testimonials','${d.id}')">Supprimer</button></div>`;
+      const isApproved = r.approved === true;
+
+      box.innerHTML += `
+        <div class="admin-box ${isApproved ? 'status-published' : 'status-pending'}">
+            <p><strong>${r.nom}:</strong> ${r.texte}</p>
+            <div class="admin-actions">
+                ${!isApproved ? 
+                    `<button class="approve-btn" onclick="approveItem('testimonials','${d.id}')">
+                        <i class='bx bx-check'></i> Approuver
+                    </button>` : 
+                    `<span class="badge-published">✅ En ligne</span>`
+                }
+                <button class="delete-btn" onclick="deleteItem('testimonials','${d.id}')">
+                    <i class='bx bx-trash'></i> Supprimer
+                </button>
+            </div>
+        </div>
+      `;
     });
   });
 }
