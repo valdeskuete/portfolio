@@ -1197,3 +1197,28 @@ span {
     justify-content: space-between;
     align-items: center;
 }
+
+.admin-box {
+    border-left: 4px solid #f1c40f; /* Orange pour les éléments en attente */
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+}
+
+.admin-box.status-published {
+    border-left: 4px solid #2ecc71; /* Vert pour les éléments publiés */
+}
+
+.badge-published {
+    color: #2ecc71;
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
