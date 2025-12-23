@@ -216,25 +216,50 @@ function setupAdminProjectForm() {
     }
 }
 
-// --- CHARGEMENT DES PROJETS (FONCTION UNIQUE) ---
+// --- FONCTION DE SUPPRESSION DE PROJET ---
+window.deleteProject = async (id) => {
+    if(confirm("⚠️ Voulez-vous vraiment supprimer ce projet ?")) {
+        try {
+            await deleteDoc(doc(db, "projets", id));
+            alert("Projet supprimé !");
+        } catch (e) { 
+            alert("Erreur lors de la suppression : " + e.message); 
+        }
+    }
+};
+
+// --- CHARGEMENT DES PROJETS AVEC OPTION ADMIN ---
 window.loadProjects = (filter = "all") => {
     const portfolioList = document.getElementById('portfolio-list');
     if (!portfolioList) return;
 
-    let q;
-    if (filter === "all") {
-        q = query(collection(db, "projets"), orderBy("date", "desc"));
-    } else {
-        // ATTENTION : Si cela ne s'affiche pas, vérifiez la console F12. 
-        // Firebase affichera un lien pour créer l'index manquant.
+    // Ajout d'un indicateur de chargement [Mise à jour suggérée]
+    portfolioList.innerHTML = '<p class="loading">Chargement des réalisations...</p>';
+
+    let q = query(collection(db, "projets"), orderBy("date", "desc"));
+    if (filter !== "all") {
         q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
     }
 
     onSnapshot(q, (snapshot) => {
         portfolioList.innerHTML = '';
+        if (snapshot.empty) {
+            portfolioList.innerHTML = '<p>Aucun projet dans cette catégorie.</p>';
+            return;
+        }
+
         snapshot.forEach(docSnap => {
             const p = docSnap.data();
             const id = docSnap.id;
+
+            // Création du bouton supprimer uniquement si isAdmin est vrai
+            const adminTools = isAdmin ? `
+                <div class="admin-tools" style="margin-top: 10px;">
+                    <button onclick="window.deleteProject('${id}')" style="background: #ff3333; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                        <i class="fa-solid fa-trash"></i> Supprimer
+                    </button>
+                </div>` : '';
+
             portfolioList.innerHTML += `
                 <div class="portfolio-box">
                     <img src="${p.image}" alt="${p.titre}">
@@ -243,13 +268,13 @@ window.loadProjects = (filter = "all") => {
                         <p>${p.description}</p>
                         <div class="project-interactions">
                             <span onclick="window.likeProject('${id}')" style="cursor:pointer">❤️ ${p.likes || 0}</span>
+                            ${adminTools}
                         </div>
                     </div>
                 </div>`;
         });
     });
 };
-
 // Appels initiaux
 setupAdminProjectForm();
 window.loadProjects();
