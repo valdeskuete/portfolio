@@ -199,24 +199,28 @@ if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 // ============================================================
 
 function loadProjects() {
+    // GESTION FORMULAIRE : AJOUT PROJET (ADMIN)
+// ============================================================
     const addProjForm = document.getElementById('add-project-form');
     if(addProjForm) {
         addProjForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation(); // Bloque l'événement ici
-            
+            e.stopImmediatePropagation(); // EMPÊCHE DE DÉCLENCHER LE CONTACT FORM
+
             try {
                 await addDoc(collection(db, "projets"), {
                     titre: document.getElementById('proj-title').value,
                     description: document.getElementById('proj-desc').value,
                     image: document.getElementById('proj-img').value,
-                    tag: document.getElementById('proj-tag').value || 'all',
-                    likes: 0, // Initialisation
-                    date: new Date()
+                    date: new Date(),
+                    likes: 0
                 });
-                alert("✅ Projet ajouté avec succès !");
+                alert("✅ Projet publié avec succès !");
                 addProjForm.reset();
-            } catch (err) { alert("Erreur Projet: " + err.message); }
+            } catch (err) {
+                console.error(err);
+                alert("Erreur lors de la publication du projet.");
+            }
         });
     }
 }
@@ -239,23 +243,29 @@ window.sendComment = async (projId, inputElement) => {
     } catch (e) { alert("Erreur commentaire."); }
 };
 
-// Formulaire contact
+// GESTION FORMULAIRE : CONTACT (CLIENT)
+// ============================================================
 const contactForm = document.getElementById('firebase-contact-form');
 if(contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        e.stopImmediatePropagation(); // Bloque l'événement ici
+        e.stopImmediatePropagation(); // EMPÊCHE DE DÉCLENCHER L'ADMIN FORM
 
         try {
             await addDoc(collection(db, "messages"), {
                 nom: document.getElementById('contact-name').value,
                 email: document.getElementById('contact-email').value,
+                tel: document.getElementById('contact-phone').value,
+                sujet: document.getElementById('contact-subject').value,
                 message: document.getElementById('contact-message').value,
                 date: new Date()
             });
-            alert("✅ Message envoyé au contact !");
+            alert("✅ Votre message a été envoyé à Valdes.Tech !");
             contactForm.reset();
-        } catch (err) { alert("Erreur Contact: " + err.message); }
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de l'envoi du message de contact.");
+        }
     });
 }
 
