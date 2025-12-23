@@ -253,7 +253,7 @@ window.loadProjects = (filter = "all") => {
     });
 };
 
-// --- FONCTION : CHARGER LES COMMENTAIRES ---
+// --- FONCTION : CHARGER LES COMMENTAIRES AVEC OPTION DE MODÉRATION ---
 window.loadComments = (projId) => {
     const commList = document.getElementById(`comments-${projId}`);
     const commCount = document.getElementById(`count-${projId}`);
@@ -263,17 +263,40 @@ window.loadComments = (projId) => {
     
     onSnapshot(q, (snapshot) => {
         commList.innerHTML = '';
-        commCount.innerText = snapshot.size; // Met à jour le nombre de commentaires
+        commCount.innerText = snapshot.size; 
         
         snapshot.forEach(d => {
             const c = d.data();
+            const commentId = d.id; // On récupère l'ID du commentaire pour la suppression
+
             commList.innerHTML += `
                 <div class="comment-item">
-                    <span class="comment-text">${c.text}</span>
-                    <small class="comment-date">${new Date(c.date.seconds * 1000).toLocaleDateString()}</small>
+                    <div class="comment-content">
+                        <span class="comment-text">${c.text}</span>
+                        <small class="comment-date">${new Date(c.date.seconds * 1000).toLocaleDateString()}</small>
+                    </div>
+                    
+                    ${isAdmin ? `
+                        <button onclick="window.deleteComment('${commentId}')" class="admin-comm-del-btn" title="Supprimer ce commentaire">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    ` : ''}
                 </div>`;
         });
     });
+};
+
+// --- FONCTION : SUPPRIMER UN COMMENTAIRE (ADMIN UNIQUEMENT) ---
+window.deleteComment = async (commentId) => {
+    if(confirm("❌ Supprimer définitivement ce commentaire ?")) {
+        try {
+            await deleteDoc(doc(db, "comments", commentId));
+            // La mise à jour est instantanée grâce au onSnapshot
+        } catch (e) {
+            console.error("Erreur suppression :", e);
+            alert("Impossible de supprimer le commentaire.");
+        }
+    }
 };
 
 // --- FONCTION : AJOUTER UN COMMENTAIRE ---
