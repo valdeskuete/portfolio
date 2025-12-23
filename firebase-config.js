@@ -201,6 +201,27 @@ if(contactForm) {
     });
 }
 
+// ENVOI DES AVIS (Témoignages)
+const reviewForm = document.getElementById('review-form');
+if(reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            await addDoc(collection(db, "testimonials"), {
+                nom: document.getElementById('review-name').value,
+                texte: document.getElementById('review-text').value,
+                approved: false, // Important : attend ta validation
+                date: new Date()
+            });
+            alert("✅ Témoignage envoyé ! Il sera visible après validation.");
+            reviewForm.reset();
+        } catch (e) {
+            console.error(e);
+            alert("Erreur lors de l'envoi de l'avis.");
+        }
+    });
+}
+
 // Chargement des conseils
 async function loadTips() {
     const osList = document.getElementById('os-tips-list');
