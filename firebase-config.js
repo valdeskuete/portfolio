@@ -294,16 +294,21 @@ if(reviewForm) {
 const reviewList = document.getElementById('testimonials-list');
 
 if (reviewList) {
-    // On écoute uniquement les avis où approved est strictement égal à true (booléen)
-    const q = query(collection(db, "testimonials"), where("approved", "==", true));
+    // 1. On ajoute le tri par date pour que ce soit plus joli
+    const q = query(
+        collection(db, "testimonials"), 
+        where("approved", "==", true),
+        orderBy("date", "desc") 
+    );
     
     onSnapshot(q, (snapshot) => {
-        console.log("Avis approuvés trouvés :", snapshot.size); // Vérifie ce chiffre dans ta console F12
+        // DEBUG : Regarde ce chiffre dans ta console (F12)
+        console.log("Nombre d'avis validés détectés :", snapshot.size); 
         
         reviewList.innerHTML = '';
         
         if (snapshot.empty) {
-            reviewList.innerHTML = '<p>Aucun avis pour le moment.</p>';
+            reviewList.innerHTML = '<p>Aucun avis vérifié pour le moment.</p>';
             return;
         }
 
@@ -318,6 +323,9 @@ if (reviewList) {
                     </div>
                 </div>`;
         });
+    }, (error) => {
+        // En cas d'erreur (comme l'index manquant), on le verra ici
+        console.error("Erreur témoignages :", error);
     });
 }
 
