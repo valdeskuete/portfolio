@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, deleteDoc, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 // 1. CONFIGURATION FIREBASE
@@ -16,79 +16,16 @@ const firebaseConfig = {
     appId: "1:359469879862:web:6ede2896e55a9822ef7e97"
 };
 
-// Initialisation
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Variables globales
 let isAdmin = false;
 
 // ============================================================
-// 2. FONCTIONS GLOBALES (Accessibles depuis le HTML onclick="")
+// 2. FONCTIONS DE CHARGEMENT (DÉFINIES UNE SEULE FOIS)
 // ============================================================
 
-// Supprimer un élément (Projet, Message ou Avis)
-window.deleteItem = async (col, id) => {
-    if(confirm("⚠️ Es-tu sûr de vouloir supprimer cet élément définitivement ?")) {
-        try {
-            await deleteDoc(doc(db, col, id));
-            console.log("Suppression réussie");
-        } catch (e) {
-            alert("Erreur: " + e.message);
-        }
-    }
-};
-
-// Valider ou Masquer un avis (Modération)
-window.toggleReview = async (id, status) => {
-    try {
-        await updateDoc(doc(db, "testimonials", id), { approved: status });
-    } catch (e) {
-        alert("Erreur: " + e.message);
-    }
-};
-
-// ============================================================
-// 3. GESTION DE L'AUTHENTIFICATION & UI ADMIN
-// ============================================================
-
-const adminPanel = document.getElementById('admin-panel');
-const loginModal = document.getElementById('login-modal');
-const adminTrigger = document.getElementById('admin-trigger');
-const closeModalBtn = document.getElementById('close-modal');
-
-// Ouvrir la modal
-if(adminTrigger) adminTrigger.onclick = () => loginModal.classList.remove('hidden');
-// Fermer la modal
-if(closeModalBtn) closeModalBtn.onclick = () => loginModal.classList.add('hidden');
-
-// Se connecter
-const loginForm = document.getElementById('login-form');
-if(loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const pwd = document.getElementById('login-password').value;
-        try {
-            await signInWithEmailAndPassword(auth, email, pwd);
-            loginModal.classList.add('hidden');
-            loginForm.reset();
-        // Remplace le catch du loginForm
-        } catch (err) { 
-            let msg = "Erreur inconnue";
-            if(err.code === "auth/invalid-credential") msg = "Email ou mot de passe incorrect.";
-            if(err.code === "auth/too-many-requests") msg = "Trop de tentatives. Réessayez plus tard.";
-            alert("Erreur : " + msg); 
-        }
-    });
-}
-
-// Se déconnecter
-const logoutBtn = document.getElementById('logout-btn');
-if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
-
-// 1. LES FONCTIONS (Définies à l'extérieur pour être propres)
 function loadAdminReviews() {
     const box = document.getElementById('admin-reviews-list');
     if(!box) return;
@@ -98,16 +35,17 @@ function loadAdminReviews() {
         snapshot.forEach(d => {
             const t = d.data();
             const status = t.approved ? '<span style="color:#00cc00">Public</span>' : '<span style="color:orange">En attente</span>';
-            
+            const actionBtn = t.approved ? 
+                `<button onclick="window.toggleReview('${d.id}', false)" style="background:orange; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Masquer</button>` : 
+                `<button onclick="window.toggleReview('${d.id}', true)" style="background:green; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Valider</button>`;
+
             box.innerHTML += `
                 <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid ${t.approved ? '#0ef' : 'orange'}">
                     <p><strong>${t.nom}</strong> - ${status}</p>
                     <p>"${t.texte}"</p>
                     <div style="margin-top:10px;">
-                        <button onclick="window.toggleReview('${d.id}', ${!t.approved})" class="btn" style="padding:5px 10px; font-size:1.2rem;">
-                            ${t.approved ? 'Masquer' : 'Approuver'}
-                        </button>
-                        <button onclick="window.deleteDocGeneric('testimonials', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-left:10px; cursor:pointer;">Supprimer</button>
+                        ${actionBtn}
+                        <button onclick="window.deleteItem('testimonials', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-left:10px; cursor:pointer;">Supprimer</button>
                     </div>
                 </div>`;
         });
@@ -120,38 +58,86 @@ function loadAdminMessages() {
 
     onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snapshot) => {
         box.innerHTML = '';
-        if(snapshot.empty) box.innerHTML = "<p>Aucun message reçu.</p>";
+        if(snapshot.empty) { box.innerHTML = "<p>Aucun message reçu.</p>"; return; }
         
         snapshot.forEach(d => {
             const m = d.data();
+            const dateStr = m.date?.toDate ? m.date.toDate().toLocaleString() : 'Date inconnue';
             box.innerHTML += `
-                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px;">
+                <div class="admin-box" style="background:#1a1a1a; padding:15px; margin-bottom:10px; border-radius:10px; border-left:4px solid var(--main-color);">
                     <p><strong>De:</strong> ${m.nom} (${m.email})</p>
                     <p><strong>Sujet:</strong> ${m.sujet || 'Sans sujet'}</p>
                     <p><strong>Message:</strong> ${m.message}</p>
-                    <p style="font-size:1rem; color:gray;">Reçu le: ${m.date?.toDate().toLocaleString()}</p>
-                    <button onclick="window.deleteDocGeneric('messages', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Supprimer</button>
+                    <p style="font-size:0.9rem; color:gray;">Reçu le: ${dateStr}</p>
+                    <button onclick="window.deleteItem('messages', '${d.id}')" style="background:red; color:white; padding:5px 10px; border-radius:5px; margin-top:10px; cursor:pointer;">Supprimer</button>
                 </div>`;
         });
     });
 }
 
-// 2. LES ACTIONS WINDOW (Pour les boutons HTML)
-window.toggleReview = async (id, newState) => {
-    await updateDoc(doc(db, "testimonials", id), { approved: newState });
+// ============================================================
+// 3. ACTIONS GLOBALES (window.xxx)
+// ============================================================
+
+window.deleteItem = async (col, id) => {
+    if(confirm("⚠️ Supprimer définitivement ?")) {
+        try {
+            await deleteDoc(doc(db, col, id));
+        } catch (e) { alert("Erreur: " + e.message); }
+    }
 };
 
-// 3. LA SURVEILLANCE (Le Cerveau qui appelle les fonctions)
+window.toggleReview = async (id, status) => {
+    try {
+        await updateDoc(doc(db, "testimonials", id), { approved: status });
+    } catch (e) { alert("Erreur: " + e.message); }
+};
+
+window.likeProject = async (id) => {
+    try {
+        const docRef = doc(db, "projets", id); // Vérifie que ta collection s'appelle "projets"
+        await updateDoc(docRef, { likes: increment(1) });
+    } catch (e) { console.error("Erreur like:", e); }
+};
+
+window.toggleComments = (id) => {
+    const area = document.getElementById(`comment-area-${id}`);
+    if(area) {
+        area.classList.toggle('hidden');
+        if(!area.classList.contains('hidden')) loadProjectComments(id);
+    }
+};
+
+window.sendComment = async (projId, input) => {
+    if(!input.value.trim()) return;
+    try {
+        await addDoc(collection(db, "comments"), {
+            projectId: projId,
+            text: input.value,
+            isAdmin: isAdmin,
+            approved: isAdmin,
+            date: new Date()
+        });
+        input.value = "";
+        if(!isAdmin) alert("Merci ! Votre commentaire sera visible après validation.");
+    } catch (e) { alert("Erreur commentaire."); }
+};
+
+// ============================================================
+// 4. SURVEILLANCE AUTH & CHARGEMENT INITIAL
+// ============================================================
+
+const adminPanel = document.getElementById('admin-panel');
+const adminTrigger = document.getElementById('admin-trigger');
+
 onAuthStateChanged(auth, (user) => {
+    isAdmin = !!user;
     if (user) {
-        isAdmin = true;
         if(adminPanel) adminPanel.classList.remove('hidden');
         if(adminTrigger) adminTrigger.classList.add('hidden');
-        
         loadAdminMessages(); 
         loadAdminReviews();  
     } else {
-        isAdmin = false;
         if(adminPanel) adminPanel.classList.add('hidden');
         if(adminTrigger) adminTrigger.classList.remove('hidden');
     }
@@ -159,28 +145,24 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ============================================================
-// 4. GESTION DES PROJETS (Portfolio)
+// 5. PROJETS & PORTFOLIO
 // ============================================================
 
-// Chargement dynamique
 function loadProjects() {
     const container = document.getElementById('portfolio-list');
     if(!container) return;
 
     onSnapshot(query(collection(db, "projets"), orderBy("date", "desc")), (snapshot) => {
         container.innerHTML = '';
-        
         snapshot.forEach((d) => {
-         // Dans la fonction loadProjects, à l'intérieur du snapshot.forEach :
-            const p = docSnap.data();
-            const id = docSnap.id;
-
-            list.innerHTML += `
-                <div class="portfolio-box" data-category="${p.tag}">
-                    <img src="${p.img}" alt="">
+            const p = d.data();
+            const id = d.id;
+            container.innerHTML += `
+                <div class="portfolio-box" data-category="${p.tag || 'all'}">
+                    <img src="${p.image || p.img}" alt="">
                     <div class="portfolio-layer">
-                        <h4>${p.title}</h4>
-                        <p>${p.desc}</p>
+                        <h4>${p.titre || p.title}</h4>
+                        <p>${p.description || p.desc}</p>
                         <div class="project-footer">
                             <span onclick="window.likeProject('${id}')" style="cursor:pointer">
                                 <i class="fa-solid fa-heart"></i> ${p.likes || 0}
@@ -194,40 +176,12 @@ function loadProjects() {
                         <div class="comments-list" id="list-${id}"></div>
                         <input type="text" placeholder="Votre commentaire..." onkeydown="if(event.key==='Enter') window.sendComment('${id}', this)">
                     </div>
-                </div>
-            `;
-        }); // <--- On ferme le forEach ici
-
-        // On synchronise ScrollReveal UNE SEULE FOIS après avoir généré tous les éléments
-        if(typeof ScrollReveal === 'function') {
-            ScrollReveal().sync();
-        }
+                </div>`;
+        });
     });
 }
 
-// Ajout d'un projet (Formulaire Admin)
-const addProjForm = document.getElementById('add-project-form');
-if(addProjForm) {
-    addProjForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        try {
-            await addDoc(collection(db, "projets"), {
-                titre: document.getElementById('proj-title').value,
-                description: document.getElementById('proj-desc').value,
-                image: document.getElementById('proj-img').value, // Assure-toi que l'ID est bien proj-img dans ton HTML
-                date: new Date()
-            });
-            alert("✅ Projet ajouté avec succès !");
-            addProjForm.reset();
-        } catch (e) { alert("Erreur: " + e.message); }
-    });
-}
-
-// ============================================================
-// 5. CONTACT & MESSAGERIE
-// ============================================================
-
-// Envoi (Côté Client)
+// Formulaire contact
 const contactForm = document.getElementById('firebase-contact-form');
 if(contactForm) {
     contactForm.addEventListener('submit', async (e) => {
@@ -241,187 +195,21 @@ if(contactForm) {
                 message: document.getElementById('contact-message').value,
                 date: new Date()
             });
-            alert("✅ Message envoyé ! Valdes vous répondra bientôt.");
+            alert("✅ Message envoyé !");
             contactForm.reset();
         } catch (e) { alert("Erreur d'envoi."); }
     });
 }
 
-// Réception (Côté Admin)
-function loadAdminMessages() {
-    const box = document.getElementById('admin-messages-list');
-    if(!box) return;
-
-    onSnapshot(query(collection(db, "messages"), orderBy("date", "desc")), (snapshot) => {
-        box.innerHTML = '';
-        if(snapshot.empty) { box.innerHTML = '<p>Aucun message.</p>'; return; }
-
-        snapshot.forEach(d => {
-            const m = d.data();
-            const date = m.date?.toDate ? m.date.toDate().toLocaleDateString() : '';
-            box.innerHTML += `
-                <div class="admin-box">
-                    <p><strong>${m.nom}</strong> <small>(${date})</small></p>
-                    <p>📞 ${m.tel} | ✉️ ${m.email}</p>
-                    <p style="font-weight:bold; color:#00ffee; margin-top:5px;">${m.sujet}</p>
-                    <p style="background:#222; padding:10px; border-radius:5px; margin:5px 0;">${m.message}</p>
-                    <button onclick="window.deleteItem('messages', '${d.id}')" class="delete-btn">Archiver</button>
-                    <div style="clear:both"></div>
-                </div>`;
-        });
-    });
-}
-
-// ============================================================
-// 6. TÉMOIGNAGES (PUBLIC & MODÉRATION)
-// ============================================================
-
-// Affichage Public (Seulement Approuvés)
-const reviewList = document.getElementById('testimonials-list');
-if(reviewList) {
-    onSnapshot(query(collection(db, "testimonials"), where("approved", "==", true)), (snapshot) => {
-        reviewList.innerHTML = '';
-        snapshot.forEach(d => {
-            const t = d.data();
-            reviewList.innerHTML += `
-                <div class="testimonial-box">
-                    <i class="fa-solid fa-quote-left"></i>
-                    <p>« ${t.texte} »</p>
-                    <div class="client-info">
-                        <h4>${t.nom}</h4>
-                    </div>
-                </div>`;
-        });
-    });
-}
-
-// Modération (Côté Admin)
-function loadAdminReviews() {
-    const box = document.getElementById('admin-reviews-list');
-    if(!box) return;
-
-    onSnapshot(query(collection(db, "testimonials"), orderBy("date", "desc")), (snapshot) => {
-        box.innerHTML = '';
-        if(snapshot.empty) { box.innerHTML = '<p>Aucun avis.</p>'; return; }
-
-        snapshot.forEach(d => {
-            const t = d.data();
-            const status = t.approved ? '<span style="color:#00cc00">Public</span>' : '<span style="color:orange">En attente</span>';
-            
-            // Bouton Toggle : Si approuvé -> Masquer, Sinon -> Valider
-            const actionBtn = t.approved ? 
-                `<button onclick="window.toggleReview('${d.id}', false)" class="delete-btn" style="background:orange; float:none; margin-right:5px;">Masquer</button>` : 
-                `<button onclick="window.toggleReview('${d.id}', true)" class="approve-btn">Valider</button>`;
-
-            box.innerHTML += `
-                <div class="admin-box">
-                    <p><strong>${t.nom}</strong> - ${status}</p>
-                    <p style="font-style:italic;">"${t.texte}"</p>
-                    <div style="margin-top:10px;">
-                        ${actionBtn}
-                        <button onclick="window.deleteItem('testimonials', '${d.id}')" class="delete-btn">Supprimer</button>
-                    </div>
-                </div>`;
-        });
-    });
-}
-
-// Gestion des Likes
-window.likeProject = async (id) => {
-    const docRef = doc(db, "projects", id);
-    await updateDoc(docRef, { likes: increment(1) });
-};
-
-// Envoi de commentaire (Contrôlé)
-window.sendComment = async (projId, input) => {
-    if(!input.value.trim()) return;
-    
-    await addDoc(collection(db, "comments"), {
-        projectId: projId,
-        text: input.value,
-        isAdmin: isAdmin, // Si tu es connecté en admin, isAdmin sera true
-        approved: isAdmin, // Les comms admin sont approuvés d'office, sinon false
-        date: new Date()
-    });
-    
-    input.value = "";
-    if(!isAdmin) alert("Merci ! Votre commentaire sera visible après validation.");
-};
-
-// Afficher/Masquer la zone de commentaires
-window.toggleComments = (id) => {
-    const area = document.getElementById(`comment-area-${id}`);
-    area.classList.toggle('hidden');
-    if(!area.classList.contains('hidden')) {
-        loadProjectComments(id);
-    }
-};
-
-window.approveComment = async (id) => {
-    await updateDoc(doc(db, "comments", id), { approved: true });
-};
-
-// Charger les commentaires d'un projet spécifique
-function loadProjectComments(projId) {
-    const list = document.getElementById(`list-${projId}`);
-    const q = query(collection(db, "comments"), where("projectId", "==", projId), orderBy("date", "asc"));
-
-    onSnapshot(q, (snapshot) => {
-        list.innerHTML = '';
-        snapshot.forEach(d => {
-            const c = d.data();
-            // On ne montre que si approuvé OU si c'est un comm admin
-            if(c.approved || c.isAdmin) {
-                const isAdminClass = c.isAdmin ? 'admin-comment' : '';
-                const adminBadge = c.isAdmin ? '<span class="admin-badge">⭐ Valdes.Tech</span> ' : '';
-                list.innerHTML += `<p class="comment-text ${isAdminClass}">${adminBadge}${c.text}</p>`;
-            }
-        });
-    });
-}
-
-// Filtrage des projets
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-filter');
-        document.querySelector('.filter-btn.active').classList.remove('active');
-        btn.classList.add('active');
-        
-        document.querySelectorAll('.portfolio-box').forEach(box => {
-            if(filter === 'all' || box.getAttribute('data-category') === filter) {
-                box.style.display = 'block';
-            } else {
-                box.style.display = 'none';
-            }
-        });
-    });
-});
-
-/* --- CHARGEMENT DYNAMIQUE DES CONSEILS --- */
+// Chargement des conseils
 async function loadTips() {
     const osList = document.getElementById('os-tips-list');
     const hwList = document.getElementById('hardware-tips-list');
     const errorList = document.getElementById('errors-list');
+    if(!osList) return;
 
-    if(!osList || !hwList || !errorList) return;
-
-    // On écoute la collection "tips" sur Firebase
     onSnapshot(collection(db, "tips"), (snapshot) => {
-        // Si vide, on affiche des conseils par défaut (Maintenance Préventive)
-        if(snapshot.empty) {
-            osList.innerHTML = `
-                <div class="tip-item"><i class="fa-solid fa-check"></i> Activez les mises à jour de sécurité Windows/Linux.</div>
-                <div class="tip-item"><i class="fa-solid fa-check"></i> Nettoyez les fichiers temporaires une fois par mois.</div>`;
-            hwList.innerHTML = `
-                <div class="tip-item"><i class="fa-solid fa-check"></i> Gardez vos pilotes (drivers) à jour pour la stabilité.</div>
-                <div class="tip-item"><i class="fa-solid fa-check"></i> Évitez de boucher les aérations de votre PC portable.</div>`;
-            errorList.innerHTML = `
-                <li><i class="fa-solid fa-xmark"></i> Éteindre son PC brutalement par le bouton d'alimentation.</li>
-                <li><i class="fa-solid fa-xmark"></i> Utiliser un chargeur universel de mauvaise qualité.</li>`;
-            return;
-        }
-
-        // Si des données existent sur Firebase, on les affiche
+        if(snapshot.empty) return; 
         osList.innerHTML = ''; hwList.innerHTML = ''; errorList.innerHTML = '';
         snapshot.forEach(doc => {
             const data = doc.data();
@@ -433,6 +221,20 @@ async function loadTips() {
     });
 }
 
-// Appeler la fonction au chargement
-loadTips();
+function loadProjectComments(projId) {
+    const list = document.getElementById(`list-${projId}`);
+    if(!list) return;
+    const q = query(collection(db, "comments"), where("projectId", "==", projId), orderBy("date", "asc"));
+    onSnapshot(q, (snapshot) => {
+        list.innerHTML = '';
+        snapshot.forEach(d => {
+            const c = d.data();
+            if(c.approved || c.isAdmin) {
+                const isAdminClass = c.isAdmin ? 'admin-comment' : '';
+                list.innerHTML += `<p class="comment-text ${isAdminClass}">${c.text}</p>`;
+            }
+        });
+    });
+}
 
+loadTips();
