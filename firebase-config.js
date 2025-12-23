@@ -290,6 +290,37 @@ if(reviewForm) {
     });
 }
 
+// --- AFFICHAGE PUBLIC DES TÉMOIGNAGES ---
+const reviewList = document.getElementById('testimonials-list');
+
+if (reviewList) {
+    // On écoute uniquement les avis où approved est strictement égal à true (booléen)
+    const q = query(collection(db, "testimonials"), where("approved", "==", true));
+    
+    onSnapshot(q, (snapshot) => {
+        console.log("Avis approuvés trouvés :", snapshot.size); // Vérifie ce chiffre dans ta console F12
+        
+        reviewList.innerHTML = '';
+        
+        if (snapshot.empty) {
+            reviewList.innerHTML = '<p>Aucun avis pour le moment.</p>';
+            return;
+        }
+
+        snapshot.forEach(d => {
+            const t = d.data();
+            reviewList.innerHTML += `
+                <div class="testimonial-box">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>« ${t.texte} »</p>
+                    <div class="client-info">
+                        <h4>${t.nom}</h4>
+                    </div>
+                </div>`;
+        });
+    });
+}
+
 // Chargement des conseils
 async function loadTips() {
     const osList = document.getElementById('os-tips-list');
