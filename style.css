@@ -934,3 +934,32 @@ span {
     padding: 5px 10px;
     margin: 5px 0;
 }
+
+/* Style du bouton supprimer dans le portfolio */
+.project-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-delete {
+    background: #ff4757;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.btn-delete:hover {
+    background: #ff6b81;
+    transform: scale(1.1);
+}
+
+/* S'assurer que les boutons de filtres montrent qu'ils sont cliquables */
+.filter-btn {
+    cursor: pointer;
+}

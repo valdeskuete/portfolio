@@ -71,27 +71,35 @@ if (document.querySelector('.multiple-text')) {
     });
 }
 
-/* ==================== BOTPRESS CHAT CUSTOM FUNCTION (ROBUSTE) ==================== */
 document.addEventListener('DOMContentLoaded', () => {
-    const chatButton = document.getElementById('open-chat-button');
     
-    if (chatButton) {
-        chatButton.addEventListener('click', () => {
-            function showBotpressChat() {
-                // Vérifie si l'objet Botpress est chargé et prêt
-                if (window.botpressWebChat && window.botpressWebChat.sendEvent) {
-                    // C'est l'appel API qui ouvre la fenêtre de chat
-                    window.botpressWebChat.sendEvent({type: 'show'}); 
-                } else {
-                    // Si l'objet n'est pas encore prêt, on réessaie après un court délai
-                    console.warn("Botpress n'est pas prêt, réessai...");
-                    setTimeout(showBotpressChat, 100); 
-                }
+    /* ==================== FILTRES PORTFOLIO ==================== */
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+        btn.onclick = () => {
+            // UI : Changer le bouton actif
+            document.querySelector('.filter-btn.active')?.classList.remove('active');
+            btn.classList.add('active');
+
+            // Logique : Filtrer les projets
+            const category = btn.getAttribute('data-filter');
+            if (window.loadProjects) {
+                window.loadProjects(category);
             }
-            // Lance la vérification
-            showBotpressChat();
-        });
-    } else {
-        console.error("Erreur critique : Bouton #open-chat-button non trouvé.");
+        };
+    });
+
+    /* ==================== ASSISTANT IA (BOTPRESS) ==================== */
+    const chatButton = document.getElementById('open-chat-button');
+    if (chatButton) {
+        chatButton.onclick = () => {
+            if (window.botpressWebChat) {
+                // Envoi des commandes d'affichage et d'ouverture
+                window.botpressWebChat.sendEvent({ type: 'show' });
+                window.botpressWebChat.sendEvent({ type: 'open' });
+            } else {
+                alert("L'assistant est en cours de préparation... Réessayez dans une seconde.");
+            }
+        };
     }
 });
