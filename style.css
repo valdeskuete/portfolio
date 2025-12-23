@@ -1172,7 +1172,7 @@ span {
     display: block;
 }
 
-/* Fix pour les commentaires injectés */
+/* Fix pour les commentaires injectés 
 .comments-list {
     max-height: 120px;
     overflow-y: auto;
@@ -1184,6 +1184,52 @@ span {
     font-size: 1.2rem;
     padding: 0.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+}*/
+
+/* Container des commentaires */
+.comments-container {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Bulle de message Telegram */
+.tg-message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.tg-content {
+    background: var(--second-bg-color);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 12px 12px 12px 2px; /* Style bulle gauche */
+    position: relative;
+    max-width: 85%;
+    font-size: 1.4rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.tg-time {
+    font-size: 1rem;
+    color: #888;
+    margin-left: 8px;
+    float: right;
+    margin-top: 5px;
+}
+
+/* Scrollbar fine style moderne */
+.comments-container::-webkit-scrollbar {
+    width: 4px;
+}
+.comments-container::-webkit-scrollbar-thumb {
+    background: var(--main-color);
+    border-radius: 10px;
 }
 
 /* Barre d'info sous le projet */
