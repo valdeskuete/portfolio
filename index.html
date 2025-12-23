@@ -45,6 +45,7 @@
             <a href="#testimonials">Témoignages</a>
             <a href="#education">Parcours</a>
             <a href="#portfolio">Projets</a>
+            <a href="#tips">Conseils</a>
             <a href="#contact">Contact</a>
         </nav>
     </header>
@@ -346,6 +347,30 @@
         </div>
         
     </section>
+
+    <section class="tips" id="tips">
+        <h2 class="heading">Conseils & <span>Astuces</span></h2>
+        <div class="tips-container" id="tips-display">
+            </div>
+    </section>
+
+    <div class="admin-section" style="margin-top:3rem; border-top: 1px solid #0ef; pt-3">
+        <h3>🛠️ Gérer les Conseils Pro</h3>
+        <form id="tip-form" class="admin-form">
+            <div class="input-box">
+                <input type="text" id="tip-title" placeholder="Titre de l'astuce (ex: Booster Windows)" required>
+                <select id="tip-category">
+                    <option value="os">Système (OS)</option>
+                    <option value="hardware">Hardware</option>
+                    <option value="security">Sécurité</option>
+                    <option value="network">Réseau</option>
+                </select>
+            </div>
+            <textarea id="tip-content" cols="30" rows="5" placeholder="Description détaillée du conseil..." required></textarea>
+            <button type="submit" class="btn">Ajouter le conseil</button>
+        </form>
+        <div id="admin-tips-list" style="margin-top:2rem;"></div>
+    </div>
     
     <footer class="footer">
         <div class="footer-text">

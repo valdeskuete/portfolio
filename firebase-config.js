@@ -380,3 +380,93 @@ window.forceSeed = runSeeding;
 
 // Exécuter immédiatement au chargement (Une seule fois)
 // runSeeding();*/
+
+/* ==================== GESTION DES CONSEILS (TIPS) ==================== */
+
+// 1. Ajouter un conseil via l'Admin
+const tipForm = document.getElementById('tip-form');
+if (tipForm) {
+    tipForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('tip-title').value;
+        const category = document.getElementById('tip-category').value;
+        const content = document.getElementById('tip-content').value;
+
+        try {
+            await addDoc(collection(db, "tips"), {
+                titre: title,
+                categorie: category,
+                description: content,
+                date: serverTimestamp()
+            });
+            tipForm.reset();
+            alert("Conseil ajouté avec succès !");
+        } catch (e) {
+            console.error("Erreur d'ajout : ", e);
+        }
+    });
+}
+
+// 2. Charger les conseils (Public)
+function loadPublicTips() {
+    const display = document.getElementById('tips-display');
+    if (!display) return;
+
+    const q = query(collection(db, "tips"), orderBy("date", "desc"));
+    onSnapshot(q, (snap) => {
+        display.innerHTML = '';
+        snap.forEach(doc => {
+            const t = doc.data();
+            const icon = t.categorie === 'security' ? 'bx-shield-quarter' : 'bx-bulb';
+            display.innerHTML += `
+                <div class="tip-card">
+                    <span class="category-tag">${t.categorie}</span>
+                    <i class='bx ${icon}'></i>
+                    <h3>${t.titre}</h3>
+                    <p>${t.description}</p>
+                </div>
+            `;
+        });
+    });
+}
+
+// 3. Charger les conseils (Admin - avec option supprimer)
+function loadAdminTips() {
+    const box = document.getElementById('admin-tips-list');
+    if (!box) return;
+
+    onSnapshot(query(collection(db, "tips"), orderBy("date", "desc")), (snap) => {
+        box.innerHTML = '';
+        snap.forEach(d => {
+            const t = d.data();
+            box.innerHTML += `
+                <div class="admin-box" style="border-left:4px solid #0ef; padding:1.5rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.05); border-radius:10px;">
+                    <h4 style="color:#0ef; font-size:1.6rem;">${t.titre}</h4>
+                    <p style="font-size:1.3rem; margin:10px 0;">${t.description.substring(0, 100)}...</p>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="editTipPrompt('${d.id}', '${t.titre}', '${t.description}')" style="background:transparent; border:1px solid #0ef; color:#0ef; padding:5px 12px; border-radius:5px; cursor:pointer;">✏️ Modifier</button>
+                        <button onclick="deleteItem('tips','${d.id}')" style="background:#ff4757; color:white; padding:5px 12px; border-radius:5px; cursor:pointer;">🗑️ Supprimer</button>
+                    </div>
+                </div>
+            `;
+        });
+    });
+}
+
+// Fonction pour modifier rapidement via un prompt (GUI simplifiée)
+window.editTipPrompt = async (id, oldTitle, oldDesc) => {
+    const newTitle = prompt("Nouveau titre :", oldTitle);
+    const newDesc = prompt("Nouveau contenu :", oldDesc);
+    
+    if (newTitle && newDesc) {
+        await updateDoc(doc(db, "tips", id), {
+            titre: newTitle,
+            description: newDesc
+        });
+        alert("Astuce mise à jour !");
+    }
+};
+
+// Appeler les fonctions au chargement
+loadPublicTips();
+loadAdminTips();
