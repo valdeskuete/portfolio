@@ -199,36 +199,26 @@ if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 // ============================================================
 
 function loadProjects() {
-    const container = document.getElementById('portfolio-list');
-    if(!container) return;
-
-    onSnapshot(query(collection(db, "projets"), orderBy("date", "desc")), (snapshot) => {
-        container.innerHTML = '';
-        snapshot.forEach((d) => {
-            const p = d.data();
-            const id = d.id;
-            container.innerHTML += `
-                <div class="portfolio-box" data-category="${p.tag || 'all'}">
-                    <img src="${p.image || p.img}" alt="">
-                    <div class="portfolio-layer">
-                        <h4>${p.titre || p.title}</h4>
-                        <p>${p.description || p.desc}</p>
-                        <div class="project-footer">
-                            <span onclick="window.likeProject('${id}')" style="cursor:pointer">
-                                <i class="fa-solid fa-heart"></i> ${p.likes || 0}
-                            </span>
-                            <span onclick="window.toggleComments('${id}')" style="cursor:pointer">
-                                <i class="fa-solid fa-comment"></i> Commenter
-                            </span>
-                        </div>
-                    </div>
-                    <div id="comment-area-${id}" class="comment-area hidden">
-                        <div class="comments-list" id="list-${id}"></div>
-                        <input type="text" placeholder="Votre commentaire..." onkeydown="if(event.key==='Enter') window.sendComment('${id}', this)">
-                    </div>
-                </div>`;
+    const addProjForm = document.getElementById('add-project-form');
+    if(addProjForm) {
+        addProjForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation(); // Bloque l'événement ici
+            
+            try {
+                await addDoc(collection(db, "projets"), {
+                    titre: document.getElementById('proj-title').value,
+                    description: document.getElementById('proj-desc').value,
+                    image: document.getElementById('proj-img').value,
+                    tag: document.getElementById('proj-tag').value || 'all',
+                    likes: 0, // Initialisation
+                    date: new Date()
+                });
+                alert("✅ Projet ajouté avec succès !");
+                addProjForm.reset();
+            } catch (err) { alert("Erreur Projet: " + err.message); }
         });
-    });
+    }
 }
 
 // --- ENVOI DE COMMENTAIRE ---
@@ -254,18 +244,18 @@ const contactForm = document.getElementById('firebase-contact-form');
 if(contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        e.stopImmediatePropagation(); // Bloque l'événement ici
+
         try {
             await addDoc(collection(db, "messages"), {
                 nom: document.getElementById('contact-name').value,
                 email: document.getElementById('contact-email').value,
-                tel: document.getElementById('contact-phone').value,
-                sujet: document.getElementById('contact-subject').value,
                 message: document.getElementById('contact-message').value,
                 date: new Date()
             });
-            alert("✅ Message envoyé !");
+            alert("✅ Message envoyé au contact !");
             contactForm.reset();
-        } catch (e) { alert("Erreur d'envoi."); }
+        } catch (err) { alert("Erreur Contact: " + err.message); }
     });
 }
 
