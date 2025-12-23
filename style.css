@@ -55,6 +55,80 @@ body {
     transition: .3s;
 }
 
+/* --- AMÉLIORATIONS DESIGN --- */
+:root {
+    --bg-color: #0b0d11; /* Plus sombre pour faire ressortir le néon */
+    --main-color: #0ef;
+    --font-size-base: 1.6rem; /* 16px */
+}
+
+body {
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+}
+
+/* Texte minimum 14px pour la lisibilité */
+p, a, input, textarea, button {
+    font-size: 1.5rem !important; /* 15px minimum */
+}
+
+/* Interface Admin Premium */
+.admin-section {
+    background: linear-gradient(135deg, #1f242d 0%, #161a21 100%);
+    padding: 10rem 9%;
+    border-top: 2px solid var(--main-color);
+}
+
+.admin-container {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem;
+    padding: 3rem;
+    border: 1px solid rgba(0, 238, 255, 0.1);
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 1rem 2rem;
+    background: var(--second-bg-color);
+    color: white;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tab-btn.active {
+    background: var(--main-color);
+    color: var(--bg-color);
+    box-shadow: var(--neon-glow);
+}
+
+/* Animations d'entrée */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar personnalisée néon */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--main-color); border-radius: 10px; }
+
+
 .header.sticky {
     background: var(--second-bg-color);
     padding: 1.2rem 9%; 
