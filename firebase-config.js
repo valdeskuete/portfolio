@@ -507,3 +507,14 @@ window.editTipPrompt = async (id, oldTitle, oldDesc) => {
 // Appeler les fonctions au chargement
 loadPublicTips();
 loadAdminTips();
+
+window.addEmoji = (emoji) => {
+    // Cette fonction trouve l'input actif et ajoute l'emoji
+    const inputs = document.querySelectorAll('input[id^="comm-input-"]');
+    inputs.forEach(input => {
+        if(document.activeElement === input || input.value !== "") {
+            input.value += emoji;
+            input.focus();
+        }
+    });
+};

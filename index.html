@@ -142,6 +142,18 @@
                 <textarea id="review-text" placeholder="Votre témoignage" required></textarea>
                 <button type="submit" class="btn">Publier mon avis</button>
            </form>
+
+           <div class="comment-input-area">
+                <div class="quick-reactions">
+                    <span onclick="addEmoji('👍')">👍</span>
+                    <span onclick="addEmoji('🔥')">🔥</span>
+                    <span onclick="addEmoji('❤️')">❤️</span>
+                    <span onclick="addEmoji('👏')">👏</span>
+                </div>
+                <input type="text" id="comm-input-${p.id}" placeholder="Écrire un commentaire...">
+                <button onclick="sendComment('${p.id}')"><i class='bx bxs-send'></i></button>
+            </div>
+
         </div>
     </section>
 
