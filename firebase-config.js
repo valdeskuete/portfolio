@@ -199,10 +199,7 @@ if(logoutBtn) logoutBtn.onclick = () => signOut(auth);
 // ============================================================
 
 function loadProjects() {
-   // ============================================================
-// LOGIQUE D'ENVOI DES PROJETS (ADMIN)
-// ============================================================
-    // --- LOGIQUE D'ENVOI (ADMIN) ---
+  // --- CONFIGURATION & ENVOI PROJET ---
     const addProjForm = document.getElementById('add-project-form');
     if (addProjForm) {
         addProjForm.onsubmit = async (e) => {
@@ -216,66 +213,48 @@ function loadProjects() {
                     likes: 0,
                     date: new Date()
                 });
-                alert("🚀 Projet ajouté ! Il apparaîtra dès que l'index sera prêt.");
+                alert("🚀 Projet ajouté avec succès !");
                 addProjForm.reset();
-            } catch (err) { alert("Erreur d'envoi : " + err.message); }
+            } catch (err) { alert("Erreur : " + err.message); }
         };
     }
-
-    // --- CHARGEMENT AVEC ALERTE INDEX ---
-    const loadProjects = (filter = "all") => {
-        const portfolioList = document.getElementById('portfolio-list');
-        let q = (filter === "all") 
-            ? query(collection(db, "projets"), orderBy("date", "desc"))
-            : query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
-
-        onSnapshot(q, (snapshot) => {
-            portfolioList.innerHTML = '';
-            snapshot.forEach(docSnap => {
-                // ... ton code d'affichage (innerHTML) ...
-            });
-        }, (error) => {
-            if (error.code === 'failed-precondition') {
-                alert("⚠️ L'affichage nécessite un INDEX. Cliquez sur le lien dans la console (F12).");
-            }
-        });
-    };
 }
 
-// --- GESTION DES BOUTONS DE FILTRE ---
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.onclick = (e) => {
-        // Gérer l'apparence des boutons
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
+// --- CHARGEMENT PUBLIC AVEC FILTRES ---
+window.loadProjects = (filter = "all") => {
+    const portfolioList = document.getElementById('portfolio-list');
+    if (!portfolioList) return;
 
-        // Filtrer les données
-        const category = e.target.getAttribute('data-filter');
-        loadProjects(category);
-    };
-});
+    const q = (filter === "all") 
+        ? query(collection(db, "projets"), orderBy("date", "desc"))
+        : query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
 
-// Lancement automatique au chargement de la page
-loadProjects();
-
-
-// --- ENVOI DE COMMENTAIRE ---
-window.sendComment = async (projId, inputElement) => {
-    const text = inputElement.value.trim();
-    if(!text) return;
-
-    try {
-        await addDoc(collection(db, "comments"), {
-            projectId: projId,
-            texte: text,
-            date: new Date(),
-            isAdmin: isAdmin, // Pour savoir si c'est toi qui réponds
-            approved: isAdmin // Tes commentaires sont auto-approuvés
+    onSnapshot(q, (snapshot) => {
+        portfolioList.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const id = docSnap.id;
+            portfolioList.innerHTML += `
+                <div class="portfolio-box">
+                    <img src="${p.image}" alt="${p.titre}">
+                    <div class="portfolio-layer">
+                        <h4>${p.titre}</h4>
+                        <p>${p.description}</p>
+                        <div class="project-interactions">
+                            <span onclick="window.likeProject('${id}')">❤️ ${p.likes || 0}</span>
+                        </div>
+                    </div>
+                </div>`;
         });
-        inputElement.value = ""; // Vide le champ
-        if(!isAdmin) alert("Commentaire reçu, en attente de validation !");
-    } catch (e) { alert("Erreur commentaire."); }
+    }, (error) => {
+        if (error.code === 'failed-precondition') {
+            alert("⚠️ Index manquant. Vérifie la console (F12).");
+        }
+    });
 };
+
+// Initialisation au démarrage
+window.loadProjects();
 
 // GESTION FORMULAIRE : CONTACT (CLIENT)
 // ============================================================
