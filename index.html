@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Valdes.Tech | Expert Dépannage PC & Réseau - Douala, Cameroun</title>
-    <meta name="description" content="Valdes Kuete, Expert en Maintenance Informatique à Douala. Dépannage PC rapide, Audit Réseau IUGET, Sécurité et Solutions IA.">
-    <meta name="keywords" content="Valdes Kuete, Technicien Informatique Douala, Dépannage PC Cameroun, Maintenance Informatique, Sécurité Réseau, IUGET">
-    <meta name="author" content="Valdes.Tech">
-    
-    <meta property="og:title" content="Valdes.Tech | Solutions Informatiques sur Mesure à Douala">
-    <meta property="og:description" content="Maintenance, Réseaux et Sécurité. Service rapide à domicile ou en entreprise.">
+    <title>Valdes Kuete | Technicien IT & Réseaux à Douala (Remote)</title>
+    <meta name="description" content="Expert en maintenance informatique et réseaux à Douala. Spécialiste infrastructure, sécurité et support technique IUGET.">
+    <meta property="og:title" content="Valdes Kuete | Solutions Informatiques sur Mesure">
+    <meta property="og:description" content="Maintenance, Réseaux et Sécurité. Découvrez mes projets et expertises.">
     <meta property="og:image" content="https://valdeskuete.github.io/portfolio/images/og-image.jpg"> 
     <meta property="og:url" content="https://valdeskuete.github.io/portfolio/">
     <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
@@ -34,12 +32,14 @@
         <nav class="navbar">
             <a href="#home" class="active">Accueil</a>
             <a href="#services">Services</a>
-            <a href="#skills">Compétences</a>
-            <a href="#testimonials">Témoignages</a>
             <a href="#education">Parcours</a>
             <a href="#portfolio">Projets</a>
-            <a href="#tips">Conseils</a>
-            <a href="#contact">Contact</a>
+            <a href="#journal">Journal</a> <a href="#contact">Contact</a>
+            
+            <span class="lang-switch" style="margin-left: 2rem; color: white; font-size: 1.2rem;">
+                <a href="#" style="color: var(--main-color);">FR</a> | <a href="#">EN</a>
+            </span>
+
             <a href="#" id="admin-login-link" title="Admin"><i class="fa-solid fa-user-shield"></i></a>
         </nav>
     </header>
@@ -68,7 +68,8 @@
         </div>
 
         <div class="home-img">
-            <img src="images/profile.jpg" alt="Valdes Kuete - Expert Maintenance Informatique">
+            <img src="images/profile.jpg" alt="Valdes Kuete - Expert en Maintenance Informatique et Réseaux à Douala">
+
         </div>
     </section>
 
@@ -195,6 +196,13 @@
         </div>
         <div class="portfolio-container" id="portfolio-list"></div>
     </section>
+     
+        <section class="journal" id="journal" style="background: var(--second-bg-color);">
+        <h2 class="heading">Journal de <span>Veille</span></h2>
+        <div class="journal-container" id="journal-display" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding: 0 7%;">
+            </div>
+    </section>
+
 
     <section class="tips" id="tips">
         <h2 class="heading">Conseils & <span>Astuces</span></h2>
@@ -233,6 +241,18 @@
     <div id="admin-panel" class="admin-section hidden">
         <div class="admin-container">
             <h2 class="heading">Tableau de <span>Bord Admin</span></h2>
+            <button class="tab-btn" onclick="openTab('tab-journal')">📝 Journal</button>
+
+ <div id="tab-journal" class="tab-content">
+    <h3>Publier dans le Journal</h3>
+    <form id="journal-form" class="admin-form">
+        <input type="text" id="j-title" placeholder="Titre de l'article" required>
+        <textarea id="j-content" placeholder="Contenu de la veille..." required></textarea>
+        <button type="submit" class="btn">Publier l'article</button>
+    </form>
+    <div id="admin-journal-list"></div>
+ </div>
+
 
             <div class="admin-tabs">
                 <button class="tab-btn active" onclick="openTab('tab-projets')">🚀 Projets</button>
