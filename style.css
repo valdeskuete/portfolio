@@ -643,3 +643,52 @@ textarea { resize: none; height: 18rem; }
     color: var(--second-bg-color);
     box-shadow: 0 0 1rem var(--main-color);
 }
+
+.portfolio-layer {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Aligné à gauche pour la lecture */
+    text-align: left;
+}
+
+.case-study-content {
+    font-size: 1.3rem;
+    margin: 1rem 0;
+    color: var(--text-color);
+}
+
+.case-study-content p {
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+}
+
+.case-study-content i {
+    color: var(--main-color);
+    margin-right: 5px;
+}
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.project-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    background: var(--text-color);
+    border-radius: 50%;
+    color: var(--second-bg-color);
+    font-size: 2rem;
+    transition: .3s ease;
+}
+
+.project-links a:hover {
+    background: var(--main-color);
+    transform: scale(1.1);
+}
