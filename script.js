@@ -57,6 +57,26 @@ window.onscroll = () => {
     header.classList.toggle('sticky', window.scrollY > 100);
 };
 
+/* ==================== FILTRAGE DU PORTFOLIO (Correction) ==================== */
+const filterButtons = document.querySelectorAll('.filter-btn');
+
+filterButtons.forEach(button => {
+    button.onclick = () => {
+        // 1. Gérer l'état actif des boutons
+        document.querySelector('.filter-btn.active').classList.remove('active');
+        button.classList.add('active');
+
+        // 2. Récupérer le filtre
+        const filterValue = button.getAttribute('data-filter');
+
+        // 3. Appeler la fonction de chargement Firebase (déjà présente dans ton firebase-config.js)
+        if (window.loadProjects) {
+            window.loadProjects(filterValue);
+        }
+    };
+});
+
+
 /* ==================== 4. ANIMATIONS ==================== */
 ScrollReveal({
     reset: false, // Mettre à true si tu veux que l'animation se répète
