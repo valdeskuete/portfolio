@@ -95,7 +95,8 @@ window.likeProject = async (projectId) => {
     localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
 };
 
-/* ==================== CHARGEMENT DES PROJETS ==================== */
+
+/* ==================== CHARGEMENT DES PROJETS (PHASE 2) ==================== */
 window.loadProjects = (filter = "all") => {
     const list = document.getElementById('portfolio-list');
     if (!list) return;
@@ -108,12 +109,30 @@ window.loadProjects = (filter = "all") => {
         snapshot.forEach(docSnap => {
             const p = docSnap.data();
             const id = docSnap.id;
+            
+            // Gestion de la rétrocompatibilité si les nouveaux champs n'existent pas encore
+            const content = p.challenge 
+                ? `<div class="case-study-mini">
+                    <p><strong><i class='bx bx-target-lock'></i> Défi:</strong> ${p.challenge}</p>
+                    <p><strong><i class='bx bx-cog'></i> Solution:</strong> ${p.solution}</p>
+                    <p><strong><i class='bx bx-check-circle'></i> Résultat:</strong> ${p.resultat}</p>
+                   </div>`
+                : `<p>${p.description}</p>`;
+
+            const links = (p.github || p.demo) 
+                ? `<div class="project-links">
+                    ${p.github ? `<a href="${p.github}" target="_blank" title="Code Source"><i class='bx bxl-github'></i></a>` : ''}
+                    ${p.demo ? `<a href="${p.demo}" target="_blank" title="Démo Live"><i class='bx bx-link-external'></i></a>` : ''}
+                   </div>`
+                : '';
+
             list.innerHTML += `
                 <div class="portfolio-box">
                     <img src="${p.image || 'images/default.jpg'}" alt="${p.titre}">
                     <div class="portfolio-layer">
                         <h4>${p.titre}</h4>
-                        <p>${p.description}</p>
+                        ${content}
+                        ${links}
                         <div class="comments-container">
                             <div class="comments-list" id="comments-${id}"></div>
                             <div class="comment-input-group">
@@ -131,6 +150,7 @@ window.loadProjects = (filter = "all") => {
         });
     });
 };
+
 
 /* ==================== COMMENTAIRES ==================== */
 window.addComment = async (id) => {
