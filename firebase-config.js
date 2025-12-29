@@ -274,19 +274,24 @@ function loadAdminMessages() {
     });
 }
 
-/* ==================== SOUMISSION FORMULAIRES PUBLICS ==================== */
+/* ==================== SOUMISSION PROJETS (PHASE 2) ==================== */
 document.getElementById('project-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     await addDoc(collection(db, "projets"), {
         titre: document.getElementById('p-title').value,
-        description: document.getElementById('p-desc').value,
+        challenge: document.getElementById('p-challenge').value, // Nouveau
+        solution: document.getElementById('p-solution').value,   // Nouveau
+        resultat: document.getElementById('p-result').value,     // Nouveau
+        github: document.getElementById('p-github').value || "", // Nouveau
+        demo: document.getElementById('p-demo').value || "",     // Nouveau
+        description: document.getElementById('p-challenge').value, // Legacy (pour la sécurité)
         image: document.getElementById('p-image').value,
         tag: document.getElementById('p-tag').value,
         likes: 0,
         date: serverTimestamp()
     });
     e.target.reset();
-    alert("Projet publié !");
+    alert("Étude de cas publiée avec succès !");
 });
 
 document.getElementById('firebase-contact-form')?.addEventListener('submit', async (e) => {
