@@ -692,3 +692,31 @@ textarea { resize: none; height: 18rem; }
     background: var(--main-color);
     transform: scale(1.1);
 }
+
+.case-study-mini {
+    text-align: left;
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    line-height: 1.4;
+}
+.case-study-mini p { margin-bottom: 0.5rem; }
+.case-study-mini i { color: var(--main-color); margin-right: 5px; }
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.project-links a {
+    font-size: 2rem;
+    color: var(--main-color);
+    transition: 0.3s;
+}
+.project-links a:hover { transform: translateY(-3px); color: white; }
+
+/* Ajustement portfolio layer pour gérer plus de texte */
+.portfolio-layer {
+    padding: 1.5rem;
+    justify-content: flex-start !important;
+    overflow-y: auto;
+}
