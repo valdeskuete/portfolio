@@ -242,23 +242,33 @@
             </div>
 
             <div id="tab-projets" class="tab-content active">
-                <h3>Ajouter un Nouveau Projet</h3>
-                <form id="project-form" class="admin-form">
-                    <div class="input-box">
-                        <input type="text" id="p-title" placeholder="Titre du projet" required>
-                        <select id="p-tag" required>
-                            <option value="Mise à jour">Mise à jour</option>
-                            <option value="Reprogrammation">Reprogrammation</option>
-                            <option value="Récupération">Récupération de données</option>
-                            <option value="Sécurité">Sécurité & Stérilisation</option>
-                        </select>
-                    </div>
-                    <input type="url" id="p-image" placeholder="Lien de l'image (URL)">
-                    <textarea id="p-desc" placeholder="Description du projet" required></textarea>
-                    <button type="submit" class="btn">Publier le Projet</button>
-                </form>
-                <div id="admin-portfolio-list" class="admin-grid-list"></div>
-            </div>
+    <h3>Ajouter une Étude de Cas (Projet)</h3>
+    <form id="project-form" class="admin-form">
+        <div class="input-box">
+            <input type="text" id="p-title" placeholder="Titre du projet" required>
+            <select id="p-tag" required>
+                <option value="Mise à jour">Mise à jour</option>
+                <option value="Reprogrammation">Reprogrammation</option>
+                <option value="Récupération">Récupération de données</option>
+                <option value="Sécurité">Sécurité & Stérilisation</option>
+            </select>
+        </div>
+        <input type="url" id="p-image" placeholder="Lien de l'image (Mockup recommandé)">
+        
+        <textarea id="p-challenge" placeholder="Le Challenge : Quel était le problème client ?" required></textarea>
+        <textarea id="p-solution" placeholder="La Solution : Comment as-tu résolu le problème ?" required></textarea>
+        <textarea id="p-result" placeholder="Le Résultat : Quel bénéfice pour le client ?" required></textarea>
+        
+        <div class="input-box">
+            <input type="url" id="p-demo" placeholder="Lien Démo Live (Optionnel)">
+            <input type="url" id="p-github" placeholder="Lien Code Source (Optionnel)">
+        </div>
+
+        <button type="submit" class="btn">Publier l'étude de cas</button>
+    </form>
+    <div id="admin-portfolio-list" class="admin-grid-list"></div>
+</div>
+
 
             <div id="tab-messages" class="tab-content">
                 <h3>Derniers Contacts</h3>
