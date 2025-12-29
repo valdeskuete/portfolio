@@ -44,12 +44,16 @@ onAuthStateChanged(auth, (user) => {
         loadAdminReviews();
         loadAdminComments();
         loadAdminTips();
-        loadAdminMessages(); // Chargement des messages
+        // ... dans le if(user)
+        loadAdminJournal();
+        loadAdminMessages(); // chargement des messages
     } else {
         if(el.adminPanel) el.adminPanel.classList.add('hidden');
     }
     window.loadProjects(); 
     loadPublicTips();
+    // ... après le else
+    loadPublicJournal();
 });
 
 // Ouverture du Modal (Cadenas Menu OU Texte Footer)
@@ -354,6 +358,48 @@ if (reviewList) {
                     <p>${t.texte}</p>
                     <div class="client-details"><h4>${t.nom}</h4></div>
                 </div>`;
+        });
+    });
+}
+
+/* ==================== GESTION JOURNAL (ACTION 10) ==================== */
+document.getElementById('journal-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await addDoc(collection(db, "journal"), {
+        titre: document.getElementById('j-title').value,
+        contenu: document.getElementById('j-content').value,
+        date: serverTimestamp()
+    });
+    e.target.reset();
+    alert("Article publié !");
+});
+
+function loadPublicJournal() {
+    const display = document.getElementById('journal-display');
+    if (!display) return;
+    onSnapshot(query(collection(db, "journal"), orderBy("date", "desc")), snap => {
+        display.innerHTML = '';
+        snap.forEach(d => {
+            const j = d.data();
+            display.innerHTML += `
+                <div class="tip-card"> <span class="category-tag">Veille</span>
+                    <h3>${j.titre}</h3>
+                    <p>${j.contenu}</p>
+                </div>`;
+        });
+    });
+}
+
+function loadAdminJournal() {
+    const box = document.getElementById('admin-journal-list');
+    if (!box) return;
+    onSnapshot(query(collection(db, "journal"), orderBy("date", "desc")), snap => {
+        box.innerHTML = '';
+        snap.forEach(d => {
+            box.innerHTML += `<div class="admin-box">
+                <p><strong>${d.data().titre}</strong></p>
+                <button onclick="deleteItem('journal','${d.id}')" style="background:red;">Supprimer</button>
+            </div>`;
         });
     });
 }
