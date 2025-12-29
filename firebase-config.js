@@ -114,7 +114,30 @@ window.loadProjects = (filter = "all") => {
             const p = docSnap.data();
             const id = docSnap.id;
             
-            // Gestion de la rétrocompatibilité si les nouveaux champs n'existent pas encore
+/* ==================== 2.1 FILTRAGE PORTFOLIO (Correction) ==================== */
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        // 1. Mise à jour visuelle du bouton actif
+        const currentActive = document.querySelector('.filter-btn.active');
+        if (currentActive) {
+            currentActive.classList.remove('active');
+        }
+        this.classList.add('active');
+
+        // 2. Récupération de la catégorie via l'attribut HTML
+        const filterValue = this.getAttribute('data-filter');
+
+        // 3. Appel de la fonction globale de chargement Firebase
+        if (typeof window.loadProjects === 'function') {
+            window.loadProjects(filterValue);
+        }
+    });
+});
+
+
+           // Gestion de la rétrocompatibilité si les nouveaux champs n'existent pas encore
             const content = p.challenge 
                 ? `<div class="case-study-mini">
                     <p><strong><i class='bx bx-target-lock'></i> Défi:</strong> ${p.challenge}</p>
