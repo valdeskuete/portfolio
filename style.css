@@ -698,13 +698,14 @@ textarea { resize: none; height: 18rem; }
     top: 0;
     width: 100%;
     max-width: 400px;
-    height: 100vh;
+    max-height: 100vh;
     background: var(--bg-color);
     border-left: 2px solid var(--main-color);
     display: flex;
     flex-direction: column;
     box-shadow: -5px 0 20px rgba(0, 238, 255, 0.2);
     animation: slideInRight 0.3s ease;
+    overflow: hidden;
 }
 
 @keyframes slideInRight {
@@ -716,6 +717,7 @@ textarea { resize: none; height: 18rem; }
     padding: 1.5rem;
     border-bottom: 1px solid rgba(0, 238, 255, 0.2);
     background: rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
 }
 
 #comments-header h3 {
@@ -745,6 +747,7 @@ textarea { resize: none; height: 18rem; }
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-height: 200px;
 }
 
 .comment-message {
@@ -772,37 +775,40 @@ textarea { resize: none; height: 18rem; }
 
 .comments-input-area {
     display: flex;
-    gap: 10px;
-    padding: 1rem;
+    gap: 8px;
+    padding: 0.8rem;
     border-top: 1px solid rgba(0, 238, 255, 0.2);
     background: rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
 }
 
 #comment-input {
     flex: 1;
-    padding: 10px 12px;
+    padding: 8px 12px;
     background: var(--second-bg-color);
     color: var(--text-color);
     border: 1px solid rgba(0, 238, 255, 0.2);
     border-radius: 20px;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 #comment-input:focus {
     outline: none;
     border-color: var(--main-color);
-    box-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
+    box-shadow: 0 0 8px rgba(0, 238, 255, 0.3);
 }
 
 #send-comment-btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     background: var(--main-color);
     color: #000;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 0.95rem;
     transition: 0.3s;
+    flex-shrink: 0;
 }
 
 #send-comment-btn:hover {

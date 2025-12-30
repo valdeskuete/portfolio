@@ -502,33 +502,63 @@ function loadAdminJournal() {
 }
 
 /* ==================== EVENT LISTENERS - MODAL COMMENTAIRES ==================== */
-// Fermer la modal commentaires
-document.getElementById('close-comments')?.addEventListener('click', window.closeCommentsModal);
-
-// Envoyer un commentaire
-document.getElementById('send-comment-btn')?.addEventListener('click', async () => {
-    const input = document.getElementById('comment-input');
-    const text = input.value.trim();
+// Utiliser la délégation d'événements pour plus de robustesse
+document.addEventListener('click', async (e) => {
+    // Fermer la modal
+    if (e.target.id === 'close-comments' || e.target.parentElement?.id === 'close-comments') {
+        window.closeCommentsModal();
+        return;
+    }
     
-    if (!text || !window.currentProjectId) return;
+    // Envoyer un commentaire
+    if (e.target.id === 'send-comment-btn') {
+        const input = document.getElementById('comment-input');
+        const text = input?.value.trim();
+        
+        if (!text || !window.currentProjectId) {
+            console.warn("Erreur: texte vide ou ID projet manquant", { text, projectId: window.currentProjectId });
+            return;
+        }
+        
+        try {
+            await addDoc(collection(db, "comments"), {
+                projectId: window.currentProjectId,
+                text: text,
+                author: window.isAdmin ? 'Admin' : 'Utilisateur',
+                date: serverTimestamp()
+            });
+            if (input) input.value = '';
+        } catch (err) {
+            console.error("Erreur envoi commentaire:", err);
+            alert("Erreur lors de l'envoi du commentaire");
+        }
+    }
     
-    try {
-        await addDoc(collection(db, "comments"), {
-            projectId: window.currentProjectId,
-            text: text,
-            author: window.isAdmin ? 'Admin' : 'Utilisateur',
-            date: serverTimestamp()
-        });
-        input.value = '';
-    } catch (err) {
-        console.error("Erreur envoi commentaire:", err);
-        alert("Erreur lors de l'envoi du commentaire");
+    // Fermer la modal en cliquant en dehors (backdrop)
+    if (e.target.id === 'comments-modal') {
+        window.closeCommentsModal();
     }
 });
 
-// Fermer la modal en cliquant en dehors (backdrop)
-document.getElementById('comments-modal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'comments-modal') {
-        window.closeCommentsModal();
+// Soumettre le commentaire avec Enter
+document.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter' && e.target.id === 'comment-input') {
+        e.preventDefault();
+        const input = document.getElementById('comment-input');
+        const text = input?.value.trim();
+        
+        if (!text || !window.currentProjectId) return;
+        
+        try {
+            await addDoc(collection(db, "comments"), {
+                projectId: window.currentProjectId,
+                text: text,
+                author: window.isAdmin ? 'Admin' : 'Utilisateur',
+                date: serverTimestamp()
+            });
+            if (input) input.value = '';
+        } catch (err) {
+            console.error("Erreur envoi commentaire:", err);
+        }
     }
 });
