@@ -123,6 +123,14 @@ window.openCommentsModal = (projectId, projectTitle) => {
     modal.classList.remove('hidden');
     container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Chargement...</div>';
     
+    // Get user ID (email if logged in, or localStorage-based ID for guests)
+    let userId = localStorage.getItem('valdes_user_id');
+    if (!userId) {
+        userId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('valdes_user_id', userId);
+    }
+    window.currentUserId = userId;
+    
     // Charger les commentaires en live
     const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("date", "asc"));
     window.commentsUnsubscribe = onSnapshot(q, (snap) => {
@@ -132,14 +140,24 @@ window.openCommentsModal = (projectId, projectTitle) => {
         }
         snap.forEach(doc => {
             const c = doc.data();
-            const time = new Date(c.date?.toMillis?.() || Date.now()).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            const isOwn = window.isAdmin && c.author === 'Admin'; // À adapter selon votre logique
+            const commentTime = new Date(c.date?.toMillis?.() || Date.now());
+            const now = new Date();
+            const minutesAgo = Math.floor((now - commentTime) / 60000);
+            const canEdit = minutesAgo < 15 && c.userId === userId;
+            const time = commentTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const isOwn = c.userId === userId;
             
             const msgDiv = document.createElement('div');
             msgDiv.className = `comment-message ${isOwn ? 'own' : ''}`;
             msgDiv.innerHTML = `
                 <div>${c.text}</div>
-                <div class="comment-time">${time}${window.isAdmin ? ` - <span style="cursor:pointer; color:#ff3232;" onclick="window.deleteComment('${doc.id}')">Supprimer</span>` : ''}</div>
+                <div class="comment-time">${time}${c.editedAt ? ' (modifié)' : ''}</div>
+                ${canEdit ? `<div style="margin-top:5px; display:flex; gap:5px; font-size:0.85rem;">
+                    <button onclick="window.editCommentPrompt('${doc.id}', '${c.text.replace(/'/g, "\\'")}', '${projectId}')" style="background:rgba(0,238,150,0.2); color:#0ef; border:1px solid #0ef; padding:3px 8px; border-radius:4px; cursor:pointer;">Éditer</button>
+                    <button onclick="window.deleteCommentUser('${doc.id}')" style="background:rgba(255,50,50,0.2); color:#ff3232; border:1px solid #ff3232; padding:3px 8px; border-radius:4px; cursor:pointer;">Supprimer</button>
+                </div>` : (window.isAdmin ? `<div style="margin-top:5px; display:flex; gap:5px; font-size:0.85rem;">
+                    <button onclick="window.deleteComment('${doc.id}')" style="background:rgba(255,50,50,0.2); color:#ff3232; border:1px solid #ff3232; padding:3px 8px; border-radius:4px; cursor:pointer;">Supprimer (admin)</button>
+                </div>` : '')}
             `;
             container.appendChild(msgDiv);
         });
@@ -155,6 +173,36 @@ window.closeCommentsModal = () => {
     const modal = document.getElementById('comments-modal');
     if (modal) modal.classList.add('hidden');
     if (window.commentsUnsubscribe) window.commentsUnsubscribe();
+};
+
+// Éditer un commentaire (modal simple)
+window.editCommentPrompt = (commentId, currentText, projectId) => {
+    const newText = prompt("Modifier votre commentaire:", currentText);
+    if (newText === null || newText.trim() === '') return;
+    
+    window.editCommentConfirm(commentId, newText.trim());
+};
+
+window.editCommentConfirm = async (commentId, newText) => {
+    try {
+        await updateDoc(doc(db, "comments", commentId), {
+            text: newText,
+            editedAt: serverTimestamp()
+        });
+    } catch (err) {
+        console.error("Erreur édition commentaire:", err);
+        alert("Erreur lors de la modification");
+    }
+};
+
+// Supprimer un commentaire (utilisateur seulement)
+window.deleteCommentUser = async (commentId) => {
+    if (!confirm("Supprimer ce commentaire ?")) return;
+    try {
+        await deleteDoc(doc(db, "comments", commentId));
+    } catch (err) {
+        console.error("Erreur suppression commentaire:", err);
+    }
 };
 
 window.likeProject = async (projectId) => {
@@ -518,6 +566,7 @@ document.addEventListener('click', async (e) => {
                 projectId: window.currentProjectId,
                 text: text,
                 author: window.isAdmin ? 'Admin' : 'Utilisateur',
+                userId: window.currentUserId,
                 date: serverTimestamp()
             });
             if (input) input.value = '';
@@ -547,6 +596,7 @@ document.addEventListener('keypress', async (e) => {
                 projectId: window.currentProjectId,
                 text: text,
                 author: window.isAdmin ? 'Admin' : 'Utilisateur',
+                userId: window.currentUserId,
                 date: serverTimestamp()
             });
             if (input) input.value = '';
