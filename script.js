@@ -4,7 +4,7 @@ let navbar = document.querySelector('.navbar');
 
 if (menuIcon && navbar) {
     menuIcon.onclick = () => {
-        menuIcon.classList.toggle('bx-x');
+        menuIcon.classList.toggle('active');
         navbar.classList.toggle('active');
     };
 }
@@ -45,7 +45,7 @@ window.onscroll = () => {
     });
 
     // Fermer le menu si on scrolle
-    if (menuIcon) menuIcon.classList.remove('bx-x');
+    if (menuIcon) menuIcon.classList.remove('active');
     if (navbar) navbar.classList.remove('active');
 
     // Sticky Header
