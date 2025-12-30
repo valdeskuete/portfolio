@@ -191,6 +191,81 @@ section {
     100% { transform: translateY(0); }
 }
 
+/* --- ABOUT --- */
+.about {
+    background: var(--bg-color);
+}
+
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.about-content h3 {
+    font-size: 1.8rem;
+    color: var(--main-color);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.about-content h3:first-child {
+    margin-top: 0;
+}
+
+.about-content p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.about-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.about-content ul li {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+}
+
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 238, 255, 0.2);
+}
+
+.stat-box {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(0, 238, 255, 0.05);
+    border: 1px solid rgba(0, 238, 255, 0.2);
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.stat-box:hover {
+    background: rgba(0, 238, 255, 0.1);
+    border-color: rgba(0, 238, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 238, 255, 0.15);
+}
+
+.stat-box h4 {
+    font-size: 2.5rem;
+    color: var(--main-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-box p {
+    font-size: 1rem;
+    color: #aaa;
+    margin: 0;
+}
+
 /* --- SERVICES --- */
 .services { background: var(--second-bg-color); }
 
@@ -905,6 +980,11 @@ textarea { resize: none; height: 18rem; }
     .timeline-item:nth-child(odd) { padding-right: 0; text-align: left; }
     .timeline-item:nth-child(even) { padding-left: 37px; }
     .timeline-dot { left: 0; }
+    
+    /* About Mobile */
+    .about-stats { grid-template-columns: 1fr; gap: 1rem; }
+    .about-content h3 { font-size: 1.5rem; }
+    .about-content p { font-size: 1rem; }
 }
 
 @media (max-width: 617px) {
