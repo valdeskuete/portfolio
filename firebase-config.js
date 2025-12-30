@@ -224,11 +224,10 @@ window.addComment = async (id) => {
     await addDoc(collection(db, "comments"), {
         projectId: id,
         text: input.value,
-        approved: false,
         date: serverTimestamp()
     });
     input.value = "";
-    alert("Commentaire envoyé pour validation !");
+    alert("Commentaire envoyé !");
 };
 
 window.loadComments = (projectId, containerId) => {
@@ -239,9 +238,7 @@ window.loadComments = (projectId, containerId) => {
         container.innerHTML = '';
         snap.forEach(doc => {
             const c = doc.data();
-            if (c.approved || window.isAdmin) {
-                container.innerHTML += `<div class="tg-msg"><div>${c.text}</div></div>`;
-            }
+            container.innerHTML += `<div class="tg-msg"><div>${c.text}</div></div>`;
         });
     });
 };
@@ -363,11 +360,7 @@ function loadAdminComments() {
                     </div>
                     <div class="comment-project">📌 Projet ID: ${comment.projectId}</div>
                     <div class="comment-text">"${comment.text}"</div>
-                    <span class="comment-status ${comment.approved ? 'approved' : 'pending'}">
-                        ${comment.approved ? '✅ Approuvé' : '⏳ En attente'}
-                    </span>
                     <div class="comment-actions">
-                        ${!comment.approved ? `<button class="comment-approve-btn" onclick="window.approveComment('${doc.id}')">✓ Approuver</button>` : ''}
                         <button class="comment-delete-btn" onclick="window.deleteComment('${doc.id}')">✕ Supprimer</button>
                     </div>
                 </div>
