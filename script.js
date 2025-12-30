@@ -39,8 +39,13 @@ window.onscroll = () => {
         if(top >= offset && top < offset + height) {
             navLinks.forEach(links => {
                 links.classList.remove('active');
-                document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
             });
+            
+            // Chercher le lien correspondant de manière robuste
+            if (id) {
+                const activeLink = document.querySelector(`header nav a[href="#${id}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
         }
     });
 
@@ -52,6 +57,14 @@ window.onscroll = () => {
     let header = document.querySelector('header');
     header.classList.toggle('sticky', window.scrollY > 100);
 };
+
+/* Fermer le menu mobile au clic sur un lien */
+document.querySelectorAll('header nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (menuIcon) menuIcon.classList.remove('active');
+        if (navbar) navbar.classList.remove('active');
+    });
+});
 
 /* ==================== FILTRAGE DU PORTFOLIO (Correction) ==================== */
 const filterButtons = document.querySelectorAll('.filter-btn');
