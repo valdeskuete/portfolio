@@ -111,6 +111,52 @@ window.deleteComment = async (commentId) => {
     }
 };
 
+/* ==================== MODAL COMMENTAIRES LIVE ==================== */
+window.openCommentsModal = (projectId, projectTitle) => {
+    const modal = document.getElementById('comments-modal');
+    const container = document.getElementById('comments-container');
+    const headerTitle = document.getElementById('comments-project-title');
+    
+    if (!modal || !container) return;
+    
+    headerTitle.textContent = `Commentaires - ${projectTitle}`;
+    modal.classList.remove('hidden');
+    container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Chargement...</div>';
+    
+    // Charger les commentaires en live
+    const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("date", "asc"));
+    window.commentsUnsubscribe = onSnapshot(q, (snap) => {
+        container.innerHTML = '';
+        if (snap.empty) {
+            container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Aucun commentaire pour le moment...</div>';
+        }
+        snap.forEach(doc => {
+            const c = doc.data();
+            const time = new Date(c.date?.toMillis?.() || Date.now()).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const isOwn = window.isAdmin && c.author === 'Admin'; // À adapter selon votre logique
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `comment-message ${isOwn ? 'own' : ''}`;
+            msgDiv.innerHTML = `
+                <div>${c.text}</div>
+                <div class="comment-time">${time}${window.isAdmin ? ` - <span style="cursor:pointer; color:#ff3232;" onclick="window.deleteComment('${doc.id}')">Supprimer</span>` : ''}</div>
+            `;
+            container.appendChild(msgDiv);
+        });
+        // Scroll vers le bas
+        container.scrollTop = container.scrollHeight;
+    });
+    
+    // Stocker l'ID du projet pour l'envoi
+    window.currentProjectId = projectId;
+};
+
+window.closeCommentsModal = () => {
+    const modal = document.getElementById('comments-modal');
+    if (modal) modal.classList.add('hidden');
+    if (window.commentsUnsubscribe) window.commentsUnsubscribe();
+};
+
 window.likeProject = async (projectId) => {
     const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
     if (likedProjects.includes(projectId)) return alert("Déjà aimé ! 😉");
@@ -157,20 +203,15 @@ window.loadProjects = (filter = "all") => {
                         <h4>${p.titre}</h4>
                         ${content}
                         ${links}
-                        <div class="comments-container">
-                            <div class="comments-list" id="comments-${id}"></div>
-                            <div class="comment-input-group">
-                                <input type="text" id="input-${id}" placeholder="Commenter...">
-                                <button onclick="addComment('${id}')"><i class='bx bxs-send'></i></button>
-                            </div>
-                        </div>
+                        <button class="comments-btn" onclick="window.openCommentsModal('${id}', '${p.titre.replace(/'/g, "\\'")}')" style="margin-top:1rem; padding:0.8rem 1.5rem; background:var(--main-color); color:#000; border:none; border-radius:5px; cursor:pointer; font-weight:600; transition:0.3s;">
+                            <i class='bx bxs-comment'></i> Commentaires
+                        </button>
                     </div>
                     <div class="project-info-bar">
                         <span class="like-counter" onclick="likeProject('${id}')"><i class='bx bxs-heart'></i> ${p.likes || 0}</span>
                         ${window.isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
                     </div>
                 </div>`;
-            loadComments(id, `comments-${id}`);
         });
     });
 };
@@ -459,3 +500,35 @@ function loadAdminJournal() {
         });
     });
 }
+
+/* ==================== EVENT LISTENERS - MODAL COMMENTAIRES ==================== */
+// Fermer la modal commentaires
+document.getElementById('close-comments')?.addEventListener('click', window.closeCommentsModal);
+
+// Envoyer un commentaire
+document.getElementById('send-comment-btn')?.addEventListener('click', async () => {
+    const input = document.getElementById('comment-input');
+    const text = input.value.trim();
+    
+    if (!text || !window.currentProjectId) return;
+    
+    try {
+        await addDoc(collection(db, "comments"), {
+            projectId: window.currentProjectId,
+            text: text,
+            author: window.isAdmin ? 'Admin' : 'Utilisateur',
+            date: serverTimestamp()
+        });
+        input.value = '';
+    } catch (err) {
+        console.error("Erreur envoi commentaire:", err);
+        alert("Erreur lors de l'envoi du commentaire");
+    }
+});
+
+// Fermer la modal en cliquant en dehors (backdrop)
+document.getElementById('comments-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'comments-modal') {
+        window.closeCommentsModal();
+    }
+});
