@@ -12,16 +12,13 @@ import {
 // Les clés sont maintenant lues depuis les variables d'environnement
 // En production, utiliser une fonction backend pour initier Firebase
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "CONFIGURE_IN_ENV",
+  apiKey: "AIzaSyAB7CYuYUyLKihOQ8KstDcj6ko_CLjs4S8",
   authDomain: "valdes-tech.firebaseapp.com",
   projectId: "valdes-tech",
   storageBucket: "valdes-tech.firebasestorage.app",
   messagingSenderId: "359469879862",
   appId: "1:359469879862:web:6ede2896e55a9822ef7e97"
 };
-
-// ⚠️ IMPORTANT: Pour la production, utilisez un fichier .env
-// VITE_FIREBASE_API_KEY=votre_clé_publique_seulement
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -41,27 +38,23 @@ const el = {
 };
 
 /* ==================== AUTHENTIFICATION ==================== */
-/* ==================== AUTHENTIFICATION (Améliorée) ==================== */
+/* ==================== AUTHENTIFICATION ==================== */
 onAuthStateChanged(auth, (user) => {
-    try {
-        window.isAdmin = !!user;
-        if (user) {
-            if(el.adminPanel) el.adminPanel.classList.remove('hidden');
-            if(el.loginModal) el.loginModal.classList.add('hidden');
-            loadAdminReviews();
-            loadAdminComments();
-            loadAdminTips();
-            loadAdminJournal();
-            loadAdminMessages();
-        } else {
-            if(el.adminPanel) el.adminPanel.classList.add('hidden');
-        }
-        window.loadProjects && window.loadProjects(); 
-        loadPublicTips();
-        loadPublicJournal();
-    } catch (error) {
-        console.error('Auth state error:', error);
+    window.isAdmin = !!user;
+    if (user) {
+        if(el.adminPanel) el.adminPanel.classList.remove('hidden');
+        if(el.loginModal) el.loginModal.classList.add('hidden');
+        loadAdminReviews();
+        loadAdminComments();
+        loadAdminTips();
+        loadAdminJournal();
+        loadAdminMessages();
+    } else {
+        if(el.adminPanel) el.adminPanel.classList.add('hidden');
     }
+    window.loadProjects(); 
+    loadPublicTips();
+    loadPublicJournal();
 });
 
 // Ouverture du Modal (Cadenas Menu OU Texte Footer)
@@ -78,203 +71,118 @@ if(el.closeModal) el.closeModal.onclick = () => el.loginModal.classList.add('hid
 el.loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     try {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        if (!email || !password) {
-            alert("Email et mot de passe requis");
-            return;
-        }
-        
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
         el.loginForm.reset();
     } catch (error) { 
-        console.error('Login error:', error);
-        let message = "Erreur: Identifiants incorrects";
-        if (error.code === 'auth/user-not-found') message = "Utilisateur non trouvé";
-        if (error.code === 'auth/wrong-password') message = "Mot de passe incorrect";
-        if (error.code === 'auth/too-many-requests') message = "Trop de tentatives, réessayez plus tard";
-        alert(message);
+        alert("Erreur: Identifiants incorrects"); 
     }
 });
 
 if(el.logoutBtn) el.logoutBtn.onclick = () => signOut(auth);
 
-/* ==================== FONCTIONS GLOBALES (Window) - Améliorées ==================== */
+/* ==================== FONCTIONS GLOBALES (Window) ==================== */
 window.deleteItem = async (col, id) => {
-    if (!window.isAdmin) {
-        console.warn('Only admin can delete items');
-        return;
-    }
-    try {
-        if (confirm("Supprimer définitivement ?")) {
-            await deleteDoc(doc(db, col, id));
-            console.log(`Item deleted from ${col}`);
-        }
-    } catch (error) {
-        console.error('Delete error:', error);
-        alert('Erreur lors de la suppression');
-    }
+    if (!window.isAdmin) return;
+    if (confirm("Supprimer définitivement ?")) await deleteDoc(doc(db, col, id));
 };
 
 window.approveItem = async (col, id) => {
-    if (!window.isAdmin) {
-        console.warn('Only admin can approve items');
-        return;
-    }
-    try {
-        await updateDoc(doc(db, col, id), { approved: true });
-        console.log(`Item approved in ${col}`);
-    } catch (error) {
-        console.error('Approve error:', error);
-        alert('Erreur lors de l\'approbation');
-    }
+    if (!window.isAdmin) return;
+    await updateDoc(doc(db, col, id), { approved: true });
 };
 
 window.likeProject = async (projectId) => {
-    try {
-        const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
-        if (likedProjects.includes(projectId)) {
-            alert("Vous avez déjà aimé ce projet ! 😉");
-            return;
-        }
+    const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
+    if (likedProjects.includes(projectId)) return alert("Déjà aimé ! 😉");
 
-        await updateDoc(doc(db, "projets", projectId), { likes: increment(1) });
-        likedProjects.push(projectId);
-        localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
-    } catch (error) {
-        console.error('Like error:', error);
-        alert('Erreur lors du like');
-    }
+    await updateDoc(doc(db, "projets", projectId), { likes: increment(1) });
+    likedProjects.push(projectId);
+    localStorage.setItem('valdes_tech_likes', JSON.stringify(likedProjects));
 };
 
 
-/* ==================== CHARGEMENT DES PROJETS (Amélioré) ==================== */
+/* ==================== CHARGEMENT DES PROJETS ==================== */
 window.loadProjects = (filter = "all") => {
     const list = document.getElementById('portfolio-list');
-    if (!list) {
-        console.warn('Portfolio list element not found');
-        return;
-    }
+    if (!list) return;
 
-    try {
-        let q = query(collection(db, "projets"), orderBy("date", "desc"));
-        if (filter !== "all") {
-            q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
-        }
+    let q = query(collection(db, "projets"), orderBy("date", "desc"));
+    if (filter !== "all") q = query(collection(db, "projets"), where("tag", "==", filter), orderBy("date", "desc"));
 
-        onSnapshot(q, (snapshot) => {
-            list.innerHTML = '';
-            if (snapshot.empty) {
-                list.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Aucun projet trouvé.</p>';
-                return;
-            }
+    onSnapshot(q, (snapshot) => {
+        list.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const id = docSnap.id;
             
-            snapshot.forEach(docSnap => {
-                try {
-                    const p = docSnap.data();
-                    const id = docSnap.id;
-                    
-                    const content = p.challenge 
-                        ? `<div class="case-study-mini">
-                            <p><strong><i class='bx bx-target-lock'></i> Défi:</strong> ${p.challenge}</p>
-                            <p><strong><i class='bx bx-cog'></i> Solution:</strong> ${p.solution}</p>
-                            <p><strong><i class='bx bx-check-circle'></i> Résultat:</strong> ${p.resultat}</p>
-                           </div>`
-                        : `<p>${p.description || 'Pas de description'}</p>`;
+            const content = p.challenge 
+                ? `<div class="case-study-mini">
+                    <p><strong><i class='bx bx-target-lock'></i> Défi:</strong> ${p.challenge}</p>
+                    <p><strong><i class='bx bx-cog'></i> Solution:</strong> ${p.solution}</p>
+                    <p><strong><i class='bx bx-check-circle'></i> Résultat:</strong> ${p.resultat}</p>
+                   </div>`
+                : `<p>${p.description}</p>`;
 
-                    const links = (p.github || p.demo) 
-                        ? `<div class="project-links">
-                            ${p.github ? `<a href="${p.github}" target="_blank" rel="noopener" title="Code Source"><i class='bx bxl-github'></i></a>` : ''}
-                            ${p.demo ? `<a href="${p.demo}" target="_blank" rel="noopener" title="Démo Live"><i class='bx bx-link-external'></i></a>` : ''}
-                           </div>`
-                        : '';
+            const links = (p.github || p.demo) 
+                ? `<div class="project-links">
+                    ${p.github ? `<a href="${p.github}" target="_blank" title="Code Source"><i class='bx bxl-github'></i></a>` : ''}
+                    ${p.demo ? `<a href="${p.demo}" target="_blank" title="Démo Live"><i class='bx bx-link-external'></i></a>` : ''}
+                   </div>`
+                : '';
 
-                    list.innerHTML += `
-                        <div class="portfolio-box">
-                            <img src="${p.image || 'images/default.jpg'}" alt="${p.titre}" loading="lazy">
-                            <div class="portfolio-layer">
-                                <h4>${p.titre}</h4>
-                                ${content}
-                                ${links}
-                                <div class="comments-container">
-                                    <div class="comments-list" id="comments-${id}"></div>
-                                    <div class="comment-input-group">
-                                        <input type="text" id="input-${id}" placeholder="Commenter..." maxlength="200">
-                                        <button onclick="addComment('${id}')" title="Ajouter commentaire"><i class='bx bxs-send'></i></button>
-                                    </div>
-                                </div>
+            list.innerHTML += `
+                <div class="portfolio-box">
+                    <img src="${p.image || 'images/default.jpg'}" alt="${p.titre}">
+                    <div class="portfolio-layer">
+                        <h4>${p.titre}</h4>
+                        ${content}
+                        ${links}
+                        <div class="comments-container">
+                            <div class="comments-list" id="comments-${id}"></div>
+                            <div class="comment-input-group">
+                                <input type="text" id="input-${id}" placeholder="Commenter...">
+                                <button onclick="addComment('${id}')"><i class='bx bxs-send'></i></button>
                             </div>
-                            <div class="project-info-bar">
-                                <span class="like-counter" onclick="likeProject('${id}')" style="cursor:pointer;"><i class='bx bxs-heart'></i> ${p.likes || 0}</span>
-                                ${window.isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')" title="Supprimer"><i class='bx bxs-trash'></i></button>` : ''}
-                            </div>
-                        </div>`;
-                    loadComments(id, `comments-${id}`);
-                } catch (error) {
-                    console.error('Error processing project:', error);
-                }
-            });
-        }, (error) => {
-            console.error('Firestore query error:', error);
-            list.innerHTML = '<p style="color:#ff3333;">Erreur lors du chargement des projets</p>';
+                        </div>
+                    </div>
+                    <div class="project-info-bar">
+                        <span class="like-counter" onclick="likeProject('${id}')"><i class='bx bxs-heart'></i> ${p.likes || 0}</span>
+                        ${window.isAdmin ? `<button class="admin-trash-btn" onclick="deleteItem('projets','${id}')"><i class='bx bxs-trash'></i></button>` : ''}
+                    </div>
+                </div>`;
+            loadComments(id, `comments-${id}`);
         });
-    } catch (error) {
-        console.error('Load projects error:', error);
-        list.innerHTML = '<p style="color:#ff3333;">Erreur: Impossible de charger les projets</p>';
-    }
+    });
 };
 
 
-/* ==================== COMMENTAIRES (Amélioré) ==================== */
+/* ==================== COMMENTAIRES ==================== */
 window.addComment = async (id) => {
     const input = document.getElementById(`input-${id}`);
-    if (!input || !input.value.trim()) {
-        alert("Le commentaire ne peut pas être vide");
-        return;
-    }
-    
-    try {
-        const text = input.value.trim();
-        if (text.length > 200) {
-            alert("Le commentaire ne doit pas dépasser 200 caractères");
-            return;
-        }
-        
-        await addDoc(collection(db, "comments"), {
-            projectId: id,
-            text: text,
-            approved: false,
-            date: serverTimestamp()
-        });
-        input.value = "";
-        alert("Commentaire envoyé pour validation !");
-    } catch (error) {
-        console.error('Comment add error:', error);
-        alert("Erreur lors de l'ajout du commentaire");
-    }
+    if (!input || !input.value.trim()) return;
+    await addDoc(collection(db, "comments"), {
+        projectId: id,
+        text: input.value,
+        approved: false,
+        date: serverTimestamp()
+    });
+    input.value = "";
+    alert("Commentaire envoyé pour validation !");
 };
 
 window.loadComments = (projectId, containerId) => {
     const container = document.getElementById(containerId);
     if(!container) return;
-    
-    try {
-        const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("date", "asc"));
-        onSnapshot(q, (snap) => {
-            container.innerHTML = '';
-            snap.forEach(doc => {
-                const c = doc.data();
-                if (c.approved || window.isAdmin) {
-                    container.innerHTML += `<div class="tg-msg"><div>${c.text || 'Commentaire vide'}</div></div>`;
-                }
-            });
-        }, (error) => {
-            console.error('Load comments error:', error);
+    const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("date", "asc"));
+    onSnapshot(q, (snap) => {
+        container.innerHTML = '';
+        snap.forEach(doc => {
+            const c = doc.data();
+            if (c.approved || window.isAdmin) {
+                container.innerHTML += `<div class="tg-msg"><div>${c.text}</div></div>`;
+            }
         });
-    } catch (error) {
-        console.error('Load comments error:', error);
-    }
+    });
 };
 
 /* ==================== GESTION ASTUCES (TIPS) ==================== */
