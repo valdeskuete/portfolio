@@ -28,13 +28,23 @@ html {
     overflow-x: hidden;
 }
 
+/* Remplace ton bloc body actuel par celui-ci */
 body {
     background: var(--bg-color);
     color: var(--text-color);
     overflow-x: hidden;
     width: 100%;
     position: relative;
+    line-height: 1.6; /* Ajoute de l'espace entre les lignes pour le confort */
+    -webkit-font-smoothing: antialiased; /* Rend la police plus lisse */
 }
+
+/* Ajoute cette règle juste en dessous pour adoucir tous les paragraphes */
+p {
+    color: #d1d1d1; /* Un blanc légèrement grisé, moins agressif pour les yeux */
+    font-size: 1.6rem;
+}
+
 
 /* Scrollbar Personnalisée */
 ::-webkit-scrollbar {
@@ -51,9 +61,13 @@ body {
 /* --- UTILS --- */
 span { color: var(--main-color); }
 .neon-text { color: var(--main-color); text-shadow: var(--neon-glow); }
-.heading { text-align: center; font-size: 4.5rem; margin-bottom: 4rem; }
-.hidden { display: none !important; }
-
+.heading {
+    text-align: center;
+    font-size: 5rem; /* Plus imposant */
+    margin-bottom: 5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 .btn {
     display: inline-block;
     padding: 1rem 2.8rem;
@@ -306,63 +320,57 @@ section {
 .skills-content ul li { font-size: 1.7rem; padding: 1rem 0; }
 .skills-content ul li i { color: var(--main-color); margin-right: 1rem; }
 
-/* --- PORTFOLIO (ET COMMENTAIRES) --- */
-.portfolio { background: var(--second-bg-color); }
-.portfolio-container { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 2.5rem; }
-
+/* Remplace ton .portfolio-box actuel */
 .portfolio-box {
     position: relative;
-    border-radius: 2rem;
-    box-shadow: 0 0 1rem var(--bg-color);
+    border-radius: 1.5rem; /* Arrondi plus moderne */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     display: flex;
     flex-direction: column; 
-    background: #252525;
+    background: #151921; /* Fond très sombre pour les images aux formats variés */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.4s ease;
 }
 
+/* Remplace ton .portfolio-box img actuel */
 .portfolio-box img {
     width: 100%;
-    height: 200px; /* Hauteur fixe pour uniformité */
-    object-fit: cover;
+    aspect-ratio: 16 / 10; /* Définit un cadre proportionnel pro */
+    object-fit: contain; /* L'IMAGE S'AFFICHE DÉSORMAIS ENTIÈREMENT SANS ÊTRE COUPÉE */
+    padding: 10px; /* Petit espace interne pour que l'image ne colle pas aux bords */
     transition: .5s ease;
 }
 
-.portfolio-box:hover img { transform: scale(1.05); }
-
-.portfolio-layer {
-    padding: 2rem;
-    background: linear-gradient(to top, #1f242d, transparent);
-    display: flex;
-    flex-direction: column;
-}
-
-.portfolio-layer h4 { font-size: 2.5rem; color: var(--main-color); }
-.portfolio-layer p { font-size: 1.4rem; margin: .5rem 0 1rem; }
-
-/* Boutons de Filtre */
+/* --- BOUTONS DE FILTRE (OPTIMISÉS) --- */
 .filter-buttons {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 4rem;
+    gap: 1.2rem; /* Espacement plus serré et moderne */
+    margin-bottom: 5rem; /* Plus d'espace sous les boutons pour laisser respirer les projets */
     flex-wrap: wrap;
 }
 
 .filter-btn {
-    padding: 1rem 2rem;
-    background: var(--second-bg-color);
+    padding: 0.8rem 2.4rem; /* Plus fin en hauteur, plus large en largeur */
+    background: transparent; /* Fond transparent pour un look plus léger */
     color: var(--text-color);
-    border: 2px solid var(--main-color);
-    border-radius: 3rem;
+    border: 1px solid rgba(0, 238, 255, 0.4); /* Bordure plus fine et subtile */
+    border-radius: 1rem; /* Moins "bulle", plus "interface logicielle" */
     cursor: pointer;
-    font-weight: 600;
-    transition: .3s;
+    font-size: 1.5rem; /* Taille de lecture optimale */
+    font-weight: 500;
+    letter-spacing: 0.5px; /* Légère aisance entre les lettres */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.filter-btn.active, .filter-btn:hover {
+.filter-btn.active, 
+.filter-btn:hover {
     background: var(--main-color);
     color: var(--bg-color);
-    box-shadow: var(--neon-glow);
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px rgba(0, 238, 255, 0.3); /* Lueur plus douce et moins agressive */
+    transform: translateY(-2px); /* Petit effet de levée au survol */
 }
 
 /* Commentaires dans Portfolio */
