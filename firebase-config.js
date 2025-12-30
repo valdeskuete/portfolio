@@ -91,6 +91,26 @@ window.approveItem = async (col, id) => {
     await updateDoc(doc(db, col, id), { approved: true });
 };
 
+window.approveComment = async (commentId) => {
+    if (!window.isAdmin) return;
+    try {
+        await updateDoc(doc(db, "comments", commentId), { approved: true });
+    } catch (err) {
+        console.error("Erreur approbation commentaire:", err);
+    }
+};
+
+window.deleteComment = async (commentId) => {
+    if (!window.isAdmin) return;
+    if (confirm("Supprimer ce commentaire définitivement ?")) {
+        try {
+            await deleteDoc(doc(db, "comments", commentId));
+        } catch (err) {
+            console.error("Erreur suppression commentaire:", err);
+        }
+    }
+};
+
 window.likeProject = async (projectId) => {
     const likedProjects = JSON.parse(localStorage.getItem('valdes_tech_likes') || '[]');
     if (likedProjects.includes(projectId)) return alert("Déjà aimé ! 😉");
@@ -277,7 +297,43 @@ function loadAdminReviews() {
     });
 }
 
-function loadAdminComments() { /* ... Logique similaire si besoin ... */ }
+function loadAdminComments() {
+    const container = document.getElementById('admin-comments-list');
+    if (!container) return;
+    
+    const q = query(collection(db, "comments"), orderBy("date", "desc"));
+    onSnapshot(q, (snap) => {
+        if (snap.empty) {
+            container.innerHTML = '<div class="no-comments-msg">✨ Aucun commentaire à modérer</div>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        snap.forEach(doc => {
+            const comment = doc.data();
+            const date = new Date(comment.date?.toMillis?.() || Date.now());
+            const timeStr = date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            
+            container.innerHTML += `
+                <div class="comment-bubble">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.author || 'Utilisateur'}</span>
+                        <span class="comment-time">${timeStr}</span>
+                    </div>
+                    <div class="comment-project">📌 Projet ID: ${comment.projectId}</div>
+                    <div class="comment-text">"${comment.text}"</div>
+                    <span class="comment-status ${comment.approved ? 'approved' : 'pending'}">
+                        ${comment.approved ? '✅ Approuvé' : '⏳ En attente'}
+                    </span>
+                    <div class="comment-actions">
+                        ${!comment.approved ? `<button class="comment-approve-btn" onclick="window.approveComment('${doc.id}')">✓ Approuver</button>` : ''}
+                        <button class="comment-delete-btn" onclick="window.deleteComment('${doc.id}')">✕ Supprimer</button>
+                    </div>
+                </div>
+            `;
+        });
+    });
+}
 
 function loadAdminMessages() {
     const box = document.getElementById("admin-messages-list");

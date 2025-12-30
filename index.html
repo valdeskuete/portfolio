@@ -274,6 +274,7 @@
                 <button class="tab-btn active" onclick="openTab('tab-projets')">🚀 Projets</button>
                 <button class="tab-btn" onclick="openTab('tab-messages')">📩 Messages</button>
                 <button class="tab-btn" onclick="openTab('tab-tips')">💡 Astuces</button>
+                <button class="tab-btn" onclick="openTab('tab-comments')">💬 Commentaires</button>
                 <button class="tab-btn" onclick="openTab('tab-reviews')">⭐ Avis</button>
             </div>
 
@@ -325,6 +326,12 @@
                     <button type="submit" class="btn">Ajouter l'astuce</button>
                 </form>
                 <div id="admin-tips-list"></div>
+            </div>
+
+            <div id="tab-comments" class="tab-content">
+                <h3>Modération des Commentaires</h3>
+                <p style="color: #aaa; margin-bottom: 20px;">Approuvez ou supprimez les commentaires des clients sur vos projets.</p>
+                <div id="admin-comments-list" class="admin-comments-container"></div>
             </div>
 
             <div id="tab-reviews" class="tab-content">
