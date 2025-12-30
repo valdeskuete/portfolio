@@ -88,7 +88,7 @@ span { color: var(--main-color); }
     z-index: 100;
     transition: .3s;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .header.sticky {
@@ -744,13 +744,15 @@ textarea { resize: none; height: 18rem; }
 @media (max-width: 768px) {
     #menu-icon { display: block; }
     .navbar {
-        position: absolute; top: 100%; left: 0; width: 100%;
+        position: fixed; top: 80px; left: 0; width: 100%;
         padding: 1rem 3%; background: var(--bg-color);
         border-top: .1rem solid rgba(0,0,0,.2);
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.2);
         display: none;
+        z-index: 99;
+        flex-direction: column;
     }
-    .navbar.active { display: block; }
+    .navbar.active { display: flex !important; }
     .navbar a { display: block; font-size: 2rem; margin: 3rem 0; }
     
     .home { flex-direction: column; }
