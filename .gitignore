@@ -1,0 +1,57 @@
+# 🔐 Variables d'environnement (NE JAMAIS commiter!)
+.env
+.env.local
+.env.*.local
+
+# 📦 Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# 🔨 Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# 💾 System files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 📝 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# 🧪 Testing
+coverage/
+.nyc_output/
+
+# 🌐 Firebase local emulator
+.emulatorrc.json
+
+# 📊 Analytics
+.cache/
+
+# 🛠️ Build tools
+.parcel-cache
+.next/
+.nuxt/
+out/
+
+# 🔒 Secrets (même dans les commentaires!)
+**/secrets.js
+**/config.private.js
+credentials.json
+
+# 🎯 OS
+.env*
+!.env.example

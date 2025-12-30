@@ -1,60 +1,92 @@
-/* ==================== 1. MENU MOBILE (Code Ajouté) ==================== */
+/* ==================== 1. MENU MOBILE (Code Amélioré) ==================== */
 let menuIcon = document.querySelector('#menu-icon');
 let navbar = document.querySelector('.navbar');
 
-menuIcon.onclick = () => {
-    menuIcon.classList.toggle('bx-x'); // Transforme l'icône en X
-    navbar.classList.toggle('active'); // Affiche le menu
-};
+if (menuIcon && navbar) {
+    menuIcon.onclick = () => {
+        menuIcon.classList.toggle('active');
+        navbar.classList.toggle('active');
+        document.body.style.overflow = navbar.classList.contains('active') ? 'hidden' : 'auto';
+    };
 
-/* ==================== 2. GESTION DES ONGLETS ADMIN (Code Ajouté) ==================== */
-// Cette fonction est maintenant disponible globalement
+    // Fermer le menu au clic sur un lien
+    navbar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuIcon.classList.remove('active');
+            navbar.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    });
+}
+
+/* ==================== 2. GESTION DES ONGLETS ADMIN (Amélioré) ==================== */
 window.openTab = function(tabName) {
-    // Masquer tous les contenus
-    let tabContents = document.getElementsByClassName("tab-content");
-    for (let i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove("active");
-    }
+    try {
+        // Validation du tabName
+        if (!tabName || typeof tabName !== 'string') {
+            console.error('Invalid tab name provided');
+            return;
+        }
 
-    // Désactiver tous les boutons
-    let tabBtns = document.getElementsByClassName("tab-btn");
-    for (let i = 0; i < tabBtns.length; i++) {
-        tabBtns[i].classList.remove("active");
-    }
+        // Masquer tous les contenus
+        let tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active");
+        }
 
-    // Afficher le contenu demandé et activer le bouton cliqué
-    document.getElementById(tabName).classList.add("active");
-    
-    // Astuce pour retrouver le bouton cliqué (event target)
-    event.currentTarget.classList.add("active");
+        // Désactiver tous les boutons
+        let tabBtns = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].classList.remove("active");
+        }
+
+        // Afficher le contenu demandé
+        const targetElement = document.getElementById(tabName);
+        if (targetElement) {
+            targetElement.classList.add("active");
+            // Activer le bouton cliqué
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add("active");
+            }
+        } else {
+            console.warn(`Tab with id '${tabName}' not found`);
+        }
+    } catch (error) {
+        console.error('Error in openTab:', error);
+    }
 };
 
-/* ==================== 3. SCROLL SPY & NAVIGATION ==================== */
+/* ==================== 3. SCROLL SPY & NAVIGATION (Amélioré) ==================== */
 let sections = document.querySelectorAll('section');
 let navLinks = document.querySelectorAll('header nav a');
 
 window.onscroll = () => {
-    sections.forEach(sec => {
-        let top = window.scrollY;
-        let offset = sec.offsetTop - 150;
-        let height = sec.offsetHeight;
-        let id = sec.getAttribute('id');
+    try {
+        sections.forEach(sec => {
+            let top = window.scrollY;
+            let offset = sec.offsetTop - 150;
+            let height = sec.offsetHeight;
+            let id = sec.getAttribute('id');
 
-        if(top >= offset && top < offset + height) {
-            navLinks.forEach(links => {
-                links.classList.remove('active');
-                document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
-            });
+            if(top >= offset && top < offset + height) {
+                navLinks.forEach(links => {
+                    links.classList.remove('active');
+                });
+                const activeLink = document.querySelector(`header nav a[href*="${id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        });
+
+        // Sticky Header
+        let header = document.querySelector('header');
+        if (header) {
+            header.classList.toggle('sticky', window.scrollY > 100);
         }
-    });
-
-    // Fermer le menu si on scrolle
-    menuIcon.classList.remove('bx-x');
-    navbar.classList.remove('active');
-
-    // Sticky Header
-    let header = document.querySelector('header');
-    header.classList.toggle('sticky', window.scrollY > 100);
+    } catch (error) {
+        console.error('Error in scroll event:', error);
+    }
 };
 
 /* ==================== FILTRAGE DU PORTFOLIO (Correction) ==================== */
@@ -77,9 +109,9 @@ filterButtons.forEach(button => {
 });
 
 
-/* ==================== 4. ANIMATIONS ==================== */
+/* ==================== 4. ANIMATIONS & VALIDATION ==================== */
 ScrollReveal({
-    reset: false, // Mettre à true si tu veux que l'animation se répète
+    reset: false,
     distance: '80px',
     duration: 2000,
     delay: 200
@@ -97,3 +129,34 @@ const typed = new Typed('.multiple-text', {
     backDelay: 1000,
     loop: true
 });
+
+/* ==================== VALIDATION FORMULAIRES ==================== */
+// Validation pour formulaire de contact
+const contactForm = document.getElementById('firebase-contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        const email = document.getElementById('contact-email');
+        const phone = document.getElementById('contact-phone');
+        
+        // Validation email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            e.preventDefault();
+            email.style.borderColor = '#ff3333';
+            alert('Email invalide');
+            return;
+        }
+        
+        // Validation téléphone (optionnel si rempli)
+        const phoneRegex = /^[\d\s\-\+\(\)]{0,20}$/;
+        if (phone.value && !phoneRegex.test(phone.value)) {
+            e.preventDefault();
+            phone.style.borderColor = '#ff3333';
+            alert('Numéro de téléphone invalide');
+            return;
+        }
+        
+        email.style.borderColor = '';
+        phone.style.borderColor = '';
+    });
+}

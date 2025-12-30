@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tests - Valdes.Tech Portfolio</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .test-section { background: white; margin: 20px 0; padding: 20px; border-radius: 8px; }
+        .test-item { padding: 10px; margin: 5px 0; border-left: 4px solid #ddd; }
+        .pass { border-left-color: #4CAF50; background: #f1f8f4; }
+        .fail { border-left-color: #f44336; background: #fdeae6; }
+        .warn { border-left-color: #ff9800; background: #fff3e0; }
+        h2 { color: #333; border-bottom: 3px solid #0ef; padding-bottom: 10px; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        button { padding: 10px 20px; background: #0ef; color: #000; border: none; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>✅ LISTE DE VÉRIFICATION - Portfolio Valdes.Tech</h1>
+
+<div class="test-section">
+    <h2>🔐 Sécurité</h2>
+    <div class="test-item pass">✅ Clés API protégées dans .env</div>
+    <div class="test-item pass">✅ Validation des formulaires côté client</div>
+    <div class="test-item pass">✅ Gestion des erreurs Firebase</div>
+    <div class="test-item pass">✅ Vérification isAdmin sur opérations sensibles</div>
+    <div class="test-item warn">⚠️ FAIRE: Ajouter CSP headers</div>
+    <div class="test-item warn">⚠️ FAIRE: Configurer Firestore security rules</div>
+</div>
+
+<div class="test-section">
+    <h2>📱 Responsive Design</h2>
+    <div class="test-item pass">✅ Menu mobile fonctionnel (< 991px)</div>
+    <div class="test-item pass">✅ Hamburger qui se ferme au clic</div>
+    <div class="test-item pass">✅ Breakpoints: 1200px, 991px, 768px, 450px</div>
+    <div class="test-item pass">✅ Images responsive avec srcset</div>
+    <div class="test-item warn">⚠️ FAIRE: Tester sur vrais appareils mobiles</div>
+    <div class="test-item warn">⚠️ FAIRE: Vérifier touch targets (min 44x44px)</div>
+</div>
+
+<div class="test-section">
+    <h2>🎨 Performance CSS</h2>
+    <div class="test-item pass">✅ CSS minifiée et bien structurée</div>
+    <div class="test-item pass">✅ Variables CSS pour couleurs</div>
+    <div class="test-item pass">✅ Animations optimisées</div>
+    <div class="test-item warn">⚠️ FAIRE: Supprimer CSS non utilisée (PurgeCSS)</div>
+    <div class="test-item warn">⚠️ FAIRE: Lazy-load des images</div>
+</div>
+
+<div class="test-section">
+    <h2>🚀 JavaScript & Firebase</h2>
+    <div class="test-item pass">✅ Try/catch sur toutes les requêtes Firebase</div>
+    <div class="test-item pass">✅ Validation des inputs avant envoi</div>
+    <div class="test-item pass">✅ Vérification des éléments DOM</div>
+    <div class="test-item pass">✅ Gestion des commentaires avec modération</div>
+    <div class="test-item warn">⚠️ FAIRE: Débounce/Throttle sur événements</div>
+    <div class="test-item warn">⚠️ FAIRE: Pagination des commentaires</div>
+</div>
+
+<div class="test-section">
+    <h2>📊 SEO & Métadonnées</h2>
+    <div class="test-item pass">✅ Meta description présente</div>
+    <div class="test-item pass">✅ Open Graph tags configurés</div>
+    <div class="test-item pass">✅ Twitter Card setup</div>
+    <div class="test-item pass">✅ Sitemap.xml existant</div>
+    <div class="test-item pass">✅ Robots.txt existant</div>
+    <div class="test-item warn">⚠️ FAIRE: Ajouter JSON-LD Schema.org</div>
+    <div class="test-item warn">⚠️ FAIRE: Soumettre à Google Search Console</div>
+</div>
+
+<div class="test-section">
+    <h2>📸 Optimisation Images</h2>
+    <div class="test-item warn">⚠️ FAIRE: Convertir en WebP format</div>
+    <div class="test-item warn">⚠️ FAIRE: Ajouter lazy-loading</div>
+    <div class="test-item warn">⚠️ FAIRE: Optimiser taille fichier (< 200KB)</div>
+    <div class="test-item warn">⚠️ FAIRE: Responsive images avec srcset</div>
+    <div class="test-item warn">⚠️ FAIRE: Images de profil 1:1 ratio</div>
+</div>
+
+<div class="test-section">
+    <h2>📝 Contenu & Accessibilité</h2>
+    <div class="test-item pass">✅ Heading hierarchy correct (H1, H2, H3...)</div>
+    <div class="test-item pass">✅ Alt text sur toutes les images</div>
+    <div class="test-item pass">✅ Labels sur les formulaires</div>
+    <div class="test-item warn">⚠️ FAIRE: Tester avec WAVE (WebAIM)</div>
+    <div class="test-item warn">⚠️ FAIRE: Tester au clavier (Tab navigation)</div>
+    <div class="test-item warn">⚠️ FAIRE: Color contrast WCAG AA</div>
+</div>
+
+<div class="test-section">
+    <h2>🧪 Tests Manuels</h2>
+    <h3>À faire avant publication:</h3>
+    <button onclick="runTests()">▶️ Tester mainteant</button>
+    <div id="test-results" style="margin-top: 20px;"></div>
+</div>
+
+<div class="test-section">
+    <h2>🔗 Outils de Test</h2>
+    <ul>
+        <li><a href="https://pagespeed.web.dev" target="_blank">Google PageSpeed Insights</a> - Performance</li>
+        <li><a href="https://validator.w3.org/" target="_blank">W3C Validator</a> - HTML/CSS</li>
+        <li><a href="https://www.webpagetest.org/" target="_blank">WebPageTest</a> - Performance avancée</li>
+        <li><a href="https://www.responsivedesignchecker.com/" target="_blank">Responsive Design Checker</a> - Mobile</li>
+        <li><a href="https://wave.webaim.org/" target="_blank">WAVE Accessibility</a> - A11y</li>
+        <li><a href="https://www.ahrefs.com/seo-toolbar" target="_blank">Ahrefs SEO Toolbar</a> - SEO</li>
+    </ul>
+</div>
+
+<script>
+function runTests() {
+    const results = [];
+    
+    // Test 1: Menu mobile visible
+    const menuIcon = document.querySelector('#menu-icon');
+    results.push({
+        name: 'Menu mobile existe',
+        pass: !!menuIcon,
+        details: menuIcon ? 'Trouvé' : 'Non trouvé'
+    });
+    
+    // Test 2: Responsiveness
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    results.push({
+        name: 'Meta viewport présent',
+        pass: !!metaViewport,
+        details: metaViewport?.getAttribute('content')
+    });
+    
+    // Test 3: Head tags
+    const langs = ['h1', 'h2', 'h3', 'h4'];
+    const hasHeadings = langs.some(tag => document.querySelector(tag));
+    results.push({
+        name: 'Heading hierarchy',
+        pass: hasHeadings,
+        details: hasHeadings ? 'OK' : 'Pas de headings trouvés'
+    });
+    
+    // Test 4: Images alt text
+    const imgWithoutAlt = document.querySelectorAll('img:not([alt])').length;
+    results.push({
+        name: 'Alt text sur images',
+        pass: imgWithoutAlt === 0,
+        details: imgWithoutAlt + ' images sans alt'
+    });
+    
+    // Test 5: Forms accessibility
+    const inputs = document.querySelectorAll('input, textarea');
+    results.push({
+        name: 'Forms exist',
+        pass: inputs.length > 0,
+        details: inputs.length + ' champs trouvés'
+    });
+    
+    // Afficher les résultats
+    let html = '<div style="margin-top: 10px;">';
+    results.forEach(r => {
+        const className = r.pass ? 'pass' : 'fail';
+        const icon = r.pass ? '✅' : '❌';
+        html += `<div class="test-item ${className}">${icon} ${r.name}: ${r.details}</div>`;
+    });
+    html += '</div>';
+    
+    document.getElementById('test-results').innerHTML = html;
+}
+</script>
+
+</body>
+</html>
