@@ -201,18 +201,42 @@
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-heading"></i> Taille Titre</label>
+                        <label><i class="fas fa-heading"></i> Nom (Heading)</label>
                         <div class="size-input-wrapper">
-                            <input type="range" id="titleFontSize" min="20" max="48" value="32" onchange="updatePreview()">
-                            <span id="titleSizeDisplay">32px</span>
+                            <input type="range" id="nameSize" min="24" max="52" value="36" oninput="updatePreview(); document.getElementById('nameSizeDisplay').textContent = this.value + 'px'">
+                            <span id="nameSizeDisplay">36px</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-briefcase"></i> Titre Professionnel</label>
+                        <div class="size-input-wrapper">
+                            <input type="range" id="jobTitleSize" min="12" max="20" value="16" oninput="updatePreview(); document.getElementById('jobTitleSizeDisplay').textContent = this.value + 'px'">
+                            <span id="jobTitleSizeDisplay">16px</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Métadonnées</label>
+                        <div class="size-input-wrapper">
+                            <input type="range" id="metaSize" min="8" max="14" value="11" oninput="updatePreview(); document.getElementById('metaSizeDisplay').textContent = this.value + 'px'">
+                            <span id="metaSizeDisplay">11px</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-heading"></i> Titres Sections</label>
+                        <div class="size-input-wrapper">
+                            <input type="range" id="sectionTitleSize" min="12" max="22" value="16" oninput="updatePreview(); document.getElementById('sectionTitleSizeDisplay').textContent = this.value + 'px'">
+                            <span id="sectionTitleSizeDisplay">16px</span>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-align-left"></i> Taille Corps</label>
                         <div class="size-input-wrapper">
-                            <input type="range" id="bodyFontSize" min="10" max="18" value="14" onchange="updatePreview()">
-                            <span id="bodySizeDisplay">14px</span>
+                            <input type="range" id="bodyFontSize" min="10" max="16" value="13" oninput="updatePreview(); document.getElementById('bodySizeDisplay').textContent = this.value + 'px'">
+                            <span id="bodySizeDisplay">13px</span>
                         </div>
                     </div>
                 </div>

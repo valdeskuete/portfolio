@@ -2,8 +2,11 @@
 let currentPhotoData = null;
 let currentTemplate = 'minimal';
 let zoomLevel = 100;
-let titleFontSize = 32;
-let bodyFontSize = 14;
+let nameSize = 36;
+let jobTitleSize = 16;
+let metaSize = 11;
+let sectionTitleSize = 16;
+let bodyFontSize = 13;
 
 let cvData = {
     fullName: '',
@@ -206,18 +209,7 @@ function initializeEventListeners() {
         });
     });
 
-    // Font size sliders
-    document.getElementById('titleFontSize').addEventListener('input', (e) => {
-        titleFontSize = parseInt(e.target.value);
-        document.getElementById('titleSizeDisplay').textContent = titleFontSize + 'px';
-        updatePreview();
-    });
-
-    document.getElementById('bodyFontSize').addEventListener('input', (e) => {
-        bodyFontSize = parseInt(e.target.value);
-        document.getElementById('bodySizeDisplay').textContent = bodyFontSize + 'px';
-        updatePreview();
-    });
+    // Font size sliders are handled with inline oninput, but ensure event listeners exist
 }
 
 // ===== TAB SWITCHING =====
@@ -478,15 +470,28 @@ function updatePreview() {
     preview.style.setProperty('--cv-primary', primaryColor);
     preview.style.fontFamily = fontBody;
 
+    // Récupère les valeurs des tailles
+    const name = document.getElementById('nameSize')?.value || nameSize;
+    const jobTitle2 = document.getElementById('jobTitleSize')?.value || jobTitleSize;
+    const meta = document.getElementById('metaSize')?.value || metaSize;
+    const sectionTitle = document.getElementById('sectionTitleSize')?.value || sectionTitleSize;
+    const body = document.getElementById('bodyFontSize')?.value || bodyFontSize;
+
+    nameSize = parseInt(name);
+    jobTitleSize = parseInt(jobTitle2);
+    metaSize = parseInt(meta);
+    sectionTitleSize = parseInt(sectionTitle);
+    bodyFontSize = parseInt(body);
+
     let html = '';
 
     // HEADER
     html += `
         <div class="cv-header">
             ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:15px;">` : ''}
-            <div class="cv-name" style="font-family:'${fontTitle}';font-size:${titleFontSize}px;font-weight:700;color:${primaryColor};margin-bottom:5px;">${fullName}</div>
-            <div class="cv-title" style="font-size:${bodyFontSize * 1.3}px;color:${primaryColor};font-weight:600;margin-bottom:10px;">${jobTitle}</div>
-            <div class="cv-meta" style="font-size:${bodyFontSize * 0.85}px;color:#666;">
+            <div class="cv-name" style="font-family:'${fontTitle}';font-size:${nameSize}px;font-weight:700;color:${primaryColor};margin-bottom:5px;">${fullName}</div>
+            <div class="cv-title" style="font-size:${jobTitleSize}px;color:${primaryColor};font-weight:600;margin-bottom:10px;">${jobTitle}</div>
+            <div class="cv-meta" style="font-size:${metaSize}px;color:#666;">
                 ${email ? `<span><i class="fas fa-envelope"></i> ${email}</span> • ` : ''}
                 ${phone ? `<span><i class="fas fa-phone"></i> ${phone}</span> • ` : ''}
                 ${location ? `<span><i class="fas fa-map-marker"></i> ${location}</span>` : ''}
@@ -498,7 +503,7 @@ function updatePreview() {
     if (about) {
         html += `
             <div class="cv-section" style="margin-top:20px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">À Propos</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">À Propos</div>
                 <p style="font-size:${bodyFontSize}px;color:#333;line-height:1.6;">${about}</p>
             </div>
         `;
@@ -508,7 +513,7 @@ function updatePreview() {
     if (cvData.skills.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Compétences</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Compétences</div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;">
                     ${cvData.skills.map(s => `<span style="background:${primaryColor};color:white;padding:5px 10px;border-radius:15px;font-size:${bodyFontSize * 0.9}px;">${s.name}</span>`).join('')}
                 </div>
@@ -520,7 +525,7 @@ function updatePreview() {
     if (cvData.experiences.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Expériences</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Expériences</div>
                 ${cvData.experiences.map(exp => `
                     <div style="margin-bottom:12px;">
                         <div style="font-weight:700;color:#000;font-size:${bodyFontSize * 1.05}px;">${exp.title}</div>
@@ -537,7 +542,7 @@ function updatePreview() {
     if (cvData.educations.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Formation</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Formation</div>
                 ${cvData.educations.map(edu => `
                     <div style="margin-bottom:10px;">
                         <div style="font-weight:700;color:#000;font-size:${bodyFontSize}px;">${edu.title}</div>
@@ -553,7 +558,7 @@ function updatePreview() {
     if (cvData.languages.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Langues</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Langues</div>
                 ${cvData.languages.map(lang => `
                     <div style="margin-bottom:8px;">
                         <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
@@ -573,7 +578,7 @@ function updatePreview() {
     if (cvData.interests.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Intérêts</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${sectionTitleSize}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Intérêts</div>
                 <p style="font-size:${bodyFontSize}px;color:#333;">${cvData.interests.map(i => i.name).join(' • ')}</p>
             </div>
         `;
@@ -620,8 +625,11 @@ function exportJSON() {
         template: currentTemplate,
         fontTitle: document.getElementById('fontTitle').value,
         fontBody: document.getElementById('fontBody').value,
-        titleFontSize: titleFontSize,
-        bodyFontSize: bodyFontSize,
+        nameSize: parseInt(document.getElementById('nameSize').value),
+        jobTitleSize: parseInt(document.getElementById('jobTitleSize').value),
+        metaSize: parseInt(document.getElementById('metaSize').value),
+        sectionTitleSize: parseInt(document.getElementById('sectionTitleSize').value),
+        bodyFontSize: parseInt(document.getElementById('bodyFontSize').value),
         primaryColor: document.getElementById('primaryColor').value,
         photo: currentPhotoData
     };
@@ -669,11 +677,22 @@ function importJSON(event) {
             document.getElementById('fontBody').value = data.fontBody || 'Roboto';
             
             // Restore font sizes
-            titleFontSize = data.titleFontSize || 32;
-            bodyFontSize = data.bodyFontSize || 14;
-            document.getElementById('titleFontSize').value = titleFontSize;
+            nameSize = data.nameSize || 36;
+            jobTitleSize = data.jobTitleSize || 16;
+            metaSize = data.metaSize || 11;
+            sectionTitleSize = data.sectionTitleSize || 16;
+            bodyFontSize = data.bodyFontSize || 13;
+            
+            document.getElementById('nameSize').value = nameSize;
+            document.getElementById('jobTitleSize').value = jobTitleSize;
+            document.getElementById('metaSize').value = metaSize;
+            document.getElementById('sectionTitleSize').value = sectionTitleSize;
             document.getElementById('bodyFontSize').value = bodyFontSize;
-            document.getElementById('titleSizeDisplay').textContent = titleFontSize + 'px';
+            
+            document.getElementById('nameSizeDisplay').textContent = nameSize + 'px';
+            document.getElementById('jobTitleSizeDisplay').textContent = jobTitleSize + 'px';
+            document.getElementById('metaSizeDisplay').textContent = metaSize + 'px';
+            document.getElementById('sectionTitleSizeDisplay').textContent = sectionTitleSize + 'px';
             document.getElementById('bodySizeDisplay').textContent = bodyFontSize + 'px';
             
             document.getElementById('primaryColor').value = data.primaryColor || '#0ef';
