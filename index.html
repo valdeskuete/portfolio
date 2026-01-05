@@ -621,7 +621,7 @@
     <!-- Configuration - ORDRE IMPORTANT -->
     <script src="env-loader.js"></script>
     <script src="gemini-config.js"></script>
-    <script src="firebase-config.js"></script>
+    <script type="module" src="firebase-config.js"></script>
     <script src="gemini-ai.js" defer></script>
     <script src="about-manager.js" defer></script>
     <script src="init-demo-data.js" defer></script>
@@ -635,14 +635,15 @@
         window.firebaseReadyPromise = new Promise((resolve) => {
             let attempts = 0;
             const checkFirebase = setInterval(() => {
-                if (window.loadProjects && typeof window.loadProjects === 'function') {
+                if (window.loadProjects && typeof window.loadProjects === 'function' && 
+                    window.db && window.auth !== undefined) {
                     clearInterval(checkFirebase);
-                    console.log('✅ Firebase is ready for script.js');
+                    console.log('✅ Firebase is fully ready for script.js');
                     resolve();
                     return;
                 }
                 attempts++;
-                if (attempts > 100) {
+                if (attempts > 200) {
                     clearInterval(checkFirebase);
                     console.warn('⚠️ Firebase took too long, continuing anyway');
                     resolve();
