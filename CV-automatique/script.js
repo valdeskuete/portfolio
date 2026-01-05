@@ -1,194 +1,337 @@
-// ===== VARIABLES GLOBALES =====
-let educationCount = 0;
-let experienceCount = 0;
-let zoomLevel = 100;
-let currentTemplate = 'classic';
+// ===== GLOBAL VARIABLES =====
 let currentPhotoData = null;
+let currentTemplate = 'minimal';
+let pageCount = 1;
+let currentPageId = 1;
+let zoomLevel = 100;
+let pageData = {
+    1: {
+        type: 'profile',
+        fullName: '',
+        jobTitle: '',
+        email: '',
+        phone: '',
+        location: '',
+        about: ''
+    }
+};
 
 const colorPresets = {
-    modern: { primary: '#0ef', bg: '#ffffff', text: '#333333', subtitle: '#666666' },
-    classic: { primary: '#1a5f7a', bg: '#f5f5f5', text: '#000000', subtitle: '#555555' },
-    minimal: { primary: '#000000', bg: '#ffffff', text: '#000000', subtitle: '#888888' },
-    bold: { primary: '#ff6600', bg: '#ffffff', text: '#222222', subtitle: '#777777' }
+    modern: { primary: '#0ef', text: '#ffffff', bg: '#1f242d' },
+    classic: { primary: '#1a5f7a', text: '#ffffff', bg: '#f5f5f5' },
+    bold: { primary: '#ff6600', text: '#222222', bg: '#ffffff' },
+    minimal: { primary: '#000000', text: '#000000', bg: '#ffffff' }
 };
 
-const templateStyles = {
-    classic: { columns: '1', layout: 'classic' },
-    modern: { columns: '2', layout: 'modern' },
-    minimal: { columns: '1', layout: 'minimal' },
-    luxury: { columns: '1', layout: 'luxury' },
-    creative: { columns: '1', layout: 'creative' },
-    tech: { columns: '1', layout: 'tech' }
-};
-
+// ===== EXAMPLE TEMPLATES (PREMIUM) =====
 const exampleTemplates = {
     dev: {
         fullName: 'Jean Dupont',
-        jobTitle: 'Ingénieur Développeur Full Stack',
-        email: 'jean.dupont@email.com',
-        phone: '+237 650 123 456',
-        location: 'Douala, Cameroun',
-        about: 'Passionné par la création d\'applications web modernes et scalables. 5+ ans d\'expérience en développement full stack.',
-        skills: 'JavaScript, React, Node.js, Python, MongoDB, PostgreSQL, Docker, AWS, Git',
-        languages: 'Français (natif), Anglais (bilingue)',
-        interests: 'Open Source, Machine Learning, DevOps, Entrepreneuriat',
+        jobTitle: 'Ingénieur Développeur Full Stack Senior',
+        email: 'jean.dupont@techcorp.dev',
+        phone: '+33 6 45 67 89 01',
+        location: 'Paris, France',
+        about: 'Ingénieur Senior passionné par la création d\'applications web scalables et performantes. 6+ ans d\'expérience en stack complet (MERN, Vue.js, Cloud). Spécialisé en architecture microservices et DevOps.',
         template: 'tech',
-        colorPreset: 'modern',
-        fontTitle: 'Roboto',
-        fontSubtitle: 'Inter',
-        fontBody: 'Open Sans',
-        educations: [
-            { school: 'Université de Yaoundé I', title: 'Licence Informatique', year: '2018-2021' },
-            { school: 'École de Formation Tech', title: 'Bootcamp Full Stack', year: '2021' }
-        ],
-        experiences: [
-            { title: 'Senior Developer', company: 'TechCorp Solutions', period: 'Jan 2022 - Présent', description: '• Led team of 5 developers\n• Architected API REST scalable\n• Improved performance by 40%' },
-            { title: 'Junior Developer', company: 'StartupXYZ', period: 'Jan 2021 - Dec 2021', description: '• Developed 10+ features\n• Fixed critical bugs\n• Mentored 2 interns' }
+        fontTitle: 'Montserrat',
+        fontBody: 'Roboto',
+        primaryColor: '#0ef',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['JavaScript/TypeScript', 'React.js', 'Node.js', 'Python', 'MongoDB', 'PostgreSQL', 'AWS EC2/RDS', 'Docker & Kubernetes', 'GraphQL', 'REST API', 'TDD & Jest']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Senior Full Stack Developer', company: 'TechCorp Solutions', period: 'Jan 2020 - Présent', description: '• Architected microservices handling 10M+ daily requests\n• Led team of 5 developers, code reviews & mentoring\n• Reduced API latency by 45% through optimization\n• Implemented CI/CD pipeline reducing deployment time by 80%' },
+                    { title: 'Full Stack Developer', company: 'StartupXYZ', period: 'Jun 2018 - Dec 2019', description: '• Built SaaS platform from scratch (React + Node.js)\n• Managed AWS infrastructure & database scaling\n• Implemented Stripe payments integration' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'École 42', title: 'Inception (Curriculum Programming)', year: '2017-2018' },
+                    { school: 'Université Sorbonne', title: 'Master Informatique', year: '2015-2017' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 90 },
+                    { name: 'Espagnol', level: 60 }
+                ]
+            }
         ]
     },
     designer: {
         fullName: 'Marie Anderson',
-        jobTitle: 'Designer UX/UI',
-        email: 'marie.anderson@email.com',
-        phone: '+237 651 234 567',
-        location: 'Yaoundé, Cameroun',
-        about: 'Designer créative spécialisée en UX/UI avec passion pour créer des expériences utilisateur exceptionnelles.',
-        skills: 'Figma, Adobe XD, UI Design, UX Research, Prototyping, Design Systems, Wireframing, User Testing',
-        languages: 'Français (natif), Anglais (intermédiaire)',
-        interests: 'Design Thinking, Illustration, Brand Design, Web Design',
+        jobTitle: 'Product Designer & UX/UI Specialist',
+        email: 'marie.anderson@designstudio.fr',
+        phone: '+33 6 56 78 90 12',
+        location: 'Lyon, France',
+        about: 'Designer créative avec 5+ ans d\'expertise en UX/UI design. Passionnée par créer des expériences utilisateur exceptionnelles et intuitives. Spécialisée en design systems et digital products.',
         template: 'creative',
-        colorPreset: 'bold',
         fontTitle: 'Playfair Display',
-        fontSubtitle: 'Montserrat',
         fontBody: 'Lato',
-        educations: [
-            { school: 'ENSET Douala', title: 'Licence Design Graphique', year: '2019-2022' },
-            { school: 'Cours Google UX Design', title: 'Certification Google', year: '2022' }
-        ],
-        experiences: [
-            { title: 'UX/UI Designer', company: 'Design Agency Pro', period: 'Mar 2022 - Présent', description: '• Designed 15+ projects\n• Created comprehensive design systems\n• Conducted user research sessions' },
-            { title: 'Graphic Designer', company: 'Creative Studio', period: 'Jan 2021 - Feb 2022', description: '• Designed branding materials\n• Created digital assets\n• Collaborated with marketing team' }
-        ]
-    },
-    manager: {
-        fullName: 'Ahmed Ibrahim',
-        jobTitle: 'Directeur Commercial',
-        email: 'ahmed.ibrahim@email.com',
-        phone: '+237 652 345 678',
-        location: 'Douala, Cameroun',
-        about: 'Leader expérimenté avec 10+ ans de management. Spécialisé en développement d\'équipes et croissance commerciale.',
-        skills: 'Leadership, Gestion Équipe, Stratégie Commerciale, Négociation, Budget Management, CRM, Business Development',
-        languages: 'Français (natif), Anglais (bilingue), Arabe (natif)',
-        interests: 'Leadership, Coaching, Entrepreneuriat, Immobilier',
-        template: 'luxury',
-        colorPreset: 'classic',
-        fontTitle: 'Playfair Display',
-        fontSubtitle: 'Montserrat',
-        fontBody: 'Roboto',
-        educations: [
-            { school: 'Université Yaoundé II', title: 'Master Gestion d\'Entreprise', year: '2010-2012' },
-            { school: 'Université Buea', title: 'Licence Commerce International', year: '2006-2010' }
-        ],
-        experiences: [
-            { title: 'Directeur Commercial', company: 'Big Corporation Inc', period: 'Jan 2019 - Présent', description: '• Managed team of 20 sales representatives\n• Increased revenue by 35%\n• Opened 5 new markets' },
-            { title: 'Manager Commercial', company: 'Trading Company', period: 'Jan 2015 - Dec 2018', description: '• Developed business strategies\n• Negotiated major contracts\n• Achieved 150% sales target' }
+        primaryColor: '#ff6600',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Figma (Expert)', 'Adobe XD', 'Sketch', 'UI/UX Research', 'Wireframing', 'Prototyping', 'Design Systems', 'User Testing', 'Interaction Design', 'Web Design', 'Mobile Design']
+            },
+            {
+                type: 'experience',
+                title: 'Projets Récents',
+                items: [
+                    { title: 'Senior Product Designer', company: 'Digital Agency Pro', period: 'Mar 2021 - Présent', description: '• Designed 25+ digital products from concept to launch\n• Created comprehensive design system (150+ components)\n• Led user research & conducted 100+ user interviews\n• Improved product conversion by 35% through UX optimization' },
+                    { title: 'UX/UI Designer', company: 'TechStartup', period: 'Jan 2019 - Feb 2021', description: '• Designed user flows & wireframes for mobile app\n• Created interactive prototypes with Figma\n• Conducted A/B testing & iterative design' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'École de Design Graphique', title: 'Certification Design UX/UI', year: '2018-2019' },
+                    { school: 'Université Paris Diderot', title: 'Licence Design Graphique', year: '2015-2018' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 85 },
+                    { name: 'Allemand', level: 45 }
+                ]
+            }
         ]
     },
     startup: {
         fullName: 'Lucas Fontaine',
         jobTitle: 'Founder & CTO - TechVision AI',
-        email: 'lucas@techvision.ai',
+        email: 'lucas@techvision-ai.com',
         phone: '+33 7 45 67 89 01',
         location: 'Paris, France',
-        about: 'Entrepreneur technologique avec 8 ans d\'expérience. Fondateur de TechVision AI (levée de 2.5M€). Passionné par l\'IA et l\'innovation.',
-        skills: 'Python, Machine Learning, AWS, Cloud Architecture, Leadership, Fundraising, Product Strategy, PostgreSQL, Docker, Kubernetes',
-        languages: 'Français (natif), Anglais (fluent), Mandarin (intermédiaire)',
-        interests: 'Intelligence Artificielle, Startups, Fintech, Open Source',
-        template: 'tech',
-        colorPreset: 'modern',
+        about: 'Entrepreneur technologique avec 8 ans d\'expérience. Fondateur de TechVision AI (levée €2.5M de Seed). Passionné par l\'IA et l\'innovation. Expert en fundraising, product strategy et team building.',
+        template: 'modern',
         fontTitle: 'Montserrat',
-        fontSubtitle: 'Inter',
-        fontBody: 'Roboto',
-        educations: [
-            { school: 'HEC Paris', title: 'Executive MBA Innovation', year: '2020-2022' },
-            { school: 'Université Paris Diderot', title: 'Master Informatique & Data Science', year: '2015-2017' }
-        ],
-        experiences: [
-            { title: 'Founder & CTO', company: 'TechVision AI', period: 'Jan 2021 - Présent', description: '• Levée de fonds 2.5M€ de VCs Tier-1\n• Construction d\'une équipe de 25 ingénieurs\n• Plateforme analytique IA serving 200+ entreprises' },
-            { title: 'Tech Lead', company: 'DataFlow Systems', period: 'Jun 2017 - Dec 2020', description: '• Infrastructure ML pour 50M+ requêtes/jour\n• Optimisation du temps d\'inférence de 60%\n• Mentorat de 12 ingénieurs junior' }
+        fontBody: 'Inter',
+        primaryColor: '#0ef',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences Clés',
+                items: ['Machine Learning', 'Python (Expert)', 'Cloud Architecture (AWS/GCP)', 'Product Management', 'Team Leadership', 'Fundraising', 'Strategic Planning', 'NLP & Computer Vision', 'Data Engineering']
+            },
+            {
+                type: 'experience',
+                title: 'Experience',
+                items: [
+                    { title: 'Founder & CTO', company: 'TechVision AI', period: 'Jan 2021 - Présent', description: '• Raised €2.5M from Top VCs (Partech, Idinvest)\n• Built team from 0 to 25+ engineers\n• Launched AI-powered analytics platform\n• Processing 50M+ data points daily\n• 200+ enterprise clients including Fortune 500' },
+                    { title: 'Tech Lead', company: 'DataFlow Systems', period: 'Jun 2017 - Dec 2020', description: '• Led ML infrastructure team of 12 engineers\n• Optimized model inference by 60%\n• Managed 5TB+ datasets & real-time processing' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Études',
+                items: [
+                    { school: 'HEC Paris', title: 'Executive MBA - Innovation & Entrepreneurship', year: '2020-2022' },
+                    { school: 'Université Sorbonne', title: 'Master Informatique & Data Science', year: '2015-2017' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 95 },
+                    { name: 'Mandarin', level: 40 }
+                ]
+            }
         ]
     },
     marketing: {
         fullName: 'Emma Rousseau',
-        jobTitle: 'Head of Marketing & Growth',
-        email: 'emma.rousseau@growthco.fr',
+        jobTitle: 'Head of Growth & Marketing',
+        email: 'emma.rousseau@growthco.io',
         phone: '+33 6 98 76 54 32',
         location: 'Marseille, France',
-        about: 'Spécialiste Growth Marketing avec 7+ ans d\'expertise. Expérience chez des SaaS et e-commerce à haut croissance. Data-driven et orientée résultats.',
-        skills: 'Growth Hacking, SEO/SEM, Content Marketing, GA4, Looker, Marketing Automation, Brand Strategy, Budget Management, Copywriting',
-        languages: 'Français (natif), Anglais (très bon), Allemand (notions)',
-        interests: 'Stratégie digitale, Tendances marketing, Psychologie consommateur',
-        template: 'creative',
-        colorPreset: 'bold',
+        about: 'Spécialiste Growth Marketing avec 7+ ans d\'expertise. Data-driven et orientée résultats. Expérience chez des SaaS et e-commerce à haut croissance. Expertise en SEO, SEM, content marketing et growth hacking.',
+        template: 'luxury',
         fontTitle: 'Playfair Display',
-        fontSubtitle: 'Raleway',
         fontBody: 'Nunito',
-        educations: [
-            { school: 'ESSEC Business School', title: 'Master Marketing Digital & E-business', year: '2015-2017' },
-            { school: 'Université Aix-Marseille', title: 'Licence Communication', year: '2012-2015' }
-        ],
-        experiences: [
-            { title: 'Head of Marketing', company: 'GrowthCo SaaS', period: 'Sep 2019 - Présent', description: '• Augmentation MRR de 180% via growth marketing\n• Build in-house content team from scratch\n• Gestion budget annuel 500k€' },
-            { title: 'Marketing Manager', company: 'EcomFlow', period: 'Jan 2017 - Aug 2019', description: '• Réduction CAC de 40% via SEO optimization\n• 5 successful product campaigns launched\n• Social media audience grown to 50k followers' }
+        primaryColor: '#ff6600',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Growth Hacking', 'SEO/SEM (Google Ads)', 'Content Marketing', 'Marketing Automation', 'GA4 & Analytics', 'Brand Strategy', 'Budget Management (€500k+)', 'CRM Management', 'A/B Testing', 'Social Media Strategy']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Head of Marketing', company: 'GrowthCo SaaS', period: 'Sep 2019 - Présent', description: '• Scaled company from €100k to €5M ARR\n• Built in-house content team from scratch (12 people)\n• Managed €500k annual marketing budget\n• 3x increase in organic traffic through SEO\n• Generated 1000+ qualified leads monthly' },
+                    { title: 'Senior Marketing Manager', company: 'EcomFlow', period: 'Jan 2017 - Aug 2019', description: '• Reduced Customer Acquisition Cost by 40%\n• Launched 12 successful product campaigns\n• Grew social media to 150k followers' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'ESSEC Business School', title: 'Master Digital Marketing & E-Business', year: '2015-2017' },
+                    { school: 'Université Aix-Marseille', title: 'Licence Communication', year: '2012-2015' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 90 },
+                    { name: 'Allemand', level: 50 }
+                ]
+            }
         ]
     },
     datascientist: {
         fullName: 'Antoine Leclerc',
-        jobTitle: 'Senior Data Scientist',
-        email: 'antoine.leclerc@datainsights.fr',
+        jobTitle: 'Senior Data Scientist & ML Engineer',
+        email: 'antoine.leclerc@datainsights.io',
         phone: '+33 6 55 44 33 22',
         location: 'Toulouse, France',
-        about: 'Data Scientist senior avec 6+ ans en machine learning et analytics. Spécialiste deep learning, NLP, recommandation systems. Publications ACM et IEEE.',
-        skills: 'Python (Expert), PyTorch, TensorFlow, SQL, Spark, Statistics, A/B Testing, Feature Engineering, Computer Vision, NLP, Kubernetes',
-        languages: 'Français (natif), Anglais (fluent), Japonais (basique)',
-        interests: 'Research ML, Computer Vision, Algorithmes avancés, Data Privacy',
+        about: 'Data Scientist Senior avec 6+ ans en machine learning et analytics. Doctorat en ML. Spécialiste deep learning, NLP et recommandation systems. 10+ publications académiques en conférences top-tier.',
         template: 'tech',
-        colorPreset: 'modern',
         fontTitle: 'Montserrat',
-        fontSubtitle: 'Inter',
         fontBody: 'Roboto',
-        educations: [
-            { school: 'Université Toulouse III', title: 'Doctorat Machine Learning', year: '2017-2020' },
-            { school: 'Université Toulouse III', title: 'Master Data Science & AI', year: '2015-2017' }
-        ],
-        experiences: [
-            { title: 'Senior Data Scientist', company: 'DataInsights Corp', period: 'Mar 2020 - Présent', description: '• Moteur de recommandation (2M+ prédictions/jour)\n• Amélioration précision modèle de 15%\n• Publication de 3 papers sur NLP techniques' },
-            { title: 'ML Engineer', company: 'TechAnalytics', period: 'Sep 2017 - Feb 2020', description: '• Computer vision models pour classification images\n• Déploiement de 5+ ML models en production\n• Réduction latence inférence de 50%' }
+        primaryColor: '#0ef',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Python (Expert)', 'PyTorch & TensorFlow', 'SQL & Spark', 'Statistical Analysis', 'NLP & Computer Vision', 'A/B Testing', 'Feature Engineering', 'Model Deployment', 'Kubernetes', 'Big Data (Hadoop/Spark)']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Senior Data Scientist', company: 'DataInsights Corp', period: 'Mar 2020 - Présent', description: '• Built recommendation engine (2M+ predictions/day)\n• Improved ML model accuracy by 15% via feature engineering\n• Published 3 papers in top ML conferences\n• Led ML research initiative for 8 engineers' },
+                    { title: 'ML Engineer', company: 'TechAnalytics', period: 'Sep 2017 - Feb 2020', description: '• Developed CV models for image classification\n• Deployed 5+ production ML systems\n• Reduced inference latency by 50%' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'Université Toulouse III', title: 'Doctorat Machine Learning - NLP', year: '2017-2020' },
+                    { school: 'Université Toulouse III', title: 'Master Data Science & AI', year: '2015-2017' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 95 },
+                    { name: 'Japonais', level: 35 }
+                ]
+            }
+        ]
+    },
+    manager: {
+        fullName: 'Ahmed Ibrahim',
+        jobTitle: 'Directeur Commercial & Business Development',
+        email: 'ahmed.ibrahim@corpcorp.biz',
+        phone: '+33 6 12 34 56 78',
+        location: 'Douala, Cameroun',
+        about: 'Leader expérimenté avec 12+ ans de management et développement d\'affaires. Spécialisé en stratégie commerciale, gestion d\'équipes et croissance revenue. Bilingue français-anglais-arabe.',
+        template: 'classic',
+        fontTitle: 'Raleway',
+        fontBody: 'Open Sans',
+        primaryColor: '#1a5f7a',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Leadership d\'Équipes', 'Stratégie Commerciale', 'Négociation & Closing', 'CRM Salesforce', 'Business Development', 'Budget Management', 'Planification Stratégique', 'Account Management', 'Market Analysis']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Directeur Commercial', company: 'Big Corporation Inc', period: 'Jan 2019 - Présent', description: '• Managed team of 25 sales representatives\n• Increased revenue by 35% YoY\n• Opened 5 new markets in West Africa\n• Built €10M+ sales pipeline\n• 90% customer retention rate' },
+                    { title: 'Sales Manager', company: 'Trading Company', period: 'Jan 2015 - Dec 2018', description: '• Developed business strategies for 50+ clients\n• Negotiated major contracts (€1M+ each)\n• Achieved 150% sales targets' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'Université Yaoundé II', title: 'Master Gestion d\'Entreprise', year: '2010-2012' },
+                    { school: 'Université Buea', title: 'Licence Commerce International', year: '2006-2010' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 90 },
+                    { name: 'Arabe', level: 100 }
+                ]
+            }
         ]
     },
     etudiant: {
         fullName: 'Marie Dubois',
-        jobTitle: 'Étudiante Master 2 - Informatique',
-        email: 'marie.dubois@student.fr',
+        jobTitle: 'Candidate Master 2 - Informatique & IA',
+        email: 'marie.dubois@student.uga.fr',
         phone: '+33 6 11 22 33 44',
         location: 'Grenoble, France',
-        about: 'Étudiante en Master 2 Informatique (UGA), spécialisation IA. Passionnée par développement full-stack et recherche en ML. Stage ingénieur web confirmé.',
-        skills: 'Java, Python, React.js, SQL, Git, Docker, Spring Boot, HTML/CSS, Linux, Agile Scrum, TensorFlow',
-        languages: 'Français (natif), Anglais (bon), Espagnol (élémentaire)',
-        interests: 'Intelligence Artificielle, Startups, Open Source, Teaching',
+        about: 'Étudiante en Master 2 Informatique à l\'UGA, spécialisation Intelligence Artificielle. Passionnée par développement full-stack et recherche appliquée en ML. Stage confirmé chez leader tech.',
         template: 'modern',
-        colorPreset: 'modern',
         fontTitle: 'Poppins',
-        fontSubtitle: 'Inter',
-        fontBody: 'Nunito',
-        educations: [
-            { school: 'Université Grenoble-Alpes', title: 'Master 2 Informatique - Spécialité IA', year: '2024-2026' },
-            { school: 'Université Grenoble-Alpes', title: 'Master 1 Informatique', year: '2023-2024' },
-            { school: 'Université Grenoble-Alpes', title: 'Licence Informatique', year: '2020-2023' }
-        ],
-        experiences: [
-            { title: 'Stagiaire Développeur Full-Stack', company: 'WebServices SA', period: 'Jun 2024 - Sep 2024', description: '• Développement features e-commerce en React & Spring Boot\n• Amélioration performance application de 25%\n• Travail en équipe agile de 6 développeurs' },
-            { title: 'Assistant de Recherche', company: 'Lab IA - UGA', period: 'Jan 2024 - Jun 2024', description: '• Support professeur sur projet recherche ML\n• Implémentation neural networks en PyTorch\n• Contribution à soumission academic paper' }
+        fontBody: 'Inter',
+        primaryColor: '#0ef',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Java', 'Python', 'React.js', 'SQL', 'Docker', 'Git', 'TensorFlow', 'Spring Boot', 'HTML/CSS', 'Linux', 'Agile Scrum']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Stagiaire Développeur Full-Stack', company: 'WebServices SA', period: 'Jun 2024 - Sep 2024', description: '• Développement features e-commerce en React & Spring Boot\n• Amélioration performance app de 25%\n• Travail en équipe agile de 6 développeurs' },
+                    { title: 'Assistant Recherche', company: 'Labo IA - UGA', period: 'Jan 2024 - Jun 2024', description: '• Support prof sur projet recherche ML\n• Implémentation neural networks en PyTorch' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'Université Grenoble-Alpes', title: 'Master 2 Informatique - Spécialité IA', year: '2024-2026' },
+                    { school: 'Université Grenoble-Alpes', title: 'Master 1 Informatique', year: '2023-2024' },
+                    { school: 'Université Grenoble-Alpes', title: 'Licence Informatique', year: '2020-2023' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 80 },
+                    { name: 'Espagnol', level: 40 }
+                ]
+            }
         ]
     },
     chercheur: {
@@ -197,757 +340,527 @@ const exampleTemplates = {
         email: 'p.arnaud@cnrs-loria.fr',
         phone: '+33 3 83 59 30 00',
         location: 'Nancy, France',
-        about: 'Chercheur senior au CNRS (LORIA) depuis 12 ans. Doctorat d\'État en Informatique (2012). Spécialisé algorithmique distribuée et systèmes complexes. 45+ publications internationales.',
-        skills: 'Algorithmique, Systèmes distribués, Théorie graphes, Machine Learning, C++, Python, Simulation, Parallel Computing, Academic Writing',
-        languages: 'Français (natif), Anglais (expert), Allemand (professionnel)',
-        interests: 'Recherche fondamentale, Optimisation combinatoire, Systèmes multi-agents',
+        about: 'Chercheur senior au CNRS (Laboratoire LORIA) depuis 12 ans. Doctorat d\'État en Informatique (2012). Spécialiste algorithmique distribuée et systèmes complexes. 45+ publications en conférences top-tier.',
         template: 'classic',
-        colorPreset: 'classic',
         fontTitle: 'Raleway',
-        fontSubtitle: 'Open Sans',
         fontBody: 'Open Sans',
-        educations: [
-            { school: 'Université de Lorraine', title: 'Doctorat d\'État Informatique', year: '2008-2012' },
-            { school: 'Université de Lorraine', title: 'Diplôme d\'Études Approfondies (DEA) Informatique', year: '2007-2008' },
-            { school: 'Université de Lorraine', title: 'Maîtrise Informatique', year: '2005-2007' }
-        ],
-        experiences: [
-            { title: 'Chercheur Senior (HDR)', company: 'CNRS - Laboratoire LORIA', period: 'Jan 2020 - Présent', description: '• Direction de 3 doctorants\n• Publication 15+ papers conférences top-tier\n• Sécurisation 800k€ financement recherche' },
-            { title: 'Chercheur Postdoctoral', company: 'INRIA Rocquencourt', period: 'Oct 2012 - Dec 2019', description: '• Développement nouveaux algorithmes distribués\n• Co-auteur 20+ peer-reviewed papers\n• Collaboration équipes recherche internationales' }
+        primaryColor: '#1a5f7a',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Domaines d\'Expertise',
+                items: ['Algorithmique Distribuée', 'Théorie des Graphes', 'Machine Learning', 'Systèmes Complexes', 'C++', 'Python', 'Simulation Numérique', 'Parallel Computing']
+            },
+            {
+                type: 'experience',
+                title: 'Positions',
+                items: [
+                    { title: 'Chercheur Senior (HDR)', company: 'CNRS - LORIA', period: 'Jan 2020 - Présent', description: '• Direction de 3 doctorants\n• Publication 15+ papers en top-tier conferences\n• Sécurisation €800k de financement recherche\n• Responsable projet ANR 3 ans' },
+                    { title: 'Chercheur Postdoc', company: 'INRIA Rocquencourt', period: 'Oct 2012 - Dec 2019', description: '• Développement algorithmes distribués innovants\n• Co-auteur 20+ peer-reviewed papers' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'Université Lorraine', title: 'Doctorat d\'État Informatique', year: '2008-2012' },
+                    { school: 'Université Lorraine', title: 'DEA Informatique', year: '2007-2008' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 95 },
+                    { name: 'Allemand', level: 70 }
+                ]
+            }
         ]
     },
     master: {
         fullName: 'Clara Beaumont',
-        jobTitle: 'Candidate Master - Relations Internationales',
+        jobTitle: 'Candidate Master 1 - Relations Internationales',
         email: 'clara.beaumont@sciencespo.fr',
         phone: '+33 6 77 88 99 00',
-        location: 'Sciences Po, Paris',
-        about: 'Étudiante Master 1 Relations Internationales à Sciences Po. Passionnée par géopolitique et diplomatie. Stage Quai d\'Orsay (année passée). Mobilités Allemagne et Japon.',
-        skills: 'Analyse géopolitique, Négociation, Rédaction diplomatique, Langues (4), Recherche académique, Communication, Microsoft Office, LaTeX',
-        languages: 'Français (natif), Anglais (bilingue), Allemand (courant), Mandarin (intermédiaire)',
-        interests: 'Géopolitique, Multilatéralisme, Droits humains, Soft Power',
+        location: 'Paris, France',
+        about: 'Étudiante Master 1 Relations Internationales à Sciences Po. Passionnée par géopolitique, diplomatie et multilatéralisme. Stage Quai d\'Orsay (2023). Mobilités Allemagne et Japon.',
         template: 'luxury',
-        colorPreset: 'classic',
         fontTitle: 'Playfair Display',
-        fontSubtitle: 'Raleway',
         fontBody: 'Lato',
-        educations: [
-            { school: 'Sciences Po Paris', title: 'Master 1 Relations Internationales', year: '2024-2025' },
-            { school: 'Sciences Po Paris', title: 'Licence (3e année) Relations Internationales', year: '2023-2024' },
-            { school: 'Sciences Po Paris', title: 'Cycle d\'études politiques', year: '2021-2024' }
-        ],
-        experiences: [
-            { title: 'Stagiaire - Diplomatie', company: 'Ministère Affaires Étrangères', period: 'Sep 2023 - Dec 2023', description: '• Analyse politique UE sur enjeux humanitaires\n• Préparation briefing notes pour ambassadeurs\n• Participation négociations multilatérales' },
-            { title: 'Assistant de Recherche', company: 'Centre d\'Études Sciences Po', period: 'Feb 2023 - Aug 2023', description: '• Recherche gouvernance Amérique Latine\n• Co-auteur 2 policy briefs\n• Présentation findings à séminaire académique' }
+        primaryColor: '#1a5f7a',
+        sections: [
+            {
+                type: 'skills',
+                title: 'Compétences',
+                items: ['Analyse Géopolitique', 'Négociation Diplomatique', 'Recherche Académique', 'Rédaction Politique', 'Communication Interculturelle', 'Microsoft Office', 'LaTeX', 'QGIS']
+            },
+            {
+                type: 'experience',
+                title: 'Expériences',
+                items: [
+                    { title: 'Stagiaire - Diplomatie', company: 'Ministère Affaires Étrangères', period: 'Sep 2023 - Dec 2023', description: '• Analyse politique UE sur enjeux humanitaires\n• Préparation briefing notes pour ambassadeurs\n• Participation négociations multilatérales' },
+                    { title: 'Assistant Recherche', company: 'Centre Études Sciences Po', period: 'Feb 2023 - Aug 2023', description: '• Recherche gouvernance Amérique Latine\n• Co-auteur 2 policy briefs\n• Présentation findings séminaire académique' }
+                ]
+            },
+            {
+                type: 'education',
+                title: 'Formation',
+                items: [
+                    { school: 'Sciences Po Paris', title: 'Master 1 Relations Internationales', year: '2024-2025' },
+                    { school: 'Sciences Po Paris', title: 'Licence (3e année) Relations Internationales', year: '2023-2024' }
+                ]
+            },
+            {
+                type: 'languages',
+                title: 'Langues',
+                items: [
+                    { name: 'Français', level: 100 },
+                    { name: 'Anglais', level: 95 },
+                    { name: 'Allemand', level: 75 },
+                    { name: 'Mandarin', level: 50 }
+                ]
+            }
         ]
     }
 };
 
-// ===== INITIALIZATION =====
+// ===== DOM INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('✅ Générateur CV Pro Advanced Edition chargé');
-    
-    // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    console.log('✅ CV Generator Premium Edition loaded');
+    initializeEventListeners();
+    renderPagesList();
+    updatePreview();
+});
+
+// ===== EVENT LISTENERS =====
+function initializeEventListeners() {
+    // Tab switching
+    document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
     });
 
     // Color inputs
-    ['primary', 'bg', 'text', 'subtitle'].forEach(color => {
-        const colorKey = color.charAt(0).toUpperCase() + color.slice(1);
-        const colorInput = document.getElementById(`color${colorKey}`);
-        const hexInput = document.getElementById(`color${colorKey}Hex`);
-        
-        if (colorInput && hexInput) {
-            colorInput.addEventListener('change', (e) => {
-                hexInput.value = e.target.value;
-                updateCVPreview();
-            });
-            
-            hexInput.addEventListener('change', (e) => {
-                if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
-                    colorInput.value = e.target.value;
-                    updateCVPreview();
-                }
+    ['primaryColor', 'textColor', 'bgColor'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', (e) => {
+                updateColorHex(id, e.target.value);
+                updatePreview();
             });
         }
     });
 
-    // Color presets
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const presetName = btn.getAttribute('data-preset');
-            applyPreset(presetName);
-        });
+    // Font & design inputs
+    ['fontTitle', 'fontBody'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('change', updatePreview);
+        }
     });
-
-    // Design controls
-    ['fontTitle', 'fontSubtitle', 'fontBody', 'template'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', updateCVPreview);
-    });
-
-    // Size and spacing sliders
-    document.getElementById('fontSizeTitle').addEventListener('input', (e) => {
-        document.getElementById('fontSizeTitleValue').textContent = e.target.value;
-        updateCVPreview();
-    });
-
-    document.getElementById('fontSizeSubtitle').addEventListener('input', (e) => {
-        document.getElementById('fontSizeSubtitleValue').textContent = e.target.value;
-        updateCVPreview();
-    });
-
-    document.getElementById('fontSizeBody').addEventListener('input', (e) => {
-        document.getElementById('fontSizeBodyValue').textContent = e.target.value;
-        updateCVPreview();
-    });
-
-    document.getElementById('spacing').addEventListener('input', (e) => {
-        document.getElementById('spacingValue').textContent = e.target.value;
-        updateCVPreview();
-    });
-
-    document.getElementById('margins').addEventListener('input', (e) => {
-        document.getElementById('marginValue').textContent = e.target.value;
-        updateCVPreview();
-    });
-
-    // Checkboxes
-    ['showPhoto', 'showBorder', 'pageNumbers'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', updateCVPreview);
-    });
-
-    // Form inputs
-    document.getElementById('cvForm').addEventListener('input', updateCVPreview);
 
     // Photo upload
-    document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
-
-    // Dynamic sections
-    addEducation();
-    addExperience();
-
-    // First render
-    updateCVPreview();
-});
+    const photoInput = document.getElementById('photoInput');
+    if (photoInput) {
+        photoInput.addEventListener('change', handlePhotoUpload);
+    }
+}
 
 // ===== TAB SWITCHING =====
 function switchTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    // Hide all tabs
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
     
-    const tabEl = document.getElementById(`tab-${tabName}`);
-    if (tabEl) tabEl.classList.add('active');
-    
-    event.target.classList.add('active');
-}
+    // Remove active from all buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
 
-// ===== COLOR PRESETS =====
-function applyPreset(presetName) {
-    const preset = colorPresets[presetName];
-    if (preset) {
-        document.getElementById('colorPrimary').value = preset.primary;
-        document.getElementById('colorPrimaryHex').value = preset.primary;
-        document.getElementById('colorBg').value = preset.bg;
-        document.getElementById('colorBgHex').value = preset.bg;
-        document.getElementById('colorText').value = preset.text;
-        document.getElementById('colorTextHex').value = preset.text;
-        document.getElementById('colorSubtitle').value = preset.subtitle;
-        document.getElementById('colorSubtitleHex').value = preset.subtitle;
-        updateCVPreview();
+    // Show selected tab
+    const tabPanel = document.getElementById(`tab-${tabName}`);
+    if (tabPanel) {
+        tabPanel.classList.add('active');
     }
+
+    // Mark button as active
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 }
 
 // ===== PHOTO HANDLING =====
 function handlePhotoUpload(event) {
     const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            currentPhotoData = e.target.result;
-            const preview = document.getElementById('photoPreview');
-            preview.innerHTML = `<img src="${currentPhotoData}" alt="Photo profil">`;
-            document.getElementById('removePhotoBtn').style.display = 'block';
-            updateCVPreview();
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert('Veuillez sélectionner une image valide');
-    }
-}
+    if (!file) return;
 
-function removePhoto() {
-    currentPhotoData = null;
-    const preview = document.getElementById('photoPreview');
-    preview.innerHTML = '<i class="fas fa-camera"></i>';
-    document.getElementById('removePhotoBtn').style.display = 'none';
-    document.getElementById('photoInput').value = '';
-    updateCVPreview();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        currentPhotoData = e.target.result;
+        const preview = document.getElementById('photoPreview');
+        if (preview) {
+            preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile">`;
+        }
+        updatePreview();
+    };
+    reader.readAsDataURL(file);
 }
 
 // ===== TEMPLATE SWITCHING =====
 function switchTemplate(templateName) {
     currentTemplate = templateName;
     
-    // Update button active state
+    // Update active button
     document.querySelectorAll('.template-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`[data-template="${templateName}"]`).classList.add('active');
     
-    // Update preview
-    updateCVPreview();
-    console.log(`📐 Template changé: ${templateName}`);
+    // Apply CSS variables based on template
+    const templateColors = {
+        'minimal': { bg: '#ffffff', text: '#000000', primary: '#000000' },
+        'classic': { bg: '#f5f5f5', text: '#000000', primary: '#1a5f7a' },
+        'modern': { bg: '#ffffff', text: '#000000', primary: '#0ef' },
+        'luxury': { bg: '#f9f7f4', text: '#2c2c2c', primary: '#1a5f7a' },
+        'creative': { bg: '#ffffff', text: '#333333', primary: '#ff6600' },
+        'tech': { bg: '#f8f9fa', text: '#000000', primary: '#0ef' }
+    };
+
+    const colors = templateColors[templateName] || templateColors['minimal'];
+    document.getElementById('bgColor').value = colors.bg;
+    document.getElementById('textColor').value = colors.text;
+    document.getElementById('primaryColor').value = colors.primary;
+
+    updatePreview();
 }
 
-// ===== LOAD EXAMPLE TEMPLATE =====
+// ===== COLOR MANAGEMENT =====
+function applyColorPreset(presetName) {
+    const preset = colorPresets[presetName];
+    if (preset) {
+        document.getElementById('primaryColor').value = preset.primary;
+        document.getElementById('textColor').value = preset.text;
+        document.getElementById('bgColor').value = preset.bg;
+        updatePreview();
+    }
+}
+
+function updateColorHex(id, value) {
+    const hexElement = document.getElementById(id + 'Hex');
+    if (hexElement) {
+        hexElement.textContent = value.toUpperCase();
+    }
+}
+
+// ===== PAGES MANAGEMENT =====
+function addNewPage() {
+    pageCount++;
+    pageData[pageCount] = {
+        type: 'content',
+        title: `Page ${pageCount}`,
+        educations: [],
+        experiences: [],
+        skills: [],
+        languages: []
+    };
+    renderPagesList();
+    switchToPage(pageCount);
+}
+
+function switchToPage(pageId) {
+    currentPageId = pageId;
+    
+    // Hide all pages
+    document.querySelectorAll('.form-page').forEach(page => {
+        page.classList.remove('active');
+    });
+
+    // Update page buttons
+    document.querySelectorAll('.page-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Show selected page
+    const page = document.getElementById(`page-${pageId}`);
+    if (page) {
+        page.classList.add('active');
+    }
+
+    const btn = document.querySelector(`[data-page="${pageId}"]`);
+    if (btn) {
+        btn.classList.add('active');
+    }
+}
+
+function renderPagesList() {
+    const container = document.getElementById('pagesContainer');
+    if (!container) return;
+
+    container.innerHTML = '';
+    for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn' + (i === currentPageId ? ' active' : '');
+        btn.setAttribute('data-page', i);
+        btn.innerHTML = `<i class="fas fa-${i === 1 ? 'id-card' : 'file'}"></i> Page ${i}`;
+        btn.onclick = () => switchToPage(i);
+        container.appendChild(btn);
+    }
+}
+
+// ===== LOAD EXAMPLE =====
 function loadExample(exampleName) {
     const example = exampleTemplates[exampleName];
     if (!example) return;
-    
-    // Remplir infos personnelles
+
+    // Fill basic info
     document.getElementById('fullName').value = example.fullName;
     document.getElementById('jobTitle').value = example.jobTitle;
     document.getElementById('email').value = example.email;
     document.getElementById('phone').value = example.phone;
     document.getElementById('location').value = example.location;
     document.getElementById('about').value = example.about;
-    document.getElementById('skills').value = example.skills;
-    document.getElementById('languages').value = example.languages;
-    document.getElementById('interests').value = example.interests;
-    
-    // Charger polices et template
+
+    // Set design
+    currentTemplate = example.template;
     document.getElementById('fontTitle').value = example.fontTitle;
-    document.getElementById('fontSubtitle').value = example.fontSubtitle;
     document.getElementById('fontBody').value = example.fontBody;
+    document.getElementById('primaryColor').value = example.primaryColor;
+
     switchTemplate(example.template);
-    
-    // Charger preset couleur
-    applyPreset(example.colorPreset);
-    
-    // Charger formations
-    document.getElementById('educationList').innerHTML = '';
-    educationCount = 0;
-    if (example.educations) {
-        example.educations.forEach(edu => {
-            addEducation();
-            const sections = document.querySelectorAll('#educationList .dynamic-section');
-            const lastSection = sections[sections.length - 1];
-            lastSection.querySelector('[data-field*="edu-school"]').value = edu.school;
-            lastSection.querySelector('[data-field*="edu-title"]').value = edu.title;
-            lastSection.querySelector('[data-field*="edu-year"]').value = edu.year;
-        });
-    }
-    
-    // Charger expériences
-    document.getElementById('experienceList').innerHTML = '';
-    experienceCount = 0;
-    if (example.experiences) {
-        example.experiences.forEach(exp => {
-            addExperience();
-            const sections = document.querySelectorAll('#experienceList .dynamic-section');
-            const lastSection = sections[sections.length - 1];
-            lastSection.querySelector('[data-field*="exp-title"]').value = exp.title;
-            lastSection.querySelector('[data-field*="exp-company"]').value = exp.company;
-            lastSection.querySelector('[data-field*="exp-period"]').value = exp.period;
-            lastSection.querySelector('[data-field*="exp-desc"]').value = exp.description;
-        });
-    }
-    
-    // Re-attacher les event listeners
-    document.querySelectorAll('.education-field').forEach(field => {
-        field.addEventListener('input', updateCVPreview);
-    });
-    document.querySelectorAll('.experience-field').forEach(field => {
-        field.addEventListener('input', updateCVPreview);
-    });
-    
-    updateCVPreview();
-    console.log(`✨ Exemple chargé: ${exampleName}`);
+    switchTab('content');
+    updatePreview();
 }
 
-// ===== ADD EDUCATION =====
-function addEducation() {
-    const list = document.getElementById('educationList');
-    const id = educationCount++;
-    
-    const html = `
-        <div class="dynamic-section" id="education-${id}">
-            <input type="text" placeholder="École/Université" data-field="edu-school-${id}" class="education-field">
-            <input type="text" placeholder="Diplôme/Certificat" data-field="edu-title-${id}" class="education-field">
-            <input type="text" placeholder="Année (Ex: 2022-2023)" data-field="edu-year-${id}" class="education-field">
-            <button type="button" class="btn-remove" onclick="removeEducation(${id})">Supprimer</button>
-        </div>
-    `;
-    
-    list.insertAdjacentHTML('beforeend', html);
-    document.querySelectorAll('.education-field').forEach(field => {
-        field.addEventListener('input', updateCVPreview);
-    });
-}
+// ===== PREVIEW UPDATE =====
+function updatePreview() {
+    const preview = document.getElementById('cvPreview');
+    if (!preview) return;
 
-function removeEducation(id) {
-    const element = document.getElementById(`education-${id}`);
-    if (element) element.remove();
-    updateCVPreview();
-}
+    const fullName = document.getElementById('fullName').value || '[Nom Complet]';
+    const jobTitle = document.getElementById('jobTitle').value || '[Titre]';
+    const email = document.getElementById('email').value || 'email@example.com';
+    const phone = document.getElementById('phone').value || '+33 6 00 00 00 00';
+    const location = document.getElementById('location').value || 'Ville, Pays';
+    const about = document.getElementById('about').value || 'Résumé professionnel';
 
-// ===== ADD EXPERIENCE =====
-function addExperience() {
-    const list = document.getElementById('experienceList');
-    const id = experienceCount++;
-    
-    const html = `
-        <div class="dynamic-section" id="experience-${id}">
-            <input type="text" placeholder="Titre du poste" data-field="exp-title-${id}" class="experience-field">
-            <input type="text" placeholder="Entreprise/Organisation" data-field="exp-company-${id}" class="experience-field">
-            <input type="text" placeholder="Période (Ex: 2020-2024)" data-field="exp-period-${id}" class="experience-field">
-            <textarea placeholder="Description des tâches" data-field="exp-desc-${id}" class="experience-field" style="resize: vertical; min-height: 60px;"></textarea>
-            <button type="button" class="btn-remove" onclick="removeExperience(${id})">Supprimer</button>
-        </div>
-    `;
-    
-    list.insertAdjacentHTML('beforeend', html);
-    document.querySelectorAll('.experience-field').forEach(field => {
-        field.addEventListener('input', updateCVPreview);
-    });
-}
+    const primaryColor = document.getElementById('primaryColor').value;
+    const textColor = document.getElementById('textColor').value;
+    const bgColor = document.getElementById('bgColor').value;
 
-function removeExperience(id) {
-    const element = document.getElementById(`experience-${id}`);
-    if (element) element.remove();
-    updateCVPreview();
-}
+    // Update CSS variables
+    preview.style.setProperty('--cv-primary', primaryColor);
+    preview.style.setProperty('--cv-text', textColor);
+    preview.style.backgroundColor = bgColor;
+    preview.style.color = textColor;
 
-// ===== UPDATE CV PREVIEW =====
-function updateCVPreview() {
-    const fullName = document.getElementById('fullName').value || 'Nom Complet';
-    const jobTitle = document.getElementById('jobTitle').value || 'Titre Professionnel';
-    const email = document.getElementById('email').value || 'email@exemple.com';
-    const phone = document.getElementById('phone').value || '+237 6XX XXX XXX';
-    const location = document.getElementById('location').value || 'Douala, Cameroun';
-    const about = document.getElementById('about').value || 'Résumé professionnel...';
-    const skills = document.getElementById('skills').value;
-    const languages = document.getElementById('languages').value;
-    const interests = document.getElementById('interests').value;
+    // Update template class
+    preview.className = `cv-page ${currentTemplate}-template`;
 
-    // Design settings
-    const colorPrimary = document.getElementById('colorPrimary').value;
-    const colorBg = document.getElementById('colorBg').value;
-    const colorText = document.getElementById('colorText').value;
-    const colorSubtitle = document.getElementById('colorSubtitle').value;
-    const fontTitle = document.getElementById('fontTitle').value;
-    const fontSubtitle = document.getElementById('fontSubtitle').value;
-    const fontBody = document.getElementById('fontBody').value;
-    const fontSizeTitle = document.getElementById('fontSizeTitle').value;
-    const fontSizeSubtitle = document.getElementById('fontSizeSubtitle').value;
-    const fontSizeBody = document.getElementById('fontSizeBody').value;
-    const spacing = document.getElementById('spacing').value;
-    const margins = document.getElementById('margins').value;
+    // Build HTML based on template
+    let html = '';
 
-    // Education
-    let educationHTML = '';
-    document.querySelectorAll('#educationList .dynamic-section').forEach(section => {
-        const school = section.querySelector('[data-field*="edu-school"]').value;
-        const title = section.querySelector('[data-field*="edu-title"]').value;
-        const year = section.querySelector('[data-field*="edu-year"]').value;
-        
-        if (school || title) {
-            educationHTML += `
-                <div class="cv-item">
-                    <div class="cv-item-title">${title || 'Certificat'}</div>
-                    <div class="cv-item-subtitle">${school || 'École'}</div>
-                    <div class="cv-item-date">${year}</div>
-                </div>
-            `;
-        }
-    });
-
-    // Experience
-    let experienceHTML = '';
-    document.querySelectorAll('#experienceList .dynamic-section').forEach(section => {
-        const title = section.querySelector('[data-field*="exp-title"]').value;
-        const company = section.querySelector('[data-field*="exp-company"]').value;
-        const period = section.querySelector('[data-field*="exp-period"]').value;
-        const desc = section.querySelector('[data-field*="exp-desc"]').value;
-        
-        if (title || company) {
-            experienceHTML += `
-                <div class="cv-item">
-                    <div class="cv-item-title">${title || 'Poste'}</div>
-                    <div class="cv-item-subtitle">${company || 'Entreprise'}</div>
-                    <div class="cv-item-date">${period}</div>
-                    ${desc ? `<div class="cv-item-description">• ${desc}</div>` : ''}
-                </div>
-            `;
-        }
-    });
-
-    // Skills
-    let skillsHTML = '';
-    if (skills) {
-        skillsHTML = skills.split(',').map(s => s.trim()).filter(s => s).map(s => 
-            `<span class="cv-skill">${s}</span>`
-        ).join('');
-    }
-
-    // Interests
-    let interestsHTML = '';
-    if (interests) {
-        interestsHTML = interests.split(',').map(i => i.trim()).filter(i => i).map(i => 
-            `<span class="cv-interest">${i}</span>`
-        ).join('');
-    }
-
-    // Languages
-    let languagesHTML = '';
-    if (languages) {
-        languagesHTML = languages.split(',').map(l => l.trim()).filter(l => l).map(l => 
-            `<div class="cv-item-description">• ${l}</div>`
-        ).join('');
-    }
-
-    // Build CV HTML
-    const cvHTML = `
-        <div class="cv-page ${currentTemplate}-template" style="
-            --cv-primary: ${colorPrimary};
-            --cv-text: ${colorText};
-            --cv-subtitle: ${colorSubtitle};
-            --cv-font-title: '${fontTitle}';
-            --cv-font-subtitle: '${fontSubtitle}';
-            --cv-font-body: '${fontBody}';
-            --cv-size-title: ${fontSizeTitle}px;
-            --cv-size-subtitle: ${fontSizeSubtitle}px;
-            --cv-size-body: ${fontSizeBody}px;
-            --cv-spacing: ${spacing};
-            --cv-padding: ${margins}px;
-            background: ${colorBg};
-            color: ${colorText};
-        ">
-            <div class="cv-content">
-                <div class="cv-header">
-                    ${currentPhotoData && currentTemplate !== 'minimal' ? `<img src="${currentPhotoData}" alt="Photo profil" class="cv-photo">` : ''}
-                    <div>
-                        <div class="cv-name">${fullName}</div>
-                        <div class="cv-job">${jobTitle}</div>
-                    </div>
-                </div>
-                <div class="cv-contact">
-                    <div><strong>Email:</strong> ${email}</div>
-                    <div><strong>Tél:</strong> ${phone}</div>
-                    <div style="grid-column: 1 / -1;"><strong>Localisation:</strong> ${location}</div>
-                </div>
-                </div>
-
-                ${about ? `<div class="cv-about" style="color: ${colorText};">${about}</div>` : ''}
-
-                ${educationHTML ? `
-                <div class="cv-section">
-                    <div class="cv-section-title">FORMATION</div>
-                    ${educationHTML}
-                </div>
-                ` : ''}
-
-                ${experienceHTML ? `
-                <div class="cv-section">
-                    <div class="cv-section-title">EXPÉRIENCES</div>
-                    ${experienceHTML}
-                </div>
-                ` : ''}
-
-                <div class="cv-row">
-                    ${skillsHTML ? `
-                    <div class="cv-col">
-                        <div class="cv-section">
-                            <div class="cv-section-title">COMPÉTENCES</div>
-                            <div>${skillsHTML}</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    
-                    <div class="cv-col">
-                        ${interestsHTML ? `
-                        <div class="cv-section">
-                            <div class="cv-section-title">INTÉRÊTS</div>
-                            <div>${interestsHTML}</div>
-                        </div>
-                        ` : ''}
-                        
-                        ${languagesHTML ? `
-                        <div class="cv-section">
-                            <div class="cv-section-title">LANGUES</div>
-                            <div>${languagesHTML}</div>
-                        </div>
-                        ` : ''}
+    if (currentTemplate === 'modern') {
+        html = `
+            <div class="cv-header">
+                ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo">` : ''}
+                <div class="cv-header-content">
+                    <div class="cv-name">${fullName}</div>
+                    <div class="cv-title">${jobTitle}</div>
+                    <div class="cv-meta">
+                        <span class="cv-meta-item"><i class="fas fa-envelope"></i> ${email}</span>
+                        <span class="cv-meta-item"><i class="fas fa-phone"></i> ${phone}</span>
+                        <span class="cv-meta-item"><i class="fas fa-map-marker"></i> ${location}</span>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+            <div class="cv-about">
+                <p>${about}</p>
+            </div>
+        `;
+    } else if (currentTemplate === 'luxury') {
+        html = `
+            <div class="cv-header">
+                ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo">` : ''}
+                <div class="cv-name">${fullName}</div>
+                <div class="cv-title">${jobTitle}</div>
+                <div class="cv-meta">
+                    ${email} • ${phone} • ${location}
+                </div>
+            </div>
+            <div class="cv-about">
+                <p>${about}</p>
+            </div>
+        `;
+    } else if (currentTemplate === 'creative') {
+        html = `
+            <div class="cv-header">
+                ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo">` : ''}
+                <div class="cv-header-content">
+                    <div class="cv-name">${fullName}</div>
+                    <div class="cv-title">${jobTitle}</div>
+                </div>
+            </div>
+            <div class="cv-meta" style="margin-top: 20px;">
+                <span>${email}</span> | <span>${phone}</span> | <span>${location}</span>
+            </div>
+            <div class="cv-about" style="margin-top: 15px;">
+                <p>${about}</p>
+            </div>
+        `;
+    } else if (currentTemplate === 'tech') {
+        html = `
+            <div class="cv-header">
+                ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo">` : ''}
+                <div class="cv-header-content">
+                    <div class="cv-name">${fullName}</div>
+                    <div class="cv-title">${jobTitle}</div>
+                    <div class="cv-meta">
+                        ${email} | ${phone} | ${location}
+                    </div>
+                </div>
+            </div>
+            <div class="cv-section">
+                <div class="cv-section-title">À Propos</div>
+                <p>${about}</p>
+            </div>
+        `;
+    } else {
+        // Minimal & Classic
+        html = `
+            <div class="cv-header">
+                <div class="cv-name">${fullName}</div>
+                <div class="cv-title">${jobTitle}</div>
+                <div class="cv-meta">
+                    ${email} | ${phone} | ${location}
+                </div>
+            </div>
+            <div class="cv-section">
+                <div class="cv-section-title">À Propos</div>
+                <p>${about}</p>
+            </div>
+        `;
+    }
 
-    const preview = document.getElementById('cvPreview');
-    preview.innerHTML = cvHTML;
-    preview.style.transform = `scale(${zoomLevel / 100})`;
+    preview.innerHTML = html;
+
+    // Apply font styles
+    const fontTitle = document.getElementById('fontTitle').value;
+    const fontBody = document.getElementById('fontBody').value;
+    preview.style.fontFamily = fontBody;
+    const nameElements = preview.querySelectorAll('.cv-name, .cv-section-title');
+    nameElements.forEach(el => el.style.fontFamily = fontTitle);
 }
 
-// ===== ZOOM CONTROLS =====
+// ===== EXPORT FUNCTIONS =====
+function exportPDF() {
+    const element = document.getElementById('cvPreview');
+    const opt = {
+        margin: 10,
+        filename: 'CV.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+function exportPNG() {
+    const element = document.getElementById('cvPreview');
+    html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'CV.png';
+        link.click();
+    });
+}
+
+function exportJSON() {
+    const data = {
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        location: document.getElementById('location').value,
+        about: document.getElementById('about').value,
+        template: currentTemplate,
+        fontTitle: document.getElementById('fontTitle').value,
+        fontBody: document.getElementById('fontBody').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        textColor: document.getElementById('textColor').value,
+        bgColor: document.getElementById('bgColor').value,
+        photo: currentPhotoData
+    };
+
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = 'cv-data.json';
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+
+function triggerJSONImport() {
+    document.getElementById('jsonInput').click();
+}
+
+function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('jobTitle').value = data.jobTitle || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('location').value = data.location || '';
+            document.getElementById('about').value = data.about || '';
+            document.getElementById('fontTitle').value = data.fontTitle || 'Poppins';
+            document.getElementById('fontBody').value = data.fontBody || 'Roboto';
+            document.getElementById('primaryColor').value = data.primaryColor || '#0ef';
+            document.getElementById('textColor').value = data.textColor || '#ffffff';
+            document.getElementById('bgColor').value = data.bgColor || '#1f242d';
+
+            if (data.photo) {
+                currentPhotoData = data.photo;
+                const preview = document.getElementById('photoPreview');
+                if (preview) {
+                    preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile">`;
+                }
+            }
+
+            if (data.template) {
+                switchTemplate(data.template);
+            }
+
+            updatePreview();
+            alert('✅ CV chargé avec succès !');
+        } catch (error) {
+            alert('❌ Erreur lors du chargement du JSON');
+            console.error(error);
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ===== ZOOM =====
 function zoomIn() {
-    if (zoomLevel < 150) {
-        zoomLevel += 10;
-        updateZoom();
-    }
+    zoomLevel = Math.min(zoomLevel + 10, 200);
+    applyZoom();
 }
 
 function zoomOut() {
-    if (zoomLevel > 50) {
-        zoomLevel -= 10;
-        updateZoom();
+    zoomLevel = Math.max(zoomLevel - 10, 50);
+    applyZoom();
+}
+
+function applyZoom() {
+    const container = document.getElementById('previewContainer');
+    if (container) {
+        container.style.transform = `scale(${zoomLevel / 100})`;
+        container.style.transformOrigin = 'top center';
+        document.getElementById('zoomLevel').textContent = zoomLevel + '%';
     }
 }
-
-function updateZoom() {
-    document.getElementById('zoomLevel').textContent = zoomLevel + '%';
-    const preview = document.getElementById('cvPreview');
-    preview.style.transform = `scale(${zoomLevel / 100})`;
-}
-
-// ===== PREVIEW PDF =====
-async function previewPDF() {
-    const cvElement = document.getElementById('cvPreview');
-    const modalPreview = document.getElementById('modalPreview');
-    
-    modalPreview.innerHTML = cvElement.innerHTML;
-    document.getElementById('previewModal').classList.add('active');
-}
-
-function closePreview() {
-    document.getElementById('previewModal').classList.remove('active');
-}
-
-function confirmExport() {
-    closePreview();
-    exportPDF();
-}
-
-// ===== EXPORT PDF =====
-async function exportPDF() {
-    const fullName = document.getElementById('fullName').value || 'CV';
-    const cvElement = document.getElementById('cvPreview');
-    
-    if (!fullName.trim()) {
-        alert('Veuillez remplir au moins votre nom !');
-        return;
-    }
-
-    try {
-        const opt = {
-            margin: [10, 10, 10, 10],
-            filename: `CV_${fullName.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-            jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-        };
-
-        await html2pdf().set(opt).from(cvElement).save();
-        console.log('✅ PDF téléchargé');
-    } catch (error) {
-        console.error('❌ Erreur PDF:', error);
-        alert('Erreur lors du téléchargement du PDF');
-    }
-}
-
-// ===== EXPORT PNG =====
-async function exportPNG() {
-    const fullName = document.getElementById('fullName').value || 'CV';
-    const cvElement = document.getElementById('cvPreview');
-    
-    if (!fullName.trim()) {
-        alert('Veuillez remplir au moins votre nom !');
-        return;
-    }
-
-    try {
-        const canvas = await html2canvas(cvElement, {
-            backgroundColor: '#ffffff',
-            scale: 2,
-            useCORS: true
-        });
-        
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = `CV_${fullName.replace(/\s+/g, '_')}.png`;
-        link.click();
-        
-        console.log('✅ PNG téléchargé');
-    } catch (error) {
-        console.error('❌ Erreur PNG:', error);
-        alert('Erreur lors du téléchargement du PNG');
-    }
-}
-
-// ===== EXPORT JSON =====
-function exportJSON() {
-    const fullName = document.getElementById('fullName').value || 'CV';
-    
-    const data = {
-        personal: {
-            fullName: document.getElementById('fullName').value,
-            jobTitle: document.getElementById('jobTitle').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value,
-            about: document.getElementById('about').value,
-            photo: currentPhotoData
-        },
-        education: [],
-        experience: [],
-        skills: document.getElementById('skills').value,
-        languages: document.getElementById('languages').value,
-        interests: document.getElementById('interests').value,
-        design: {
-            colorPrimary: document.getElementById('colorPrimary').value,
-            colorBg: document.getElementById('colorBg').value,
-            colorText: document.getElementById('colorText').value,
-            colorSubtitle: document.getElementById('colorSubtitle').value,
-            fontTitle: document.getElementById('fontTitle').value,
-            fontSubtitle: document.getElementById('fontSubtitle').value,
-            fontBody: document.getElementById('fontBody').value,
-            fontSizeTitle: document.getElementById('fontSizeTitle').value,
-            fontSizeSubtitle: document.getElementById('fontSizeSubtitle').value,
-            fontSizeBody: document.getElementById('fontSizeBody').value,
-            spacing: document.getElementById('spacing').value,
-            margins: document.getElementById('margins').value
-        },
-        template: currentTemplate
-    };
-
-    // Récupérer formations
-    document.querySelectorAll('#educationList .dynamic-section').forEach(section => {
-        data.education.push({
-            school: section.querySelector('[data-field*="edu-school"]').value,
-            title: section.querySelector('[data-field*="edu-title"]').value,
-            year: section.querySelector('[data-field*="edu-year"]').value
-        });
-    });
-
-    // Récupérer expériences
-    document.querySelectorAll('#experienceList .dynamic-section').forEach(section => {
-        data.experience.push({
-            title: section.querySelector('[data-field*="exp-title"]').value,
-            company: section.querySelector('[data-field*="exp-company"]').value,
-            period: section.querySelector('[data-field*="exp-period"]').value,
-            description: section.querySelector('[data-field*="exp-desc"]').value
-        });
-    });
-
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `CV_${fullName.replace(/\s+/g, '_')}.json`;
-    link.click();
-    
-    console.log('✅ JSON exporté');
-}
-
-// ===== IMPORT JSON =====
-function importJSON() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const data = JSON.parse(event.target.result);
-                
-                // Restore personal data
-                if (data.personal) {
-                    document.getElementById('fullName').value = data.personal.fullName || '';
-                    document.getElementById('jobTitle').value = data.personal.jobTitle || '';
-                    document.getElementById('email').value = data.personal.email || '';
-                    document.getElementById('phone').value = data.personal.phone || '';
-                    document.getElementById('location').value = data.personal.location || '';
-                    document.getElementById('about').value = data.personal.about || '';
-                    
-                    // Restore photo
-                    if (data.personal.photo) {
-                        currentPhotoData = data.personal.photo;
-                        const preview = document.getElementById('photoPreview');
-                        preview.innerHTML = `<img src="${currentPhotoData}" alt="Photo profil">`;
-                        document.getElementById('removePhotoBtn').style.display = 'block';
-                    }
-                }
-
-                // Restore design settings
-                if (data.design) {
-                    document.getElementById('colorPrimary').value = data.design.colorPrimary;
-                    document.getElementById('colorBg').value = data.design.colorBg;
-                    document.getElementById('colorText').value = data.design.colorText;
-                    document.getElementById('colorSubtitle').value = data.design.colorSubtitle;
-                    document.getElementById('fontTitle').value = data.design.fontTitle;
-                    document.getElementById('fontSubtitle').value = data.design.fontSubtitle;
-                    document.getElementById('fontBody').value = data.design.fontBody;
-                    document.getElementById('fontSizeTitle').value = data.design.fontSizeTitle;
-                    document.getElementById('fontSizeSubtitle').value = data.design.fontSizeSubtitle;
-                    document.getElementById('fontSizeBody').value = data.design.fontSizeBody;
-                    document.getElementById('spacing').value = data.design.spacing;
-                    document.getElementById('margins').value = data.design.margins;
-                }
-
-                // Restore template
-                if (data.template) {
-                    switchTemplate(data.template);
-                }
-
-                // Restore skills, languages, interests
-                document.getElementById('skills').value = data.skills || '';
-                document.getElementById('languages').value = data.languages || '';
-                document.getElementById('interests').value = data.interests || '';
-
-                // Restore education
-                document.getElementById('educationList').innerHTML = '';
-                educationCount = 0;
-                if (data.education) {
-                    data.education.forEach(edu => {
-                        addEducation();
-                        const sections = document.querySelectorAll('#educationList .dynamic-section');
-                        const lastSection = sections[sections.length - 1];
-                        lastSection.querySelector('[data-field*="edu-school"]').value = edu.school || '';
-                        lastSection.querySelector('[data-field*="edu-title"]').value = edu.title || '';
-                        lastSection.querySelector('[data-field*="edu-year"]').value = edu.year || '';
-                    });
-                }
-
-                // Restore experience
-                document.getElementById('experienceList').innerHTML = '';
-                experienceCount = 0;
-                if (data.experience) {
-                    data.experience.forEach(exp => {
-                        addExperience();
-                        const sections = document.querySelectorAll('#experienceList .dynamic-section');
-                        const lastSection = sections[sections.length - 1];
-                        lastSection.querySelector('[data-field*="exp-title"]').value = exp.title || '';
-                        lastSection.querySelector('[data-field*="exp-company"]').value = exp.company || '';
-                        lastSection.querySelector('[data-field*="exp-period"]').value = exp.period || '';
-                        lastSection.querySelector('[data-field*="exp-desc"]').value = exp.description || '';
-                    });
-                }
-
-                updateCVPreview();
-                alert('✅ CV importé avec succès !');
-            } catch (error) {
-                console.error('❌ Erreur import:', error);
-                alert('❌ Erreur lors de l\'import du fichier');
-            }
-        };
-        reader.readAsText(file);
-    };
-    input.click();
-}
-
-console.log('📄 Générateur CV Pro Advanced - Chargé avec succès !');

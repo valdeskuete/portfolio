@@ -3,315 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de CV Pro - Valdes.Tech</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CV Generator Pro - Premium CV Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&family=Inter:wght@400;600&family=Montserrat:wght@600;700&family=Raleway:wght@400;600&family=Lato:wght@400;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&family=Nunito:wght@600;700&family=Quicksand:wght@600;700&family=Source+Sans+Pro:wght@400;600&family=Arvo:wght@700&family=Caveat:wght@700&family=Oswald:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;700&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Arvo:wght@400;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- SIDEBAR CONTRÔLES -->
-        <aside class="sidebar">
+    <div class="cv-editor">
+        <!-- SIDEBAR -->
+        <aside class="editor-sidebar">
             <div class="sidebar-header">
-                <h1>CV Générateur</h1>
-                <p>Pro Edition</p>
+                <h1><span class="icon">📄</span> CV Pro</h1>
+                <p>Créateur Premium</p>
             </div>
 
-            <div class="sidebar-tabs">
-                <button class="tab-btn active" data-tab="content">📝 Contenu</button>
-                <button class="tab-btn" data-tab="design">🎨 Design</button>
-                <button class="tab-btn" data-tab="layout">📐 Layout</button>
-                <button class="tab-btn" data-tab="export">⬇️ Export</button>
-            </div>
+            <!-- TABS DE NAVIGATION -->
+            <nav class="editor-nav">
+                <button class="nav-btn active" data-tab="content" onclick="switchTab('content')">
+                    <i class="fas fa-edit"></i> Contenu
+                </button>
+                <button class="nav-btn" data-tab="design" onclick="switchTab('design')">
+                    <i class="fas fa-palette"></i> Design
+                </button>
+                <button class="nav-btn" data-tab="export" onclick="switchTab('export')">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </nav>
 
-            <!-- TAB: CONTENU -->
-            <div class="tab-content active" id="tab-content">
-                <form id="cvForm">
-                    <!-- EXEMPLES RAPIDES -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-magic"></i> Modèles Exemples</h3>
-                        <h4 style="margin-top: 10px; margin-bottom: 8px; color: #666; font-size: 0.9em;">🔧 Profesionnels</h4>
-                        <button type="button" class="btn-example" onclick="loadExample('dev')">💻 Développeur</button>
-                        <button type="button" class="btn-example" onclick="loadExample('designer')">🎨 Designer</button>
-                        <button type="button" class="btn-example" onclick="loadExample('manager')">👔 Manager</button>
-                        <button type="button" class="btn-example" onclick="loadExample('startup')">🚀 Founder/Startup</button>
-                        <button type="button" class="btn-example" onclick="loadExample('marketing')">📊 Marketing Manager</button>
-                        <button type="button" class="btn-example" onclick="loadExample('datascientist')">🤖 Data Scientist</button>
-                        <h4 style="margin-top: 12px; margin-bottom: 8px; color: #666; font-size: 0.9em;">🎓 Académiques</h4>
-                        <button type="button" class="btn-example" onclick="loadExample('etudiant')">👨‍🎓 Étudiant Master</button>
-                        <button type="button" class="btn-example" onclick="loadExample('chercheur')">🔬 Chercheur PhD</button>
-                        <button type="button" class="btn-example" onclick="loadExample('master')">🌍 Master Rel. Inter.</button>
+            <!-- ============ TAB: CONTENT ============ -->
+            <div class="tab-panel active" id="tab-content">
+                
+                <!-- EXEMPLES RAPIDES -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-sparkles"></i> Modèles Rapides</h3>
+                    <div class="examples-grid">
+                        <button class="example-btn" onclick="loadExample('dev')" title="Développeur Full Stack">💻</button>
+                        <button class="example-btn" onclick="loadExample('designer')" title="Designer UX/UI">🎨</button>
+                        <button class="example-btn" onclick="loadExample('startup')" title="Founder Tech">🚀</button>
+                        <button class="example-btn" onclick="loadExample('marketing')" title="Marketing Manager">📊</button>
+                        <button class="example-btn" onclick="loadExample('datascientist')" title="Data Scientist">🤖</button>
+                        <button class="example-btn" onclick="loadExample('manager')" title="Manager Commercial">👔</button>
+                        <button class="example-btn" onclick="loadExample('etudiant')" title="Étudiant Master">👨‍🎓</button>
+                        <button class="example-btn" onclick="loadExample('chercheur')" title="Chercheur PhD">🔬</button>
                     </div>
+                </div>
 
-                    <!-- INFOS PERSONNELLES -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-user"></i> Infos Personnelles</h3>
-                        <div class="photo-upload-section">
-                            <label>📸 Photo de Profil</label>
-                            <div class="photo-preview" id="photoPreview">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
-                            <button type="button" class="btn-photo-upload" onclick="document.getElementById('photoInput').click()">Charger une photo</button>
-                            <button type="button" class="btn-photo-remove" id="removePhotoBtn" style="display: none;" onclick="removePhoto()">Supprimer</button>
+                <!-- PAGES -->
+                <div class="panel-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-book"></i> Pages</h3>
+                        <button class="btn-add-page" onclick="addNewPage()" title="Ajouter une page">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="pages-container" id="pagesContainer"></div>
+                </div>
+
+                <!-- PAGE 1: PROFIL -->
+                <div class="form-page active" id="page-1" data-page="1">
+                    <h4 class="page-title">Page 1: Profil Personnel</h4>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Photo de Profil</label>
+                        <div class="photo-upload-box" onclick="document.getElementById('photoInput').click()">
+                            <div id="photoPreview" class="photo-preview-area"></div>
+                            <p>Cliquer pour ajouter une photo</p>
                         </div>
-                        <input type="text" id="fullName" placeholder="Nom complet" required>
-                        <input type="text" id="jobTitle" placeholder="Titre/Profession">
-                        <input type="email" id="email" placeholder="Email">
-                        <input type="tel" id="phone" placeholder="Téléphone">
-                        <input type="text" id="location" placeholder="Localisation">
-                        <textarea id="about" placeholder="Résumé professionnel (max 3 lignes)" maxlength="300"></textarea>
+                        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" style="display:none">
                     </div>
 
-                    <!-- FORMATION -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-graduation-cap"></i> Formation</h3>
-                        <div id="educationList"></div>
-                        <button type="button" class="btn-add-item" onclick="addEducation()">+ Ajouter</button>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nom Complet</label>
+                        <input type="text" id="fullName" placeholder="Votre nom complet" oninput="updatePreview()">
                     </div>
 
-                    <!-- EXPÉRIENCES -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-briefcase"></i> Expériences</h3>
-                        <div id="experienceList"></div>
-                        <button type="button" class="btn-add-item" onclick="addExperience()">+ Ajouter</button>
+                    <div class="form-group">
+                        <label><i class="fas fa-briefcase"></i> Titre Professionnel</label>
+                        <input type="text" id="jobTitle" placeholder="Ex: Ingénieur Senior" oninput="updatePreview()">
                     </div>
 
-                    <!-- COMPÉTENCES -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-cogs"></i> Compétences</h3>
-                        <input type="text" id="skills" placeholder="Séparées par des virgules">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="email" placeholder="email@example.com" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> Téléphone</label>
+                            <input type="tel" id="phone" placeholder="+33 6 00 00 00 00" oninput="updatePreview()">
+                        </div>
                     </div>
 
-                    <!-- LANGUES -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-globe"></i> Langues</h3>
-                        <input type="text" id="languages" placeholder="Séparées par des virgules">
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker"></i> Localisation</label>
+                        <input type="text" id="location" placeholder="Ville, Pays" oninput="updatePreview()">
                     </div>
 
-                    <!-- INTÉRÊTS -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-heart"></i> Intérêts</h3>
-                        <input type="text" id="interests" placeholder="Séparés par des virgules">
+                    <div class="form-group">
+                        <label><i class="fas fa-align-left"></i> Résumé Professionnel</label>
+                        <textarea id="about" placeholder="Décrivez votre profil..." rows="4" oninput="updatePreview()"></textarea>
                     </div>
-                </form>
+                </div>
+
+                <!-- PAGES DYNAMIQUES -->
+                <div id="dynamicPages"></div>
+
             </div>
 
-            <!-- TAB: DESIGN -->
-            <div class="tab-content" id="tab-design">
-                <!-- COULEURS -->
-                <div class="form-section">
-                    <h3><i class="fas fa-palette"></i> Couleurs</h3>
-                    
-                    <label>🎨 Couleur Primaire</label>
-                    <div class="color-input-group">
-                        <input type="color" id="colorPrimary" value="#0ef">
-                        <input type="text" id="colorPrimaryHex" value="#0ef" maxlength="7">
+            <!-- ============ TAB: DESIGN ============ -->
+            <div class="tab-panel" id="tab-design">
+                
+                <!-- TEMPLATES -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-layer-group"></i> Templates</h3>
+                    <div class="templates-grid">
+                        <button class="template-btn active" data-template="minimal" onclick="switchTemplate('minimal')">
+                            <span>Minimal</span>
+                        </button>
+                        <button class="template-btn" data-template="classic" onclick="switchTemplate('classic')">
+                            <span>Classique</span>
+                        </button>
+                        <button class="template-btn" data-template="modern" onclick="switchTemplate('modern')">
+                            <span>Moderne</span>
+                        </button>
+                        <button class="template-btn" data-template="luxury" onclick="switchTemplate('luxury')">
+                            <span>Luxury</span>
+                        </button>
+                        <button class="template-btn" data-template="creative" onclick="switchTemplate('creative')">
+                            <span>Créatif</span>
+                        </button>
+                        <button class="template-btn" data-template="tech" onclick="switchTemplate('tech')">
+                            <span>Tech</span>
+                        </button>
                     </div>
+                </div>
 
-                    <label>📄 Couleur Fond</label>
-                    <div class="color-input-group">
-                        <input type="color" id="colorBg" value="#ffffff">
-                        <input type="text" id="colorBgHex" value="#ffffff" maxlength="7">
-                    </div>
-
-                    <label>📝 Couleur Texte</label>
-                    <div class="color-input-group">
-                        <input type="color" id="colorText" value="#000000">
-                        <input type="text" id="colorTextHex" value="#000000" maxlength="7">
-                    </div>
-
-                    <label>🏷️ Couleur Sous-titres</label>
-                    <div class="color-input-group">
-                        <input type="color" id="colorSubtitle" value="#666666">
-                        <input type="text" id="colorSubtitleHex" value="#666666" maxlength="7">
-                    </div>
-
+                <!-- COULEURS PRESET -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-palette"></i> Palettes de Couleur</h3>
                     <div class="color-presets">
-                        <button type="button" class="preset-btn" data-preset="modern">Modern</button>
-                        <button type="button" class="preset-btn" data-preset="classic">Classic</button>
-                        <button type="button" class="preset-btn" data-preset="minimal">Minimal</button>
-                        <button type="button" class="preset-btn" data-preset="bold">Bold</button>
+                        <button class="color-preset modern" onclick="applyColorPreset('modern')" title="Modern Cyan"></button>
+                        <button class="color-preset classic" onclick="applyColorPreset('classic')" title="Classic Blue"></button>
+                        <button class="color-preset bold" onclick="applyColorPreset('bold')" title="Bold Orange"></button>
+                        <button class="color-preset minimal" onclick="applyColorPreset('minimal')" title="Minimal Black"></button>
                     </div>
                 </div>
 
-                <!-- POLICES -->
-                <div class="form-section">
-                    <h3><i class="fas fa-font"></i> Polices</h3>
+                <!-- COULEURS PERSONNALISÉES -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-fill-drip"></i> Couleurs Personnalisées</h3>
                     
-                    <label>Titre Principal</label>
-                    <select id="fontTitle">
-                        <option value="Playfair Display">Playfair Display</option>
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="Poppins">Poppins</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="Oswald">Oswald</option>
-                        <option value="Raleway">Raleway</option>
-                        <option value="Caveat">Caveat</option>
-                        <option value="Arvo">Arvo</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Couleur Principale</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="primaryColor" value="#0ef" oninput="updatePreview()">
+                            <span id="primaryColorHex">#0ef</span>
+                        </div>
+                    </div>
 
-                    <label>Sous-titres</label>
-                    <select id="fontSubtitle">
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="Poppins">Poppins</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="Inter">Inter</option>
-                        <option value="Raleway">Raleway</option>
-                        <option value="Open Sans">Open Sans</option>
-                        <option value="Nunito">Nunito</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Couleur Texte</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="textColor" value="#ffffff" oninput="updatePreview()">
+                            <span id="textColorHex">#ffffff</span>
+                        </div>
+                    </div>
 
-                    <label>Corps de Texte</label>
-                    <select id="fontBody">
-                        <option value="Roboto">Roboto</option>
-                        <option value="Poppins">Poppins</option>
-                        <option value="Lato">Lato</option>
-                        <option value="Inter">Inter</option>
-                        <option value="Open Sans">Open Sans</option>
-                        <option value="Quicksand">Quicksand</option>
-                        <option value="Source Sans Pro">Source Sans Pro</option>
-                        <option value="Nunito">Nunito</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Couleur Fond</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="bgColor" value="#1f242d" oninput="updatePreview()">
+                            <span id="bgColorHex">#1f242d</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- ESPACEMENT & TAILLES -->
-                <div class="form-section">
-                    <h3><i class="fas fa-expand"></i> Tailles & Espacement</h3>
+                <!-- TYPOGRAPHIE -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-font"></i> Typographie</h3>
                     
-                    <label>Taille Titre (<span id="fontSizeTitleValue">28</span>px)</label>
-                    <input type="range" id="fontSizeTitle" min="20" max="40" value="28">
+                    <div class="form-group">
+                        <label>Police Titre</label>
+                        <select id="fontTitle" onchange="updatePreview()">
+                            <option value="Poppins">Poppins</option>
+                            <option value="Playfair Display">Playfair Display</option>
+                            <option value="Montserrat">Montserrat</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Raleway">Raleway</option>
+                            <option value="Oswald">Oswald</option>
+                            <option value="Caveat">Caveat</option>
+                            <option value="Arvo">Arvo</option>
+                        </select>
+                    </div>
 
-                    <label>Taille Sous-titre (<span id="fontSizeSubtitleValue">14</span>px)</label>
-                    <input type="range" id="fontSizeSubtitle" min="12" max="20" value="14">
-
-                    <label>Taille Corps (<span id="fontSizeBodyValue">11</span>px)</label>
-                    <input type="range" id="fontSizeBody" min="9" max="14" value="11">
-
-                    <label>Espacement (<span id="spacingValue">1.5</span>)</label>
-                    <input type="range" id="spacing" min="1" max="2.5" step="0.1" value="1.5">
+                    <div class="form-group">
+                        <label>Police Corps</label>
+                        <select id="fontBody" onchange="updatePreview()">
+                            <option value="Poppins">Poppins</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Open Sans">Open Sans</option>
+                            <option value="Lato">Lato</option>
+                            <option value="Inter">Inter</option>
+                            <option value="Raleway">Raleway</option>
+                            <option value="Nunito">Nunito</option>
+                        </select>
+                    </div>
                 </div>
+
             </div>
 
-            <!-- TAB: LAYOUT -->
-            <div class="tab-content" id="tab-layout">
-                <div class="form-section">
-                    <h3><i class="fas fa-columns"></i> Mise en Page</h3>
-                    
-                    <label>🎨 Sélectionnez un Template</label>
-                    <div class="template-grid">
-                        <button type="button" class="template-btn active" data-template="classic" onclick="switchTemplate('classic')">
-                            <div class="template-icon">📄</div>
-                            <div class="template-name">Classique</div>
-                            <div class="template-desc">1 colonne</div>
-                        </button>
-                        <button type="button" class="template-btn" data-template="modern" onclick="switchTemplate('modern')">
-                            <div class="template-icon">📑</div>
-                            <div class="template-name">Moderne</div>
-                            <div class="template-desc">2 colonnes</div>
-                        </button>
-                        <button type="button" class="template-btn" data-template="minimal" onclick="switchTemplate('minimal')">
-                            <div class="template-icon">✨</div>
-                            <div class="template-name">Minimaliste</div>
-                            <div class="template-desc">Épuré</div>
-                        </button>
-                        <button type="button" class="template-btn" data-template="luxury" onclick="switchTemplate('luxury')">
-                            <div class="template-icon">👑</div>
-                            <div class="template-name">Luxe</div>
-                            <div class="template-desc">Premium</div>
-                        </button>
-                        <button type="button" class="template-btn" data-template="creative" onclick="switchTemplate('creative')">
-                            <div class="template-icon">🎭</div>
-                            <div class="template-name">Créatif</div>
-                            <div class="template-desc">Artistique</div>
-                        </button>
-                        <button type="button" class="template-btn" data-template="tech" onclick="switchTemplate('tech')">
-                            <div class="template-icon">⚙️</div>
-                            <div class="template-name">Tech</div>
-                            <div class="template-desc">Coder</div>
-                        </button>
-                    </div>
+            <!-- ============ TAB: EXPORT ============ -->
+            <div class="tab-panel" id="tab-export">
 
-                    <label>Marges (<span id="marginValue">20</span>mm)</label>
-                    <input type="range" id="margins" min="10" max="40" value="20">
-
-                    <div class="checkbox-group">
-                        <label>
-                            <input type="checkbox" id="showPhoto" checked> 
-                            <span>Afficher photo de profil</span>
-                        </label>
-                        <label>
-                            <input type="checkbox" id="showBorder" checked> 
-                            <span>Bordure couleur</span>
-                        </label>
-                        <label>
-                            <input type="checkbox" id="pageNumbers" checked> 
-                            <span>Numéros de page</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: EXPORT -->
-            <div class="tab-content" id="tab-export">
-                <div class="form-section">
-                    <h3><i class="fas fa-download"></i> Télécharger</h3>
+                <!-- EXPORT OPTIONS -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-download"></i> Exporter</h3>
                     
-                    <button type="button" class="btn-export" onclick="previewPDF()">
-                        <i class="fas fa-eye"></i> Aperçu PDF
-                    </button>
-                    
-                    <button type="button" class="btn-export primary" onclick="exportPDF()">
+                    <button class="export-btn primary" onclick="exportPDF()">
                         <i class="fas fa-file-pdf"></i> Télécharger PDF
                     </button>
                     
-                    <button type="button" class="btn-export" onclick="exportPNG()">
+                    <button class="export-btn" onclick="exportPNG()">
                         <i class="fas fa-image"></i> Télécharger PNG
                     </button>
 
-                    <button type="button" class="btn-export" onclick="exportJSON()">
-                        <i class="fas fa-save"></i> Sauvegarder (JSON)
+                    <button class="export-btn" onclick="exportJSON()">
+                        <i class="fas fa-save"></i> Sauvegarder JSON
                     </button>
 
-                    <button type="button" class="btn-export secondary" onclick="importJSON()">
-                        <i class="fas fa-upload"></i> Charger (JSON)
+                    <button class="export-btn secondary" onclick="triggerJSONImport()">
+                        <i class="fas fa-upload"></i> Charger JSON
                     </button>
 
-                    <div class="export-info">
-                        <p><i class="fas fa-info-circle"></i> Multi-pages supporté automatiquement</p>
-                        <p><i class="fas fa-info-circle"></i> Aperçu haute résolution</p>
+                    <input type="file" id="jsonInput" accept=".json" style="display:none" onchange="importJSON(event)">
+                </div>
+
+                <!-- ZOOM -->
+                <div class="panel-section">
+                    <h3><i class="fas fa-search-plus"></i> Zoom Aperçu</h3>
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+                        <span id="zoomLevel">100%</span>
+                        <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>
+
             </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
-            <!-- PREVIEW CV -->
-            <div class="preview-wrapper">
-                <div class="preview-toolbar">
-                    <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
-                    <span id="zoomLevel">100%</span>
-                    <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+        <!-- PREVIEW -->
+        <main class="editor-preview">
+            <div class="preview-container" id="previewContainer">
+                <div class="cv-page minimal-template" id="cvPreview">
+                    <!-- Generated content -->
                 </div>
-                <div id="cvPreview" class="cv-preview"></div>
             </div>
         </main>
     </div>
 
-    <!-- MODAL APERÇU PDF -->
-    <div id="previewModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePreview()">&times;</button>
-            <h2>Aperçu PDF</h2>
-            <div id="modalPreview" class="modal-preview"></div>
-            <div class="modal-actions">
-                <button class="btn-modal" onclick="closePreview()">Fermer</button>
-                <button class="btn-modal primary" onclick="confirmExport()">Télécharger PDF</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
