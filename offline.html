@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Hors Ligne - Valdes.Tech</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1f242d;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .offline-container {
+            text-align: center;
+            max-width: 600px;
+            background: #323946;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 238, 255, 0.3);
+        }
+        h1 {
+            color: #0ef;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            display: inline-block;
+            background: #0ef;
+            color: #1f242d;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="icon">📡</div>
+        <h1>Mode Hors Ligne</h1>
+        <p>Vous êtes actuellement hors ligne. Le contenu mis en cache s'affichera quand la connexion sera rétablie.</p>
+        <p>Vérifiez votre connexion Internet et actualisez la page.</p>
+        <button class="btn" onclick="location.reload()">Réessayer</button>
+    </div>
+</body>
+</html>
