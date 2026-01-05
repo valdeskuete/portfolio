@@ -1,60 +1,69 @@
 /**
  * ========== GEMINI AI - MODÉRATION & AMÉLIORATION CONTENU ==========
- * Intégration directe de l'API Gemini (GRATUIT - Aucune Cloud Function requise)
+ * Intégration avec SDK officielle Google Generative AI
+ * Cela contourne mieux les problèmes CORS que les appels fetch directs
  * 
  * Setup:
  * 1. Aller à: https://aistudio.google.com/app/apikeys
  * 2. Cliquer "Create API Key" 
- * 3. Copier la clé dans .env: VITE_GEMINI_API_KEY=sk_...
+ * 3. Copier la clé dans config.json: "VITE_GEMINI_API_KEY": "AIzaSy..."
  */
 
-// Configuration - Chercher la clé API dans plusieurs endroits
 let GEMINI_API_KEY = null;
+let genAI = null;
 
-// Initialize GEMINI_API_KEY (with lazy loading for env vars)
+// Initialize Gemini with official SDK
 function initGeminiKey() {
   // 1. Essayer window.VITE_GEMINI_API_KEY (depuis env-loader.js qui charge config.json)
-  if (window.VITE_GEMINI_API_KEY) {
+  if (window.VITE_GEMINI_API_KEY && window.VITE_GEMINI_API_KEY.startsWith('AIzaSy')) {
       GEMINI_API_KEY = window.VITE_GEMINI_API_KEY;
       console.log('✅ Clé Gemini depuis window.VITE_GEMINI_API_KEY');
-      return;
+      initializeSDK();
+      return true;
   }
 
-  // 2. Essayer window.GEMINI_API_KEY (défini manuellement)
-  if (window.GEMINI_API_KEY) {
+  // 2. Essayer window.GEMINI_API_KEY
+  if (window.GEMINI_API_KEY && window.GEMINI_API_KEY.startsWith('AIzaSy')) {
       GEMINI_API_KEY = window.GEMINI_API_KEY;
       console.log('✅ Clé Gemini depuis window.GEMINI_API_KEY');
-      return;
+      initializeSDK();
+      return true;
   }
 
-  // 3. Essayer depuis Firebase config (si disponible)
-  if (window.geminiConfig?.apiKey) {
-      GEMINI_API_KEY = window.geminiConfig.apiKey;
-      console.log('✅ Clé Gemini depuis Firebase config');
-      return;
+  // 3. Essayer depuis window.ENV
+  if (window.ENV?.VITE_GEMINI_API_KEY && window.ENV.VITE_GEMINI_API_KEY.startsWith('AIzaSy')) {
+      GEMINI_API_KEY = window.ENV.VITE_GEMINI_API_KEY;
+      console.log('✅ Clé Gemini depuis window.ENV.VITE_GEMINI_API_KEY');
+      initializeSDK();
+      return true;
   }
   
-  // 4. Essayer depuis window.ENV (nouvellement supporté)
-  if (window.ENV?.gemini?.apiKey) {
-      GEMINI_API_KEY = window.ENV.gemini.apiKey;
-      console.log('✅ Clé Gemini depuis window.ENV.gemini.apiKey');
-      return;
-  }
-
-  // Si pas de clé trouvée
-  console.warn('⚠️ Clé Gemini API non configurée. Les fonctionnalités IA seront désactivées.');
-  console.warn('  Aller à: https://aistudio.google.com/app/apikeys pour obtenir une clé');
+  console.warn('⚠️ Clé Gemini API non configurée (cherche AIzaSy...). Les fonctionnalités IA seront désactivées.');
   GEMINI_API_KEY = null;
+  return false;
 }
 
-// Note: initGeminiKey() will be called automatically on first use in callGemini()
-// This avoids race conditions with env-loader timing
+// Initialize Google Generative AI SDK
+function initializeSDK() {
+  if (!GEMINI_API_KEY || !window.GoogleGenerativeAI) {
+      console.warn('⚠️ SDK ou clé manquante');
+      return false;
+  }
+  
+  try {
+      genAI = new window.GoogleGenerativeAI(GEMINI_API_KEY);
+      console.log('✅ SDK Google Generative AI initialisé');
+      return true;
+  } catch (error) {
+      console.error('❌ Erreur initialisation SDK:', error);
+      return false;
+  }
+}
 
 let requestCount = 0;
 let lastResetTime = Date.now();
 
-const GEMINI_MODEL = 'gemini-1.5-flash'; // Updated: gemini-pro is deprecated
-const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 /**
  * Rate limiting - Gemini API: 60 req/min
@@ -78,64 +87,62 @@ function checkRateLimit() {
 }
 
 /**
- * Appel générique à Gemini API
+ * Appel générique à Gemini API - avec SDK officielle
  */
 async function callGemini(prompt) {
-    // S'assurer que la clé a été initialisée
+    // Initialize key if not done
     if (!GEMINI_API_KEY) {
-        initGeminiKey();
+        const initialized = initGeminiKey();
+        if (!initialized) {
+            console.warn('⚠️ Gemini API non configurée');
+            return null;
+        }
+    }
+
+    // Initialize SDK if not done
+    if (!genAI) {
+        const sdkInit = initializeSDK();
+        if (!sdkInit) {
+            console.warn('⚠️ SDK Gemini non disponible');
+            return null;
+        }
     }
 
     if (!checkRateLimit()) {
         throw new Error('Rate limit: 60 requêtes par minute');
     }
 
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'sk_YOUR_KEY_HERE') {
-        console.warn('⚠️ Clé API Gemini non configurée. Aller à: https://aistudio.google.com/app/apikeys');
-        return null;
-    }
-
     try {
-        const response = await fetch(
-            `${API_ENDPOINT}/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: prompt
-                        }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        topK: 40,
-                        topP: 0.95,
-                        maxOutputTokens: 1024
-                    }
-                })
-            }
-        );
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('❌ Erreur Gemini API:', error);
-            return null;
-        }
-
-        const data = await response.json();
+        // Utiliser la SDK officielle Google
+        const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
         
-        if (!data.candidates || !data.candidates[0]) {
+        if (!text) {
             console.error('❌ Réponse Gemini vide');
             return null;
         }
 
-        const responseText = data.candidates[0].content.parts[0].text;
-        return responseText;
+        console.log('✅ Réponse Gemini reçue (' + text.length + ' chars)');
+        return text;
     } catch (error) {
-        console.error('❌ Erreur appel Gemini:', error.message);
+        // Gérer les erreurs silencieusement - CORS ou API rate limit
+        if (error.message) {
+            if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                // Silently fail - CORS/network issue
+                return null;
+            }
+            if (error.message.includes('429') || error.message.includes('quota')) {
+                console.warn('⚠️ API quota exceeded');
+                return null;
+            }
+            if (error.message.includes('401') || error.message.includes('403')) {
+                console.warn('⚠️ Clé API invalide ou expiré');
+                return null;
+            }
+        }
+        console.warn('⚠️ Gemini API error:', error.message || error);
         return null;
     }
 }
@@ -329,16 +336,16 @@ Réponds UNIQUEMENT avec du JSON:
  * ==================== CONFIGURATION VIA FENÊTRE MODALE ===================
  */
 function showGeminiSetup() {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'sk_YOUR_KEY_HERE') {
+    const status = getStatus();
+    if (!status.apiConfigured) {
         alert(`🤖 GEMINI NON CONFIGURÉ
 
 Obtenir votre clé API gratuite:
 1. Aller à: https://aistudio.google.com/app/apikeys
 2. Cliquer "Create API Key"
-3. Copier la clé
-4. L'ajouter à .env: VITE_GEMINI_API_KEY=sk_...
-5. Ou dans console: window.GEMINI_API_KEY = "sk_..."
-6. Rafraîchir la page
+3. Copier la clé (commence par AIzaSy...)
+4. L'ajouter à config.json: "VITE_GEMINI_API_KEY": "AIzaSy..."
+5. Rafraîchir la page (Ctrl+Shift+R)
 
 Avantages:
 ✅ Modération automatique des messages
@@ -353,8 +360,21 @@ Limites GRATUITES:
 🔓 Quota public (pas d'identifiants sensibles)
 `);
     } else {
-        console.log('✅ Gemini API est configurée et prête');
+        console.log('✅ Gemini API est configurée:', status);
     }
+}
+
+/**
+ * ==================== VÉRIFIER STATUS ===================
+ */
+function getStatus() {
+    return {
+        apiConfigured: GEMINI_API_KEY && GEMINI_API_KEY.startsWith('AIzaSy'),
+        sdkLoaded: !!window.GoogleGenerativeAI,
+        sdkInitialized: !!genAI,
+        requestCount: requestCount,
+        model: GEMINI_MODEL
+    };
 }
 
 // Export global
@@ -366,11 +386,7 @@ window.GeminiAI = {
     generateTags,
     summarizeText,
     showGeminiSetup,
-    getStatus: () => ({
-        apiConfigured: GEMINI_API_KEY !== 'sk_YOUR_KEY_HERE',
-        requestCount: requestCount,
-        apiEndpoint: API_ENDPOINT
-    })
+    getStatus
 };
 
-console.log('🤖 GeminiAI Module chargé - window.GeminiAI disponible');
+console.log('📦 GeminiAI Module chargé avec SDK officielle - window.GeminiAI disponible');

@@ -197,12 +197,17 @@ window.PerformanceMonitor = window.PerformanceMonitor || {
         );
 
         // === TIMING 3: AdminFeatures (lourd) @ 1500ms ===
-        this.scheduledTasks.push(
-            setTimeout(
-                this.wrapObjectInit('AdminFeatures', 'AdminFeatures.init'),
-                1500
-            )
-        );
+        // Seulement si le module existe réellement
+        if (window.AdminFeatures || document.getElementById('admin-panel')) {
+            this.scheduledTasks.push(
+                setTimeout(
+                    this.wrapObjectInit('AdminFeatures', 'AdminFeatures.init'),
+                    1500
+                )
+            );
+        } else {
+            console.warn('⚠️ AdminFeatures not available, skipping initialization');
+        }
 
         const elapsed = this.getElapsedTime();
         this.log(`✅ Non-critical tasks scheduled`, '', elapsed);

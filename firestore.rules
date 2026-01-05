@@ -34,9 +34,8 @@ service cloud.firestore {
     match /testimonials/{document=**} {
       allow read: if resource.data.approved == true || isAdmin();
       // N'IMPORTE QUI peut soumettre un avis (sans authentification)
-      // Les nouveaux avis ont approved:false par défaut
-      allow create: if request.resource.data.get('approved', false) == false 
-                   && request.resource.data.keys().hasAll(['nom', 'texte']);
+      // Vérifie seulement que les 3 champs obligatoires sont présents
+      allow create: if request.resource.data.keys().hasAll(['nom', 'texte', 'date']);
       // Seulement l'admin peut approuver/supprimer
       allow update, delete: if isAdmin();
     }
@@ -68,6 +67,13 @@ service cloud.firestore {
       allow read: if true;
       // Seulement l'admin peut gérer
       allow create, update, delete: if isAdmin();
+    }
+
+    // ==================== CONFIG (GEMINI SETTINGS) ====================
+    // Paramètres Gemini gérés par admin
+    match /config/{document=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
     }
 
     // ==================== À PROPOS ====================

@@ -86,9 +86,18 @@
         </div>
     </noscript>
 
+    <!-- Screen Reader Announcements (Accessibility) -->
+    <div id="sr-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;"></div>
+
     <!-- Optimized Loader - MUST be first script in body -->
     <script src="loader-optimized.js"></script>
 
+    <!-- Botpress Chat Support - Polyfill CommonJS exports to prevent errors -->
+    <script>
+        // Botpress uses CommonJS modules in browser - define exports to prevent ReferenceError
+        if (typeof exports === 'undefined') window.exports = {};
+        if (typeof module === 'undefined') window.module = { exports: {} };
+    </script>
     <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/12/13/23/20251213233014-VAUDUOMW.js" defer></script>
 
@@ -398,6 +407,8 @@
     <h3>Publier dans le Journal</h3>
     <form id="journal-form" class="admin-form">
         <input type="text" id="j-title" placeholder="Titre de l'article" required>
+        <textarea id="j-resume" placeholder="Résumé (optionnel - généré automatiquement sinon)" style="min-height: 60px;"></textarea>
+        <input type="text" id="j-context" placeholder="Contexte / Tags (optionnel - ex: Sécurité, Windows)">
         <textarea id="j-content" placeholder="Contenu de la veille..." required></textarea>
         <button type="submit" class="btn">Publier l'article</button>
     </form>
@@ -405,13 +416,13 @@
  </div>
 
 
-            <div class="admin-tabs">
-                <button class="tab-btn" onclick="openTab('tab-about')">👤 À Propos</button>
-                <button class="tab-btn active" onclick="openTab('tab-projets')">🚀 Projets</button>
-                <button class="tab-btn" onclick="openTab('tab-messages')">📩 Messages</button>
-                <button class="tab-btn" onclick="openTab('tab-tips')">💡 Astuces</button>
-                <button class="tab-btn" onclick="openTab('tab-comments')">💬 Commentaires</button>
-                <button class="tab-btn" onclick="openTab('tab-reviews')">⭐ Avis</button>
+            <div class="admin-tabs" role="tablist">
+                <button class="tab-btn" onclick="openTab('tab-about')" role="tab">👤 À Propos</button>
+                <button class="tab-btn active" onclick="openTab('tab-projets')" role="tab">🚀 Projets</button>
+                <button class="tab-btn" onclick="openTab('tab-messages')" role="tab">📩 Messages</button>
+                <button class="tab-btn" onclick="openTab('tab-tips')" role="tab">💡 Astuces</button>
+                <button class="tab-btn" onclick="openTab('tab-comments')" role="tab">💬 Commentaires</button>
+                <button class="tab-btn" onclick="openTab('tab-reviews')" role="tab">⭐ Avis</button>
             </div>
 
             <div id="tab-about" class="tab-content">
@@ -609,6 +620,9 @@
         </div>
     </div>
 
+    <!-- Modal placeholder for Social Links (created dynamically by social-links.js) -->
+    <div id="social-links-modal" class="modal hidden" style="display: none;"></div>
+
     <footer class="footer">
         <div class="footer-text">
             <p>Copyright © 2025 by Valdes.Tech | Tous droits réservés.</p>
@@ -625,7 +639,11 @@
     <script src="env-loader.js"></script>
     <script src="gemini-config.js"></script>
     <script type="module" src="firebase-config.js"></script>
+    <!-- Google Generative AI SDK (contourne CORS mieux que fetch direct) -->
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.3.0/dist/index.min.js"></script>
     <script src="gemini-ai.js" defer></script>
+    <script src="gemini-integration.js" defer></script>
+    <script src="gemini-admin-panel.js" defer></script>
     <script src="about-manager.js" defer></script>
     <script src="init-demo-data.js" defer></script>
     <script src="form-validation.js" defer></script>

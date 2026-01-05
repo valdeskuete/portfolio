@@ -128,14 +128,21 @@ window.TipsManager = {
             return;
         }
 
+        // Vérifier que Firebase Firestore est disponible
+        if (!window.db || !window.Firebase) {
+            console.warn('⚠️ Firebase Firestore non initialisé - retry dans 500ms');
+            setTimeout(() => this.loadTipsFromFirebase(), 500);
+            return;
+        }
+
         try {
-            const q = window.db.query(
-                window.db.collection(window.db, 'tips'),
-                window.db.where('published', '==', true),
-                window.db.orderBy('createdAt', 'desc')
+            // Charger TOUTES les astuces sans filtres complexes (évite besoin d'index composite)
+            const q = window.Firebase.query(
+                window.Firebase.collection(window.db, 'tips'),
+                window.Firebase.orderBy('date', 'desc')
             );
             
-            const snapshot = await window.db.getDocs(q);
+            const snapshot = await window.Firebase.getDocs(q);
 
             this.state.allTips = [];
             snapshot.forEach(doc => {

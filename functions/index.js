@@ -14,5 +14,12 @@
  * - reCAPTCHA v3 est validé client-side + Firestore Rules
  */
 
-console.log("[Functions] Cloud Functions non activées (Spark Plan)");
+// This file is only for local development and Firebase Emulator
+// Do NOT deploy to production (Cloud Functions require Blaze plan)
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        message: 'Cloud Functions not initialized - Spark plan active'
+    };
+}
 

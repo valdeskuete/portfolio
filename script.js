@@ -32,6 +32,7 @@ async function initializeApp() {
     if (menuIcon && navbar) {
         // Gestion du menu avec clavier et tactile
         const toggleMenu = () => {
+            if (!menuIcon || !navbar) return; // Safety check
             const isOpen = navbar.classList.contains('active');
             if (isOpen) {
                 menuIcon.classList.remove('active');

@@ -871,42 +871,63 @@ document.getElementById('firebase-contact-form')?.addEventListener('submit', asy
 document.getElementById('review-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Get or create user ID for tracking
+    let userId = localStorage.getItem('valdes_user_id');
+    if (!userId) {
+        userId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('valdes_user_id', userId);
+    }
+    
+    // Préparer les données MINIMALES pour soumission immédiate
     const reviewData = {
         nom: document.getElementById('review-name').value,
         texte: document.getElementById('review-text').value,
+        userId: userId,
         approved: false,
         date: serverTimestamp()
     };
 
-    // 🤖 VÉRIFIER CONFORMITÉ RGPD AVEC GEMINI
-    if (window.GeminiAI) {
-        console.log('🤖 Vérification RGPD avis avec IA...');
-        const compliance = await window.GeminiAI.checkRGPDCompliance(reviewData.texte);
+    try {
+        // SOUMETTRE L'AVIS IMMÉDIATEMENT (sans attendre Gemini)
+        const docRef = await addDoc(collection(db, "testimonials"), reviewData);
+        console.log('✅ Avis soumis avec succès (ID:', docRef.id, ')');
+        alert("Merci ! Votre avis a été soumis. ✅");
+        e.target.reset();
         
-        if (compliance) {
-            reviewData.compliance = {
-                checked: true,
-                isCompliant: compliance.isCompliant,
-                issues: compliance.issues || [],
-                recommendation: compliance.recommendation || 'flag'
-            };
-
-            // Auto-approuver si conforme
-            if (compliance.isCompliant && compliance.recommendation === 'publish') {
-                reviewData.approved = true;
-                console.log('✅ Avis auto-approuvé (conforme RGPD)');
-            } else if (compliance.anonymized_text) {
-                // Utiliser texte anonymisé si nécessaire
-                reviewData.texte = compliance.anonymized_text;
-                reviewData.anonymized = true;
-                console.log('✅ Avis anonymisé pour RGPD');
-            }
-        }
+        // NOTE: Vérification Gemini RGPD désactivée (CORS bloquer API Gemini côté client)
+        // Solution: Nécessite Cloud Function ou backend tier tiers (frais)
+        // Les avis sont acceptés directement dans Firestore et peuvent être modérés manuellement
+        
+        // VÉRIFICATION RGPD DÉSACTIVÉE (Gemini API inaccessible depuis navigateur sans Cloud Function)
+        // if (window.GeminiAI && window.GEMINI_API_KEY) {
+        //     Déclencher vérification asynchrone sans bloquer
+        //     setTimeout(async () => {
+        //         try {
+        //             console.log('🔄 Vérification RGPD en arrière-plan...');
+        //             const compliance = await window.GeminiAI.checkRGPDCompliance(reviewData.texte);
+        //             
+        //             if (compliance && !compliance.isCompliant) {
+        //                 // Ajouter une note si non conforme
+        //                 await updateDoc(doc(db, "testimonials", docRef.id), {
+        //                     rgpd_compliance: {
+        //                         checked: true,
+        //                         isCompliant: compliance.isCompliant,
+        //                         issues: compliance.issues || [],
+        //                         recommendation: compliance.recommendation || 'flag'
+        //                     }
+        //                 });
+        //                 console.log('⚠️ Avis marqué pour révision RGPD');
+        //             }
+        //         } catch (geminiError) {
+        //             console.warn('⚠️ Vérification RGPD échouée:', geminiError.message);
+        //             // Continuer - l'avis est déjà soumis
+        //         }
+        //     }, 100);
+        // }
+    } catch (error) {
+        console.error('❌ Erreur lors de la soumission de l\'avis:', error);
+        alert('❌ Erreur: ' + (error.message || 'Impossible de soumettre l\'avis. Veuillez réessayer.'));
     }
-
-    await addDoc(collection(db, "testimonials"), reviewData);
-    alert("Merci ! Votre avis est traité. ✅");
-    e.target.reset();
 });
 
 // Affichage Public Avis
