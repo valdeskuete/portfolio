@@ -21,6 +21,81 @@ const templateStyles = {
     tech: { columns: '1', layout: 'tech' }
 };
 
+const exampleTemplates = {
+    dev: {
+        fullName: 'Jean Dupont',
+        jobTitle: 'Ingénieur Développeur Full Stack',
+        email: 'jean.dupont@email.com',
+        phone: '+237 650 123 456',
+        location: 'Douala, Cameroun',
+        about: 'Passionné par la création d\'applications web modernes et scalables. 5+ ans d\'expérience en développement full stack.',
+        skills: 'JavaScript, React, Node.js, Python, MongoDB, PostgreSQL, Docker, AWS, Git',
+        languages: 'Français (natif), Anglais (bilingue)',
+        interests: 'Open Source, Machine Learning, DevOps, Entrepreneuriat',
+        template: 'tech',
+        colorPreset: 'modern',
+        fontTitle: 'Roboto',
+        fontSubtitle: 'Inter',
+        fontBody: 'Open Sans',
+        educations: [
+            { school: 'Université de Yaoundé I', title: 'Licence Informatique', year: '2018-2021' },
+            { school: 'École de Formation Tech', title: 'Bootcamp Full Stack', year: '2021' }
+        ],
+        experiences: [
+            { title: 'Senior Developer', company: 'TechCorp Solutions', period: 'Jan 2022 - Présent', description: '• Led team of 5 developers\n• Architected API REST scalable\n• Improved performance by 40%' },
+            { title: 'Junior Developer', company: 'StartupXYZ', period: 'Jan 2021 - Dec 2021', description: '• Developed 10+ features\n• Fixed critical bugs\n• Mentored 2 interns' }
+        ]
+    },
+    designer: {
+        fullName: 'Marie Anderson',
+        jobTitle: 'Designer UX/UI',
+        email: 'marie.anderson@email.com',
+        phone: '+237 651 234 567',
+        location: 'Yaoundé, Cameroun',
+        about: 'Designer créative spécialisée en UX/UI avec passion pour créer des expériences utilisateur exceptionnelles.',
+        skills: 'Figma, Adobe XD, UI Design, UX Research, Prototyping, Design Systems, Wireframing, User Testing',
+        languages: 'Français (natif), Anglais (intermédiaire)',
+        interests: 'Design Thinking, Illustration, Brand Design, Web Design',
+        template: 'creative',
+        colorPreset: 'bold',
+        fontTitle: 'Playfair Display',
+        fontSubtitle: 'Montserrat',
+        fontBody: 'Lato',
+        educations: [
+            { school: 'ENSET Douala', title: 'Licence Design Graphique', year: '2019-2022' },
+            { school: 'Cours Google UX Design', title: 'Certification Google', year: '2022' }
+        ],
+        experiences: [
+            { title: 'UX/UI Designer', company: 'Design Agency Pro', period: 'Mar 2022 - Présent', description: '• Designed 15+ projects\n• Created comprehensive design systems\n• Conducted user research sessions' },
+            { title: 'Graphic Designer', company: 'Creative Studio', period: 'Jan 2021 - Feb 2022', description: '• Designed branding materials\n• Created digital assets\n• Collaborated with marketing team' }
+        ]
+    },
+    manager: {
+        fullName: 'Ahmed Ibrahim',
+        jobTitle: 'Directeur Commercial',
+        email: 'ahmed.ibrahim@email.com',
+        phone: '+237 652 345 678',
+        location: 'Douala, Cameroun',
+        about: 'Leader expérimenté avec 10+ ans de management. Spécialisé en développement d\'équipes et croissance commerciale.',
+        skills: 'Leadership, Gestion Équipe, Stratégie Commerciale, Négociation, Budget Management, CRM, Business Development',
+        languages: 'Français (natif), Anglais (bilingue), Arabe (natif)',
+        interests: 'Leadership, Coaching, Entrepreneuriat, Immobilier',
+        template: 'luxury',
+        colorPreset: 'classic',
+        fontTitle: 'Playfair Display',
+        fontSubtitle: 'Montserrat',
+        fontBody: 'Roboto',
+        educations: [
+            { school: 'Université Yaoundé II', title: 'Master Gestion d\'Entreprise', year: '2010-2012' },
+            { school: 'Université Buea', title: 'Licence Commerce International', year: '2006-2010' }
+        ],
+        experiences: [
+            { title: 'Directeur Commercial', company: 'Big Corporation Inc', period: 'Jan 2019 - Présent', description: '• Managed team of 20 sales representatives\n• Increased revenue by 35%\n• Opened 5 new markets' },
+            { title: 'Manager Commercial', company: 'Trading Company', period: 'Jan 2015 - Dec 2018', description: '• Developed business strategies\n• Negotiated major contracts\n• Achieved 150% sales target' }
+        ]
+    }
+};
+
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ Générateur CV Pro Advanced Edition chargé');
@@ -179,6 +254,72 @@ function switchTemplate(templateName) {
     // Update preview
     updateCVPreview();
     console.log(`📐 Template changé: ${templateName}`);
+}
+
+// ===== LOAD EXAMPLE TEMPLATE =====
+function loadExample(exampleName) {
+    const example = exampleTemplates[exampleName];
+    if (!example) return;
+    
+    // Remplir infos personnelles
+    document.getElementById('fullName').value = example.fullName;
+    document.getElementById('jobTitle').value = example.jobTitle;
+    document.getElementById('email').value = example.email;
+    document.getElementById('phone').value = example.phone;
+    document.getElementById('location').value = example.location;
+    document.getElementById('about').value = example.about;
+    document.getElementById('skills').value = example.skills;
+    document.getElementById('languages').value = example.languages;
+    document.getElementById('interests').value = example.interests;
+    
+    // Charger polices et template
+    document.getElementById('fontTitle').value = example.fontTitle;
+    document.getElementById('fontSubtitle').value = example.fontSubtitle;
+    document.getElementById('fontBody').value = example.fontBody;
+    switchTemplate(example.template);
+    
+    // Charger preset couleur
+    applyPreset(example.colorPreset);
+    
+    // Charger formations
+    document.getElementById('educationList').innerHTML = '';
+    educationCount = 0;
+    if (example.educations) {
+        example.educations.forEach(edu => {
+            addEducation();
+            const sections = document.querySelectorAll('#educationList .dynamic-section');
+            const lastSection = sections[sections.length - 1];
+            lastSection.querySelector('[data-field*="edu-school"]').value = edu.school;
+            lastSection.querySelector('[data-field*="edu-title"]').value = edu.title;
+            lastSection.querySelector('[data-field*="edu-year"]').value = edu.year;
+        });
+    }
+    
+    // Charger expériences
+    document.getElementById('experienceList').innerHTML = '';
+    experienceCount = 0;
+    if (example.experiences) {
+        example.experiences.forEach(exp => {
+            addExperience();
+            const sections = document.querySelectorAll('#experienceList .dynamic-section');
+            const lastSection = sections[sections.length - 1];
+            lastSection.querySelector('[data-field*="exp-title"]').value = exp.title;
+            lastSection.querySelector('[data-field*="exp-company"]').value = exp.company;
+            lastSection.querySelector('[data-field*="exp-period"]').value = exp.period;
+            lastSection.querySelector('[data-field*="exp-desc"]').value = exp.description;
+        });
+    }
+    
+    // Re-attacher les event listeners
+    document.querySelectorAll('.education-field').forEach(field => {
+        field.addEventListener('input', updateCVPreview);
+    });
+    document.querySelectorAll('.experience-field').forEach(field => {
+        field.addEventListener('input', updateCVPreview);
+    });
+    
+    updateCVPreview();
+    console.log(`✨ Exemple chargé: ${exampleName}`);
 }
 
 // ===== ADD EDUCATION =====

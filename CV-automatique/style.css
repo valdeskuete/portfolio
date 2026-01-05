@@ -840,6 +840,29 @@ input[type="range"]::-webkit-slider-thumb {
     color: var(--cv-primary);
 }
 
+/* ===== EXAMPLE BUTTONS ===== */
+.btn-example {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid #0ef;
+    background: rgba(0, 238, 255, 0.1);
+    color: #0ef;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.btn-example:hover {
+    background: #0ef;
+    color: #1f242d;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.5);
+    transform: translateY(-2px);
+}
+
 @media print {
     body {
         background: white;

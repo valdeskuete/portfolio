@@ -6,7 +6,7 @@
     <title>Générateur de CV Pro - Valdes.Tech</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;600;700&family=Open+Sans:wght@400;700&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Arvo:wght@400;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
@@ -27,6 +27,14 @@
             <!-- TAB: CONTENU -->
             <div class="tab-content active" id="tab-content">
                 <form id="cvForm">
+                    <!-- EXEMPLES RAPIDES -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-magic"></i> Modèles Exemples</h3>
+                        <button type="button" class="btn-example" onclick="loadExample('dev')">💻 Développeur</button>
+                        <button type="button" class="btn-example" onclick="loadExample('designer')">🎨 Designer</button>
+                        <button type="button" class="btn-example" onclick="loadExample('manager')">👔 Manager</button>
+                    </div>
+
                     <!-- INFOS PERSONNELLES -->
                     <div class="form-section">
                         <h3><i class="fas fa-user"></i> Infos Personnelles</h3>
@@ -129,6 +137,10 @@
                         <option value="Montserrat">Montserrat</option>
                         <option value="Poppins">Poppins</option>
                         <option value="Roboto">Roboto</option>
+                        <option value="Oswald">Oswald</option>
+                        <option value="Raleway">Raleway</option>
+                        <option value="Caveat">Caveat</option>
+                        <option value="Arvo">Arvo</option>
                     </select>
 
                     <label>Sous-titres</label>
@@ -137,6 +149,9 @@
                         <option value="Poppins">Poppins</option>
                         <option value="Roboto">Roboto</option>
                         <option value="Inter">Inter</option>
+                        <option value="Raleway">Raleway</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Nunito">Nunito</option>
                     </select>
 
                     <label>Corps de Texte</label>
@@ -145,6 +160,10 @@
                         <option value="Poppins">Poppins</option>
                         <option value="Lato">Lato</option>
                         <option value="Inter">Inter</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Quicksand">Quicksand</option>
+                        <option value="Source Sans Pro">Source Sans Pro</option>
+                        <option value="Nunito">Nunito</option>
                     </select>
                 </div>
 
