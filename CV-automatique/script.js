@@ -93,6 +93,153 @@ const exampleTemplates = {
             { title: 'Directeur Commercial', company: 'Big Corporation Inc', period: 'Jan 2019 - Présent', description: '• Managed team of 20 sales representatives\n• Increased revenue by 35%\n• Opened 5 new markets' },
             { title: 'Manager Commercial', company: 'Trading Company', period: 'Jan 2015 - Dec 2018', description: '• Developed business strategies\n• Negotiated major contracts\n• Achieved 150% sales target' }
         ]
+    },
+    startup: {
+        fullName: 'Lucas Fontaine',
+        jobTitle: 'Founder & CTO - TechVision AI',
+        email: 'lucas@techvision.ai',
+        phone: '+33 7 45 67 89 01',
+        location: 'Paris, France',
+        about: 'Entrepreneur technologique avec 8 ans d\'expérience. Fondateur de TechVision AI (levée de 2.5M€). Passionné par l\'IA et l\'innovation.',
+        skills: 'Python, Machine Learning, AWS, Cloud Architecture, Leadership, Fundraising, Product Strategy, PostgreSQL, Docker, Kubernetes',
+        languages: 'Français (natif), Anglais (fluent), Mandarin (intermédiaire)',
+        interests: 'Intelligence Artificielle, Startups, Fintech, Open Source',
+        template: 'tech',
+        colorPreset: 'modern',
+        fontTitle: 'Montserrat',
+        fontSubtitle: 'Inter',
+        fontBody: 'Roboto',
+        educations: [
+            { school: 'HEC Paris', title: 'Executive MBA Innovation', year: '2020-2022' },
+            { school: 'Université Paris Diderot', title: 'Master Informatique & Data Science', year: '2015-2017' }
+        ],
+        experiences: [
+            { title: 'Founder & CTO', company: 'TechVision AI', period: 'Jan 2021 - Présent', description: '• Levée de fonds 2.5M€ de VCs Tier-1\n• Construction d\'une équipe de 25 ingénieurs\n• Plateforme analytique IA serving 200+ entreprises' },
+            { title: 'Tech Lead', company: 'DataFlow Systems', period: 'Jun 2017 - Dec 2020', description: '• Infrastructure ML pour 50M+ requêtes/jour\n• Optimisation du temps d\'inférence de 60%\n• Mentorat de 12 ingénieurs junior' }
+        ]
+    },
+    marketing: {
+        fullName: 'Emma Rousseau',
+        jobTitle: 'Head of Marketing & Growth',
+        email: 'emma.rousseau@growthco.fr',
+        phone: '+33 6 98 76 54 32',
+        location: 'Marseille, France',
+        about: 'Spécialiste Growth Marketing avec 7+ ans d\'expertise. Expérience chez des SaaS et e-commerce à haut croissance. Data-driven et orientée résultats.',
+        skills: 'Growth Hacking, SEO/SEM, Content Marketing, GA4, Looker, Marketing Automation, Brand Strategy, Budget Management, Copywriting',
+        languages: 'Français (natif), Anglais (très bon), Allemand (notions)',
+        interests: 'Stratégie digitale, Tendances marketing, Psychologie consommateur',
+        template: 'creative',
+        colorPreset: 'bold',
+        fontTitle: 'Playfair Display',
+        fontSubtitle: 'Raleway',
+        fontBody: 'Nunito',
+        educations: [
+            { school: 'ESSEC Business School', title: 'Master Marketing Digital & E-business', year: '2015-2017' },
+            { school: 'Université Aix-Marseille', title: 'Licence Communication', year: '2012-2015' }
+        ],
+        experiences: [
+            { title: 'Head of Marketing', company: 'GrowthCo SaaS', period: 'Sep 2019 - Présent', description: '• Augmentation MRR de 180% via growth marketing\n• Build in-house content team from scratch\n• Gestion budget annuel 500k€' },
+            { title: 'Marketing Manager', company: 'EcomFlow', period: 'Jan 2017 - Aug 2019', description: '• Réduction CAC de 40% via SEO optimization\n• 5 successful product campaigns launched\n• Social media audience grown to 50k followers' }
+        ]
+    },
+    datascientist: {
+        fullName: 'Antoine Leclerc',
+        jobTitle: 'Senior Data Scientist',
+        email: 'antoine.leclerc@datainsights.fr',
+        phone: '+33 6 55 44 33 22',
+        location: 'Toulouse, France',
+        about: 'Data Scientist senior avec 6+ ans en machine learning et analytics. Spécialiste deep learning, NLP, recommandation systems. Publications ACM et IEEE.',
+        skills: 'Python (Expert), PyTorch, TensorFlow, SQL, Spark, Statistics, A/B Testing, Feature Engineering, Computer Vision, NLP, Kubernetes',
+        languages: 'Français (natif), Anglais (fluent), Japonais (basique)',
+        interests: 'Research ML, Computer Vision, Algorithmes avancés, Data Privacy',
+        template: 'tech',
+        colorPreset: 'modern',
+        fontTitle: 'Montserrat',
+        fontSubtitle: 'Inter',
+        fontBody: 'Roboto',
+        educations: [
+            { school: 'Université Toulouse III', title: 'Doctorat Machine Learning', year: '2017-2020' },
+            { school: 'Université Toulouse III', title: 'Master Data Science & AI', year: '2015-2017' }
+        ],
+        experiences: [
+            { title: 'Senior Data Scientist', company: 'DataInsights Corp', period: 'Mar 2020 - Présent', description: '• Moteur de recommandation (2M+ prédictions/jour)\n• Amélioration précision modèle de 15%\n• Publication de 3 papers sur NLP techniques' },
+            { title: 'ML Engineer', company: 'TechAnalytics', period: 'Sep 2017 - Feb 2020', description: '• Computer vision models pour classification images\n• Déploiement de 5+ ML models en production\n• Réduction latence inférence de 50%' }
+        ]
+    },
+    etudiant: {
+        fullName: 'Marie Dubois',
+        jobTitle: 'Étudiante Master 2 - Informatique',
+        email: 'marie.dubois@student.fr',
+        phone: '+33 6 11 22 33 44',
+        location: 'Grenoble, France',
+        about: 'Étudiante en Master 2 Informatique (UGA), spécialisation IA. Passionnée par développement full-stack et recherche en ML. Stage ingénieur web confirmé.',
+        skills: 'Java, Python, React.js, SQL, Git, Docker, Spring Boot, HTML/CSS, Linux, Agile Scrum, TensorFlow',
+        languages: 'Français (natif), Anglais (bon), Espagnol (élémentaire)',
+        interests: 'Intelligence Artificielle, Startups, Open Source, Teaching',
+        template: 'modern',
+        colorPreset: 'modern',
+        fontTitle: 'Poppins',
+        fontSubtitle: 'Inter',
+        fontBody: 'Nunito',
+        educations: [
+            { school: 'Université Grenoble-Alpes', title: 'Master 2 Informatique - Spécialité IA', year: '2024-2026' },
+            { school: 'Université Grenoble-Alpes', title: 'Master 1 Informatique', year: '2023-2024' },
+            { school: 'Université Grenoble-Alpes', title: 'Licence Informatique', year: '2020-2023' }
+        ],
+        experiences: [
+            { title: 'Stagiaire Développeur Full-Stack', company: 'WebServices SA', period: 'Jun 2024 - Sep 2024', description: '• Développement features e-commerce en React & Spring Boot\n• Amélioration performance application de 25%\n• Travail en équipe agile de 6 développeurs' },
+            { title: 'Assistant de Recherche', company: 'Lab IA - UGA', period: 'Jan 2024 - Jun 2024', description: '• Support professeur sur projet recherche ML\n• Implémentation neural networks en PyTorch\n• Contribution à soumission academic paper' }
+        ]
+    },
+    chercheur: {
+        fullName: 'Pr. Philippe Arnaud',
+        jobTitle: 'Chercheur Senior - Doctorat d\'État',
+        email: 'p.arnaud@cnrs-loria.fr',
+        phone: '+33 3 83 59 30 00',
+        location: 'Nancy, France',
+        about: 'Chercheur senior au CNRS (LORIA) depuis 12 ans. Doctorat d\'État en Informatique (2012). Spécialisé algorithmique distribuée et systèmes complexes. 45+ publications internationales.',
+        skills: 'Algorithmique, Systèmes distribués, Théorie graphes, Machine Learning, C++, Python, Simulation, Parallel Computing, Academic Writing',
+        languages: 'Français (natif), Anglais (expert), Allemand (professionnel)',
+        interests: 'Recherche fondamentale, Optimisation combinatoire, Systèmes multi-agents',
+        template: 'classic',
+        colorPreset: 'classic',
+        fontTitle: 'Raleway',
+        fontSubtitle: 'Open Sans',
+        fontBody: 'Open Sans',
+        educations: [
+            { school: 'Université de Lorraine', title: 'Doctorat d\'État Informatique', year: '2008-2012' },
+            { school: 'Université de Lorraine', title: 'Diplôme d\'Études Approfondies (DEA) Informatique', year: '2007-2008' },
+            { school: 'Université de Lorraine', title: 'Maîtrise Informatique', year: '2005-2007' }
+        ],
+        experiences: [
+            { title: 'Chercheur Senior (HDR)', company: 'CNRS - Laboratoire LORIA', period: 'Jan 2020 - Présent', description: '• Direction de 3 doctorants\n• Publication 15+ papers conférences top-tier\n• Sécurisation 800k€ financement recherche' },
+            { title: 'Chercheur Postdoctoral', company: 'INRIA Rocquencourt', period: 'Oct 2012 - Dec 2019', description: '• Développement nouveaux algorithmes distribués\n• Co-auteur 20+ peer-reviewed papers\n• Collaboration équipes recherche internationales' }
+        ]
+    },
+    master: {
+        fullName: 'Clara Beaumont',
+        jobTitle: 'Candidate Master - Relations Internationales',
+        email: 'clara.beaumont@sciencespo.fr',
+        phone: '+33 6 77 88 99 00',
+        location: 'Sciences Po, Paris',
+        about: 'Étudiante Master 1 Relations Internationales à Sciences Po. Passionnée par géopolitique et diplomatie. Stage Quai d\'Orsay (année passée). Mobilités Allemagne et Japon.',
+        skills: 'Analyse géopolitique, Négociation, Rédaction diplomatique, Langues (4), Recherche académique, Communication, Microsoft Office, LaTeX',
+        languages: 'Français (natif), Anglais (bilingue), Allemand (courant), Mandarin (intermédiaire)',
+        interests: 'Géopolitique, Multilatéralisme, Droits humains, Soft Power',
+        template: 'luxury',
+        colorPreset: 'classic',
+        fontTitle: 'Playfair Display',
+        fontSubtitle: 'Raleway',
+        fontBody: 'Lato',
+        educations: [
+            { school: 'Sciences Po Paris', title: 'Master 1 Relations Internationales', year: '2024-2025' },
+            { school: 'Sciences Po Paris', title: 'Licence (3e année) Relations Internationales', year: '2023-2024' },
+            { school: 'Sciences Po Paris', title: 'Cycle d\'études politiques', year: '2021-2024' }
+        ],
+        experiences: [
+            { title: 'Stagiaire - Diplomatie', company: 'Ministère Affaires Étrangères', period: 'Sep 2023 - Dec 2023', description: '• Analyse politique UE sur enjeux humanitaires\n• Préparation briefing notes pour ambassadeurs\n• Participation négociations multilatérales' },
+            { title: 'Assistant de Recherche', company: 'Centre d\'Études Sciences Po', period: 'Feb 2023 - Aug 2023', description: '• Recherche gouvernance Amérique Latine\n• Co-auteur 2 policy briefs\n• Présentation findings à séminaire académique' }
+        ]
     }
 };
 
