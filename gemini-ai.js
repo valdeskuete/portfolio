@@ -51,8 +51,8 @@ function initGeminiKey() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initGeminiKey);
 } else {
-  // Si déjà chargé, initialiser immédiatement
-  setTimeout(initGeminiKey, 50);
+  // Si déjà chargé, initialiser après délai pour laisser env-loader terminer
+  setTimeout(initGeminiKey, 300);
 }
 
 let requestCount = 0;
