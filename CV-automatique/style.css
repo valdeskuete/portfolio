@@ -1078,6 +1078,34 @@ body {
     border-radius: 4px;
 }
 
+/* ===== COLOR PALETTE ===== */
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.color-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.color-swatch.active {
+    border-color: white;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 0 0 20px rgba(14, 239, 255, 0.3);
+}
+
 /* ===== RESPONSIVE ===== */
 @media print {
     .cv-editor, .editor-sidebar, .editor-preview { display: none; }

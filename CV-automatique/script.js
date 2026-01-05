@@ -198,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ CV Generator Pro loaded');
     initializeEventListeners();
     renderDynamicLists();
+    updateColorSwatchActive('#0ef');
     updatePreview();
 });
 
@@ -426,6 +427,7 @@ function loadExample(exampleName) {
     document.getElementById('primaryColor').value = example.primaryColor || '#0ef';
 
     switchTemplate(example.template);
+    updateColorSwatchActive(example.primaryColor || '#0ef');
     renderDynamicLists();
     switchTab('content');
     updatePreview();
@@ -446,8 +448,7 @@ function applyColorPreset(presetName) {
         bold: '#ff6600',
         minimal: '#000000'
     };
-    document.getElementById('primaryColor').value = presets[presetName];
-    updatePreview();
+    setColor(presets[presetName]);
 }
 
 // ===== PREVIEW UPDATE =====
@@ -590,12 +591,41 @@ function updatePreview() {
 // ===== EXPORT =====
 function exportPDF() {
     const element = document.getElementById('cvPreview');
+    
+    // Crée une copie temporaire pour le PDF avec les styles appliqués
+    const clonedElement = element.cloneNode(true);
+    
+    // Applique les styles inline pour que le PDF les capture
+    const style = document.createElement('style');
+    style.textContent = `
+        body { margin: 0; padding: 0; }
+        .cv-page { 
+            background: white !important;
+            color: #000 !important;
+            padding: 40px !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+        }
+    `;
+    clonedElement.appendChild(style);
+    
     html2pdf().set({
-        margin: 10,
+        margin: [10, 10, 10, 10],
         filename: 'CV.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+        },
+        jsPDF: { 
+            orientation: 'portrait', 
+            unit: 'mm', 
+            format: 'a4'
+        }
     }).from(element).save();
 }
 
@@ -698,6 +728,7 @@ function importJSON(event) {
             document.getElementById('primaryColor').value = data.primaryColor || '#0ef';
 
             if (data.template) switchTemplate(data.template);
+            updateColorSwatchActive(data.primaryColor || '#0ef');
 
             renderDynamicLists();
             updatePreview();
@@ -708,6 +739,29 @@ function importJSON(event) {
         }
     };
     reader.readAsText(file);
+}
+
+// ===== COLOR MANAGEMENT =====
+function setColor(color) {
+    document.getElementById('primaryColor').value = color;
+    syncColorHex(color);
+    updateColorSwatchActive(color);
+    updatePreview();
+}
+
+function syncColorHex(color) {
+    document.getElementById('primaryColorHex').textContent = color.toUpperCase();
+}
+
+function updateColorSwatchActive(color) {
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+        const swatchColor = swatch.getAttribute('data-color');
+        if (swatchColor === color.toLowerCase()) {
+            swatch.classList.add('active');
+        } else {
+            swatch.classList.remove('active');
+        }
+    });
 }
 
 // ===== ZOOM =====

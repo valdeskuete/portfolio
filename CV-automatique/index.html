@@ -170,8 +170,16 @@
                     
                     <div class="form-group">
                         <label>Couleur Principale</label>
-                        <div class="color-input-wrapper">
-                            <input type="color" id="primaryColor" value="#0ef" oninput="updatePreview()">
+                        <div class="color-palette">
+                            <div class="color-swatch" data-color="#0ef" style="background: #0ef;" title="Cyan" onclick="setColor('#0ef')"></div>
+                            <div class="color-swatch" data-color="#ff6600" style="background: #ff6600;" title="Orange" onclick="setColor('#ff6600')"></div>
+                            <div class="color-swatch" data-color="#1a5f7a" style="background: #1a5f7a;" title="Bleu" onclick="setColor('#1a5f7a')"></div>
+                            <div class="color-swatch" data-color="#000000" style="background: #000000;" title="Noir" onclick="setColor('#000000')"></div>
+                            <div class="color-swatch" data-color="#e91e63" style="background: #e91e63;" title="Rose" onclick="setColor('#e91e63')"></div>
+                            <div class="color-swatch" data-color="#4CAF50" style="background: #4CAF50;" title="Vert" onclick="setColor('#4CAF50')"></div>
+                        </div>
+                        <div class="color-input-wrapper" style="margin-top: 10px;">
+                            <input type="color" id="primaryColor" value="#0ef" oninput="updatePreview(); syncColorHex(this.value)">
                             <span id="primaryColorHex">#0ef</span>
                         </div>
                     </div>
