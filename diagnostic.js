@@ -12,14 +12,15 @@ window.AppDiagnostic = {
     // Check 1: Firebase
     this.check('Firebase', () => window.db && window.auth !== undefined);
     
-    // Check 2: Service Worker (async)
+    // Check 2: Service Worker (async) - with longer timeout to ensure registration
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
         this.check('Service Worker', registrations.length > 0);
-      }).catch(err => {
+      } catch (err) {
         console.warn('⚠️ SW check failed:', err);
         this.check('Service Worker', false);
-      });
+      }
     }
     
     // Check 3: Gemini API (optional - not critical)
