@@ -79,6 +79,20 @@ window.getDocs = getDocs;
 window.increment = increment;
 window.serverTimestamp = serverTimestamp;
 
+// Ajouter les méthodes à window.db pour compatibilité avec les scripts non-module
+window.db.collection = collection;
+window.db.addDoc = addDoc;
+window.db.onSnapshot = onSnapshot;
+window.db.query = query;
+window.db.orderBy = orderBy;
+window.db.where = where;
+window.db.deleteDoc = deleteDoc;
+window.db.doc = doc;
+window.db.updateDoc = updateDoc;
+window.db.getDocs = getDocs;
+window.db.increment = increment;
+window.db.serverTimestamp = serverTimestamp;
+
 /* ==================== AUTHENTIFICATION ==================== */
 onAuthStateChanged(auth, async (user) => {
     try {
