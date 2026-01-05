@@ -2,12 +2,23 @@
 let educationCount = 0;
 let experienceCount = 0;
 let zoomLevel = 100;
+let currentTemplate = 'classic';
+let currentPhotoData = null;
 
 const colorPresets = {
     modern: { primary: '#0ef', bg: '#ffffff', text: '#333333', subtitle: '#666666' },
     classic: { primary: '#1a5f7a', bg: '#f5f5f5', text: '#000000', subtitle: '#555555' },
     minimal: { primary: '#000000', bg: '#ffffff', text: '#000000', subtitle: '#888888' },
     bold: { primary: '#ff6600', bg: '#ffffff', text: '#222222', subtitle: '#777777' }
+};
+
+const templateStyles = {
+    classic: { columns: '1', layout: 'classic' },
+    modern: { columns: '2', layout: 'modern' },
+    minimal: { columns: '1', layout: 'minimal' },
+    luxury: { columns: '1', layout: 'luxury' },
+    creative: { columns: '1', layout: 'creative' },
+    tech: { columns: '1', layout: 'tech' }
 };
 
 // ===== INITIALIZATION =====
@@ -90,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form inputs
     document.getElementById('cvForm').addEventListener('input', updateCVPreview);
 
+    // Photo upload
+    document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+
     // Dynamic sections
     addEducation();
     addExperience();
@@ -123,6 +137,48 @@ function applyPreset(presetName) {
         document.getElementById('colorSubtitleHex').value = preset.subtitle;
         updateCVPreview();
     }
+}
+
+// ===== PHOTO HANDLING =====
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            currentPhotoData = e.target.result;
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = `<img src="${currentPhotoData}" alt="Photo profil">`;
+            document.getElementById('removePhotoBtn').style.display = 'block';
+            updateCVPreview();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('Veuillez sélectionner une image valide');
+    }
+}
+
+function removePhoto() {
+    currentPhotoData = null;
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '<i class="fas fa-camera"></i>';
+    document.getElementById('removePhotoBtn').style.display = 'none';
+    document.getElementById('photoInput').value = '';
+    updateCVPreview();
+}
+
+// ===== TEMPLATE SWITCHING =====
+function switchTemplate(templateName) {
+    currentTemplate = templateName;
+    
+    // Update button active state
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-template="${templateName}"]`).classList.add('active');
+    
+    // Update preview
+    updateCVPreview();
+    console.log(`📐 Template changé: ${templateName}`);
 }
 
 // ===== ADD EDUCATION =====
@@ -268,7 +324,7 @@ function updateCVPreview() {
 
     // Build CV HTML
     const cvHTML = `
-        <div class="cv-page" style="
+        <div class="cv-page ${currentTemplate}-template" style="
             --cv-primary: ${colorPrimary};
             --cv-text: ${colorText};
             --cv-subtitle: ${colorSubtitle};
@@ -285,13 +341,17 @@ function updateCVPreview() {
         ">
             <div class="cv-content">
                 <div class="cv-header">
-                    <div class="cv-name">${fullName}</div>
-                    <div class="cv-job">${jobTitle}</div>
-                    <div class="cv-contact">
-                        <div><strong>Email:</strong> ${email}</div>
-                        <div><strong>Tél:</strong> ${phone}</div>
-                        <div style="grid-column: 1 / -1;"><strong>Localisation:</strong> ${location}</div>
+                    ${currentPhotoData && currentTemplate !== 'minimal' ? `<img src="${currentPhotoData}" alt="Photo profil" class="cv-photo">` : ''}
+                    <div>
+                        <div class="cv-name">${fullName}</div>
+                        <div class="cv-job">${jobTitle}</div>
                     </div>
+                </div>
+                <div class="cv-contact">
+                    <div><strong>Email:</strong> ${email}</div>
+                    <div><strong>Tél:</strong> ${phone}</div>
+                    <div style="grid-column: 1 / -1;"><strong>Localisation:</strong> ${location}</div>
+                </div>
                 </div>
 
                 ${about ? `<div class="cv-about" style="color: ${colorText};">${about}</div>` : ''}
@@ -451,7 +511,8 @@ function exportJSON() {
             email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
             location: document.getElementById('location').value,
-            about: document.getElementById('about').value
+            about: document.getElementById('about').value,
+            photo: currentPhotoData
         },
         education: [],
         experience: [],
@@ -471,7 +532,8 @@ function exportJSON() {
             fontSizeBody: document.getElementById('fontSizeBody').value,
             spacing: document.getElementById('spacing').value,
             margins: document.getElementById('margins').value
-        }
+        },
+        template: currentTemplate
     };
 
     // Récupérer formations
@@ -523,6 +585,14 @@ function importJSON() {
                     document.getElementById('phone').value = data.personal.phone || '';
                     document.getElementById('location').value = data.personal.location || '';
                     document.getElementById('about').value = data.personal.about || '';
+                    
+                    // Restore photo
+                    if (data.personal.photo) {
+                        currentPhotoData = data.personal.photo;
+                        const preview = document.getElementById('photoPreview');
+                        preview.innerHTML = `<img src="${currentPhotoData}" alt="Photo profil">`;
+                        document.getElementById('removePhotoBtn').style.display = 'block';
+                    }
                 }
 
                 // Restore design settings
@@ -539,6 +609,11 @@ function importJSON() {
                     document.getElementById('fontSizeBody').value = data.design.fontSizeBody;
                     document.getElementById('spacing').value = data.design.spacing;
                     document.getElementById('margins').value = data.design.margins;
+                }
+
+                // Restore template
+                if (data.template) {
+                    switchTemplate(data.template);
                 }
 
                 // Restore skills, languages, interests

@@ -3,148 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de CV - Valdes.Tech</title>
+    <title>Générateur de CV Pro - Valdes.Tech</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&family=Montserrat:wght@600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <header class="header">
-            <h1><i class="fas fa-file-alt"></i> Générateur de CV Professionnel</h1>
-            <p>Créez votre CV en quelques minutes - Format VADEX</p>
-        </header>
+    <div class="app-container">
+        <!-- SIDEBAR CONTRÔLES -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>CV Générateur</h1>
+                <p>Pro Edition</p>
+            </div>
 
-        <!-- MAIN CONTENT -->
-        <div class="content-wrapper">
-            <!-- FORMULAIRE (Gauche) -->
-            <div class="form-section">
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" data-tab="content">📝 Contenu</button>
+                <button class="tab-btn" data-tab="design">🎨 Design</button>
+                <button class="tab-btn" data-tab="layout">📐 Layout</button>
+                <button class="tab-btn" data-tab="export">⬇️ Export</button>
+            </div>
+
+            <!-- TAB: CONTENU -->
+            <div class="tab-content active" id="tab-content">
                 <form id="cvForm">
-                    <!-- SECTION COULEURS -->
-                    <div class="form-group">
-                        <h3><i class="fas fa-palette"></i> Personnalisation</h3>
-                        <label>Couleur principale:</label>
-                        <div class="color-palette">
-                            <input type="color" id="colorPrimary" value="#0ef" title="Couleur personnalisée">
-                            <button type="button" class="color-btn" data-color="#0ef" title="Cyan">Cyan</button>
-                            <button type="button" class="color-btn" data-color="#00d4ff" title="Bleu">Bleu</button>
-                            <button type="button" class="color-btn" data-color="#00ff88" title="Vert">Vert</button>
-                            <button type="button" class="color-btn" data-color="#ff00ff" title="Magenta">Magenta</button>
-                            <button type="button" class="color-btn" data-color="#ff6600" title="Orange">Orange</button>
-                        </div>
-                    </div>
-
                     <!-- INFOS PERSONNELLES -->
-                    <div class="form-group">
-                        <h3><i class="fas fa-user"></i> Informations Personnelles</h3>
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Infos Personnelles</h3>
+                        <div class="photo-upload-section">
+                            <label>📸 Photo de Profil</label>
+                            <div class="photo-preview" id="photoPreview">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                            <button type="button" class="btn-photo-upload" onclick="document.getElementById('photoInput').click()">Charger une photo</button>
+                            <button type="button" class="btn-photo-remove" id="removePhotoBtn" style="display: none;" onclick="removePhoto()">Supprimer</button>
+                        </div>
                         <input type="text" id="fullName" placeholder="Nom complet" required>
-                        <input type="text" id="jobTitle" placeholder="Titre/Profession" required>
-                        <input type="text" id="email" placeholder="Email">
-                        <input type="text" id="phone" placeholder="Téléphone">
-                        <input type="text" id="location" placeholder="Localisation (Ville, Pays)">
-                        <textarea id="about" placeholder="Résumé professionnel (2-3 lignes)"></textarea>
-                    </div>
-
-                    <!-- INTÉRÊTS -->
-                    <div class="form-group">
-                        <h3><i class="fas fa-heart"></i> Intérêts</h3>
-                        <input type="text" id="interests" placeholder="Ex: Voyage, Sport, Lecture, Musique (séparés par des virgules)">
+                        <input type="text" id="jobTitle" placeholder="Titre/Profession">
+                        <input type="email" id="email" placeholder="Email">
+                        <input type="tel" id="phone" placeholder="Téléphone">
+                        <input type="text" id="location" placeholder="Localisation">
+                        <textarea id="about" placeholder="Résumé professionnel (max 3 lignes)" maxlength="300"></textarea>
                     </div>
 
                     <!-- FORMATION -->
-                    <div class="form-group">
+                    <div class="form-section">
                         <h3><i class="fas fa-graduation-cap"></i> Formation</h3>
                         <div id="educationList"></div>
-                        <button type="button" class="btn-add" onclick="addEducation()">+ Ajouter formation</button>
+                        <button type="button" class="btn-add-item" onclick="addEducation()">+ Ajouter</button>
                     </div>
 
                     <!-- EXPÉRIENCES -->
-                    <div class="form-group">
+                    <div class="form-section">
                         <h3><i class="fas fa-briefcase"></i> Expériences</h3>
                         <div id="experienceList"></div>
-                        <button type="button" class="btn-add" onclick="addExperience()">+ Ajouter expérience</button>
+                        <button type="button" class="btn-add-item" onclick="addExperience()">+ Ajouter</button>
                     </div>
 
                     <!-- COMPÉTENCES -->
-                    <div class="form-group">
+                    <div class="form-section">
                         <h3><i class="fas fa-cogs"></i> Compétences</h3>
-                        <input type="text" id="skills" placeholder="Ex: Réseaux, DNS, DHCP, Virtualisation (séparés par des virgules)" required>
+                        <input type="text" id="skills" placeholder="Séparées par des virgules">
                     </div>
 
                     <!-- LANGUES -->
-                    <div class="form-group">
+                    <div class="form-section">
                         <h3><i class="fas fa-globe"></i> Langues</h3>
-                        <input type="text" id="languages" placeholder="Ex: Français (courant), Anglais (apprentissage)">
+                        <input type="text" id="languages" placeholder="Séparées par des virgules">
                     </div>
 
-                    <!-- BOUTONS ACTION -->
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-primary" onclick="exportPDF()">
-                            <i class="fas fa-download"></i> Télécharger PDF
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="exportPNG()">
-                            <i class="fas fa-image"></i> Télécharger Image
-                        </button>
-                        <button type="reset" class="btn btn-reset">
-                            <i class="fas fa-redo"></i> Réinitialiser
-                        </button>
+                    <!-- INTÉRÊTS -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-heart"></i> Intérêts</h3>
+                        <input type="text" id="interests" placeholder="Séparés par des virgules">
                     </div>
                 </form>
             </div>
 
-            <!-- PREVIEW CV (Droite) -->
-            <div class="preview-section">
-                <div id="cvPreview" class="cv-container">
-                    <!-- Le CV s'affichera ici en temps réel -->
+            <!-- TAB: DESIGN -->
+            <div class="tab-content" id="tab-design">
+                <!-- COULEURS -->
+                <div class="form-section">
+                    <h3><i class="fas fa-palette"></i> Couleurs</h3>
+                    
+                    <label>🎨 Couleur Primaire</label>
+                    <div class="color-input-group">
+                        <input type="color" id="colorPrimary" value="#0ef">
+                        <input type="text" id="colorPrimaryHex" value="#0ef" maxlength="7">
+                    </div>
+
+                    <label>📄 Couleur Fond</label>
+                    <div class="color-input-group">
+                        <input type="color" id="colorBg" value="#ffffff">
+                        <input type="text" id="colorBgHex" value="#ffffff" maxlength="7">
+                    </div>
+
+                    <label>📝 Couleur Texte</label>
+                    <div class="color-input-group">
+                        <input type="color" id="colorText" value="#000000">
+                        <input type="text" id="colorTextHex" value="#000000" maxlength="7">
+                    </div>
+
+                    <label>🏷️ Couleur Sous-titres</label>
+                    <div class="color-input-group">
+                        <input type="color" id="colorSubtitle" value="#666666">
+                        <input type="text" id="colorSubtitleHex" value="#666666" maxlength="7">
+                    </div>
+
+                    <div class="color-presets">
+                        <button type="button" class="preset-btn" data-preset="modern">Modern</button>
+                        <button type="button" class="preset-btn" data-preset="classic">Classic</button>
+                        <button type="button" class="preset-btn" data-preset="minimal">Minimal</button>
+                        <button type="button" class="preset-btn" data-preset="bold">Bold</button>
+                    </div>
                 </div>
+
+                <!-- POLICES -->
+                <div class="form-section">
+                    <h3><i class="fas fa-font"></i> Polices</h3>
+                    
+                    <label>Titre Principal</label>
+                    <select id="fontTitle">
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Roboto">Roboto</option>
+                    </select>
+
+                    <label>Sous-titres</label>
+                    <select id="fontSubtitle">
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Inter">Inter</option>
+                    </select>
+
+                    <label>Corps de Texte</label>
+                    <select id="fontBody">
+                        <option value="Roboto">Roboto</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Lato">Lato</option>
+                        <option value="Inter">Inter</option>
+                    </select>
+                </div>
+
+                <!-- ESPACEMENT & TAILLES -->
+                <div class="form-section">
+                    <h3><i class="fas fa-expand"></i> Tailles & Espacement</h3>
+                    
+                    <label>Taille Titre (<span id="fontSizeTitleValue">28</span>px)</label>
+                    <input type="range" id="fontSizeTitle" min="20" max="40" value="28">
+
+                    <label>Taille Sous-titre (<span id="fontSizeSubtitleValue">14</span>px)</label>
+                    <input type="range" id="fontSizeSubtitle" min="12" max="20" value="14">
+
+                    <label>Taille Corps (<span id="fontSizeBodyValue">11</span>px)</label>
+                    <input type="range" id="fontSizeBody" min="9" max="14" value="11">
+
+                    <label>Espacement (<span id="spacingValue">1.5</span>)</label>
+                    <input type="range" id="spacing" min="1" max="2.5" step="0.1" value="1.5">
+                </div>
+            </div>
+
+            <!-- TAB: LAYOUT -->
+            <div class="tab-content" id="tab-layout">
+                <div class="form-section">
+                    <h3><i class="fas fa-columns"></i> Mise en Page</h3>
+                    
+                    <label>🎨 Sélectionnez un Template</label>
+                    <div class="template-grid">
+                        <button type="button" class="template-btn active" data-template="classic" onclick="switchTemplate('classic')">
+                            <div class="template-icon">📄</div>
+                            <div class="template-name">Classique</div>
+                            <div class="template-desc">1 colonne</div>
+                        </button>
+                        <button type="button" class="template-btn" data-template="modern" onclick="switchTemplate('modern')">
+                            <div class="template-icon">📑</div>
+                            <div class="template-name">Moderne</div>
+                            <div class="template-desc">2 colonnes</div>
+                        </button>
+                        <button type="button" class="template-btn" data-template="minimal" onclick="switchTemplate('minimal')">
+                            <div class="template-icon">✨</div>
+                            <div class="template-name">Minimaliste</div>
+                            <div class="template-desc">Épuré</div>
+                        </button>
+                        <button type="button" class="template-btn" data-template="luxury" onclick="switchTemplate('luxury')">
+                            <div class="template-icon">👑</div>
+                            <div class="template-name">Luxe</div>
+                            <div class="template-desc">Premium</div>
+                        </button>
+                        <button type="button" class="template-btn" data-template="creative" onclick="switchTemplate('creative')">
+                            <div class="template-icon">🎭</div>
+                            <div class="template-name">Créatif</div>
+                            <div class="template-desc">Artistique</div>
+                        </button>
+                        <button type="button" class="template-btn" data-template="tech" onclick="switchTemplate('tech')">
+                            <div class="template-icon">⚙️</div>
+                            <div class="template-name">Tech</div>
+                            <div class="template-desc">Coder</div>
+                        </button>
+                    </div>
+
+                    <label>Marges (<span id="marginValue">20</span>mm)</label>
+                    <input type="range" id="margins" min="10" max="40" value="20">
+
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="showPhoto" checked> 
+                            <span>Afficher photo de profil</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="showBorder" checked> 
+                            <span>Bordure couleur</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="pageNumbers" checked> 
+                            <span>Numéros de page</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: EXPORT -->
+            <div class="tab-content" id="tab-export">
+                <div class="form-section">
+                    <h3><i class="fas fa-download"></i> Télécharger</h3>
+                    
+                    <button type="button" class="btn-export" onclick="previewPDF()">
+                        <i class="fas fa-eye"></i> Aperçu PDF
+                    </button>
+                    
+                    <button type="button" class="btn-export primary" onclick="exportPDF()">
+                        <i class="fas fa-file-pdf"></i> Télécharger PDF
+                    </button>
+                    
+                    <button type="button" class="btn-export" onclick="exportPNG()">
+                        <i class="fas fa-image"></i> Télécharger PNG
+                    </button>
+
+                    <button type="button" class="btn-export" onclick="exportJSON()">
+                        <i class="fas fa-save"></i> Sauvegarder (JSON)
+                    </button>
+
+                    <button type="button" class="btn-export secondary" onclick="importJSON()">
+                        <i class="fas fa-upload"></i> Charger (JSON)
+                    </button>
+
+                    <div class="export-info">
+                        <p><i class="fas fa-info-circle"></i> Multi-pages supporté automatiquement</p>
+                        <p><i class="fas fa-info-circle"></i> Aperçu haute résolution</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- PREVIEW CV -->
+            <div class="preview-wrapper">
+                <div class="preview-toolbar">
+                    <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+                    <span id="zoomLevel">100%</span>
+                    <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div id="cvPreview" class="cv-preview"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL APERÇU PDF -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePreview()">&times;</button>
+            <h2>Aperçu PDF</h2>
+            <div id="modalPreview" class="modal-preview"></div>
+            <div class="modal-actions">
+                <button class="btn-modal" onclick="closePreview()">Fermer</button>
+                <button class="btn-modal primary" onclick="confirmExport()">Télécharger PDF</button>
             </div>
         </div>
     </div>
 
-    <!-- Template CV caché (pour clonage) -->
-    <template id="cvTemplate">
-        <div class="cv-header">
-            <div class="cv-left">
-                <h1 class="cv-name">Nom Complet</h1>
-                <p class="cv-job">Titre Professionnel</p>
-            </div>
-            <div class="cv-right">
-                <p class="cv-info"><strong>Email:</strong> email@exemple.com</p>
-                <p class="cv-info"><strong>Tél:</strong> +237 6XX XXX XXX</p>
-                <p class="cv-info"><strong>Localisation:</strong> Douala, Cameroun</p>
-            </div>
-        </div>
-
-        <div class="cv-about">
-            <p>Résumé professionnel...</p>
-        </div>
-
-        <div class="cv-section">
-            <h3 class="cv-section-title">FORMATION</h3>
-            <div id="cvEducation"></div>
-        </div>
-
-        <div class="cv-section">
-            <h3 class="cv-section-title">EXPÉRIENCES</h3>
-            <div id="cvExperience"></div>
-        </div>
-
-        <div class="cv-row">
-            <div class="cv-col">
-                <h3 class="cv-section-title">COMPÉTENCES</h3>
-                <div id="cvSkills"></div>
-            </div>
-            <div class="cv-col">
-                <h3 class="cv-section-title">INTÉRÊTS</h3>
-                <div id="cvInterests"></div>
-                
-                <h3 class="cv-section-title">LANGUES</h3>
-                <div id="cvLanguages"></div>
-            </div>
-        </div>
-    </template>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
