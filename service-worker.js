@@ -28,12 +28,20 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[SW] Pré-caching des assets critiques...');
-      return cache.addAll(CRITICAL_ASSETS).catch((error) => {
-        console.warn('[SW] Erreur pré-cache (assets optionnels ignorés):', error);
-      });
+      // Cacher chaque asset individuellement pour éviter que 1 erreur bloque le reste
+      return Promise.all(
+        CRITICAL_ASSETS.map(url => {
+          return cache.add(url).catch((error) => {
+            console.warn(`[SW] Skipped caching ${url}:`, error.message);
+          });
+        })
+      );
     }).then(() => {
       console.log('[SW] ✅ Installation complète');
       // Force le SW à se mettre à jour immédiatement
+      return self.skipWaiting();
+    }).catch((error) => {
+      console.warn('[SW] Installation error (non-critical):', error);
       return self.skipWaiting();
     })
   );
@@ -91,17 +99,22 @@ self.addEventListener('fetch', (event) => {
         }
         console.log('[SW] Cache MISS:', url.pathname);
         return fetch(request).then((response) => {
-          // Mettre en cache les réponses réussies
-          if (response && response.status === 200) {
+          // Mettre en cache les réponses réussies uniquement
+          if (response && response.status === 200 && response.type !== 'error') {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
+              cache.put(request, responseClone).catch((error) => {
+                console.warn('[SW] Cache.put failed for', url.pathname, ':', error.message);
+              });
+            }).catch((error) => {
+              console.warn('[SW] Cache.open failed:', error.message);
             });
           }
           return response;
-        }).catch(() => {
+        }).catch((error) => {
+          console.warn('[SW] Fetch failed for', url.pathname);
           // Fallback offline
-          return caches.match(OFFLINE_URL);
+          return caches.match(OFFLINE_URL).catch(() => new Response('Offline'));
         });
       })
     );
