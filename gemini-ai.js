@@ -47,13 +47,8 @@ function initGeminiKey() {
   GEMINI_API_KEY = null;
 }
 
-// Attendre que env-loader soit prêt (attend DOMContentLoaded ou exécution immédiate)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGeminiKey);
-} else {
-  // Si déjà chargé, initialiser après délai pour laisser env-loader terminer
-  setTimeout(initGeminiKey, 300);
-}
+// Note: initGeminiKey() will be called automatically on first use in callGemini()
+// This avoids race conditions with env-loader timing
 
 let requestCount = 0;
 let lastResetTime = Date.now();
