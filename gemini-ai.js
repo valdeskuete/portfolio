@@ -11,29 +11,48 @@
 // Configuration - Chercher la clé API dans plusieurs endroits
 let GEMINI_API_KEY = null;
 
-// 1. Essayer window.VITE_GEMINI_API_KEY (depuis env-loader.js qui charge config.json)
-if (window.VITE_GEMINI_API_KEY) {
-    GEMINI_API_KEY = window.VITE_GEMINI_API_KEY;
-    console.log('✅ Clé Gemini depuis window.VITE_GEMINI_API_KEY');
+// Initialize GEMINI_API_KEY (with lazy loading for env vars)
+function initGeminiKey() {
+  // 1. Essayer window.VITE_GEMINI_API_KEY (depuis env-loader.js qui charge config.json)
+  if (window.VITE_GEMINI_API_KEY) {
+      GEMINI_API_KEY = window.VITE_GEMINI_API_KEY;
+      console.log('✅ Clé Gemini depuis window.VITE_GEMINI_API_KEY');
+      return;
+  }
+
+  // 2. Essayer window.GEMINI_API_KEY (défini manuellement)
+  if (window.GEMINI_API_KEY) {
+      GEMINI_API_KEY = window.GEMINI_API_KEY;
+      console.log('✅ Clé Gemini depuis window.GEMINI_API_KEY');
+      return;
+  }
+
+  // 3. Essayer depuis Firebase config (si disponible)
+  if (window.geminiConfig?.apiKey) {
+      GEMINI_API_KEY = window.geminiConfig.apiKey;
+      console.log('✅ Clé Gemini depuis Firebase config');
+      return;
+  }
+  
+  // 4. Essayer depuis window.ENV (nouvellement supporté)
+  if (window.ENV?.gemini?.apiKey) {
+      GEMINI_API_KEY = window.ENV.gemini.apiKey;
+      console.log('✅ Clé Gemini depuis window.ENV.gemini.apiKey');
+      return;
+  }
+
+  // Si pas de clé trouvée
+  console.warn('⚠️ Clé Gemini API non configurée. Les fonctionnalités IA seront désactivées.');
+  console.warn('  Aller à: https://aistudio.google.com/app/apikeys pour obtenir une clé');
+  GEMINI_API_KEY = null;
 }
 
-// 2. Essayer window.GEMINI_API_KEY (défini manuellement)
-if (!GEMINI_API_KEY && window.GEMINI_API_KEY) {
-    GEMINI_API_KEY = window.GEMINI_API_KEY;
-    console.log('✅ Clé Gemini depuis window.GEMINI_API_KEY');
-}
-
-// 3. Essayer depuis Firebase config (si disponible)
-if (!GEMINI_API_KEY && window.geminiConfig?.apiKey) {
-    GEMINI_API_KEY = window.geminiConfig.apiKey;
-    console.log('✅ Clé Gemini depuis Firebase config');
-}
-
-// Si pas de clé, avertir
-if (!GEMINI_API_KEY || GEMINI_API_KEY === 'sk_YOUR_KEY_HERE') {
-    console.warn('⚠️ Clé Gemini API non configurée. Les fonctionnalités IA seront désactivées.');
-    console.warn('  Aller à: https://aistudio.google.com/app/apikeys pour obtenir une clé');
-    GEMINI_API_KEY = null;
+// Attendre que env-loader soit prêt (attend DOMContentLoaded ou exécution immédiate)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGeminiKey);
+} else {
+  // Si déjà chargé, initialiser immédiatement
+  setTimeout(initGeminiKey, 50);
 }
 
 let requestCount = 0;
@@ -67,6 +86,11 @@ function checkRateLimit() {
  * Appel générique à Gemini API
  */
 async function callGemini(prompt) {
+    // S'assurer que la clé a été initialisée
+    if (!GEMINI_API_KEY) {
+        initGeminiKey();
+    }
+
     if (!checkRateLimit()) {
         throw new Error('Rate limit: 60 requêtes par minute');
     }
