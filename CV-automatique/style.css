@@ -480,9 +480,10 @@ body {
     transform-style: preserve-3d;
 }
 
+/* ===== APERÇU BLANC PAR DÉFAUT ===== */
 .cv-page {
-    background: white;
-    color: #000;
+    background: #ffffff;
+    color: #000000;
     margin: 0 auto;
     padding: 40px;
     min-height: 297mm;
@@ -900,6 +901,117 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(14, 239, 255, 0.6);
+}
+
+/* ===== DYNAMIC FORM ELEMENTS ===== */
+.dynamic-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(14, 239, 255, 0.2);
+    padding: 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(14, 239, 255, 0.1);
+}
+
+.item-header span {
+    font-weight: 600;
+    color: var(--main-color);
+    font-size: 0.9rem;
+}
+
+.btn-remove {
+    background: rgba(255, 65, 65, 0.2);
+    color: #ff4141;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-remove:hover {
+    background: rgba(255, 65, 65, 0.4);
+    transform: scale(1.1);
+}
+
+.btn-add-item {
+    background: linear-gradient(135deg, rgba(14, 239, 255, 0.3), rgba(14, 239, 255, 0.1));
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn-add-item:hover {
+    background: linear-gradient(135deg, rgba(14, 239, 255, 0.5), rgba(14, 239, 255, 0.3));
+    box-shadow: 0 0 15px rgba(14, 239, 255, 0.3);
+}
+
+.skill-input-group {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.skill-input-group input {
+    flex: 1;
+}
+
+.skill-input-group .btn-remove {
+    padding: 0.4rem 0.6rem;
+}
+
+.language-input-group {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.language-input-group input[type="text"] {
+    min-width: 150px;
+}
+
+.language-input-group input[type="range"] {
+    flex: 1;
+    min-width: 100px;
+}
+
+.level-display {
+    min-width: 50px;
+    text-align: center;
+    color: var(--main-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.language-input-group .btn-remove {
+    padding: 0.4rem 0.6rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--main-color);
 }
 
 /* ===== RESPONSIVE ===== */
