@@ -53,7 +53,7 @@ function initGeminiKey() {
 let requestCount = 0;
 let lastResetTime = Date.now();
 
-const GEMINI_MODEL = 'gemini-pro';
+const GEMINI_MODEL = 'gemini-1.5-flash'; // Updated: gemini-pro is deprecated
 const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 /**
