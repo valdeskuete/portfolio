@@ -199,6 +199,22 @@
                             <option value="Nunito">Nunito</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-heading"></i> Taille Titre</label>
+                        <div class="size-input-wrapper">
+                            <input type="range" id="titleFontSize" min="20" max="48" value="32" onchange="updatePreview()">
+                            <span id="titleSizeDisplay">32px</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-align-left"></i> Taille Corps</label>
+                        <div class="size-input-wrapper">
+                            <input type="range" id="bodyFontSize" min="10" max="18" value="14" onchange="updatePreview()">
+                            <span id="bodySizeDisplay">14px</span>
+                        </div>
+                    </div>
                 </div>
 
             </div>

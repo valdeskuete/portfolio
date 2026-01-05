@@ -2,6 +2,8 @@
 let currentPhotoData = null;
 let currentTemplate = 'minimal';
 let zoomLevel = 100;
+let titleFontSize = 32;
+let bodyFontSize = 14;
 
 let cvData = {
     fullName: '',
@@ -202,6 +204,19 @@ function initializeEventListeners() {
         btn.addEventListener('click', () => {
             switchTab(btn.getAttribute('data-tab'));
         });
+    });
+
+    // Font size sliders
+    document.getElementById('titleFontSize').addEventListener('input', (e) => {
+        titleFontSize = parseInt(e.target.value);
+        document.getElementById('titleSizeDisplay').textContent = titleFontSize + 'px';
+        updatePreview();
+    });
+
+    document.getElementById('bodyFontSize').addEventListener('input', (e) => {
+        bodyFontSize = parseInt(e.target.value);
+        document.getElementById('bodySizeDisplay').textContent = bodyFontSize + 'px';
+        updatePreview();
     });
 }
 
@@ -469,9 +484,9 @@ function updatePreview() {
     html += `
         <div class="cv-header">
             ${currentPhotoData ? `<img src="${currentPhotoData}" class="cv-photo" alt="Photo" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:15px;">` : ''}
-            <div class="cv-name" style="font-family:'${fontTitle}';font-size:2.2em;font-weight:700;color:${primaryColor};margin-bottom:5px;">${fullName}</div>
-            <div class="cv-title" style="font-size:1.2em;color:${primaryColor};font-weight:600;margin-bottom:10px;">${jobTitle}</div>
-            <div class="cv-meta" style="font-size:0.9em;color:#666;">
+            <div class="cv-name" style="font-family:'${fontTitle}';font-size:${titleFontSize}px;font-weight:700;color:${primaryColor};margin-bottom:5px;">${fullName}</div>
+            <div class="cv-title" style="font-size:${bodyFontSize * 1.3}px;color:${primaryColor};font-weight:600;margin-bottom:10px;">${jobTitle}</div>
+            <div class="cv-meta" style="font-size:${bodyFontSize * 0.85}px;color:#666;">
                 ${email ? `<span><i class="fas fa-envelope"></i> ${email}</span> • ` : ''}
                 ${phone ? `<span><i class="fas fa-phone"></i> ${phone}</span> • ` : ''}
                 ${location ? `<span><i class="fas fa-map-marker"></i> ${location}</span>` : ''}
@@ -483,8 +498,8 @@ function updatePreview() {
     if (about) {
         html += `
             <div class="cv-section" style="margin-top:20px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">À Propos</div>
-                <p style="font-size:0.95em;color:#333;line-height:1.6;">${about}</p>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">À Propos</div>
+                <p style="font-size:${bodyFontSize}px;color:#333;line-height:1.6;">${about}</p>
             </div>
         `;
     }
@@ -493,9 +508,9 @@ function updatePreview() {
     if (cvData.skills.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Compétences</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Compétences</div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                    ${cvData.skills.map(s => `<span style="background:${primaryColor};color:white;padding:5px 10px;border-radius:15px;font-size:0.9em;">${s.name}</span>`).join('')}
+                    ${cvData.skills.map(s => `<span style="background:${primaryColor};color:white;padding:5px 10px;border-radius:15px;font-size:${bodyFontSize * 0.9}px;">${s.name}</span>`).join('')}
                 </div>
             </div>
         `;
@@ -505,13 +520,13 @@ function updatePreview() {
     if (cvData.experiences.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Expériences</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Expériences</div>
                 ${cvData.experiences.map(exp => `
                     <div style="margin-bottom:12px;">
-                        <div style="font-weight:700;color:#000;font-size:1em;">${exp.title}</div>
-                        <div style="color:${primaryColor};font-weight:600;font-size:0.95em;">${exp.company}</div>
-                        <div style="color:#999;font-size:0.85em;margin-bottom:5px;">${exp.period}</div>
-                        <div style="font-size:0.95em;color:#333;white-space:pre-wrap;line-height:1.5;">${exp.description}</div>
+                        <div style="font-weight:700;color:#000;font-size:${bodyFontSize * 1.05}px;">${exp.title}</div>
+                        <div style="color:${primaryColor};font-weight:600;font-size:${bodyFontSize * 0.95}px;">${exp.company}</div>
+                        <div style="color:#999;font-size:${bodyFontSize * 0.85}px;margin-bottom:5px;">${exp.period}</div>
+                        <div style="font-size:${bodyFontSize}px;color:#333;white-space:pre-wrap;line-height:1.5;">${exp.description}</div>
                     </div>
                 `).join('')}
             </div>
@@ -522,12 +537,12 @@ function updatePreview() {
     if (cvData.educations.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Formation</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Formation</div>
                 ${cvData.educations.map(edu => `
                     <div style="margin-bottom:10px;">
-                        <div style="font-weight:700;color:#000;">${edu.title}</div>
-                        <div style="color:${primaryColor};font-weight:600;font-size:0.95em;">${edu.school}</div>
-                        <div style="color:#999;font-size:0.85em;">${edu.year}</div>
+                        <div style="font-weight:700;color:#000;font-size:${bodyFontSize}px;">${edu.title}</div>
+                        <div style="color:${primaryColor};font-weight:600;font-size:${bodyFontSize * 0.95}px;">${edu.school}</div>
+                        <div style="color:#999;font-size:${bodyFontSize * 0.85}px;">${edu.year}</div>
                     </div>
                 `).join('')}
             </div>
@@ -538,12 +553,12 @@ function updatePreview() {
     if (cvData.languages.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Langues</div>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Langues</div>
                 ${cvData.languages.map(lang => `
                     <div style="margin-bottom:8px;">
                         <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-                            <span style="font-weight:600;">${lang.name}</span>
-                            <span style="color:#666;font-size:0.85em;">${lang.level}%</span>
+                            <span style="font-weight:600;font-size:${bodyFontSize}px;">${lang.name}</span>
+                            <span style="color:#666;font-size:${bodyFontSize * 0.85}px;">${lang.level}%</span>
                         </div>
                         <div style="width:100%;height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;">
                             <div style="height:100%;background:${primaryColor};width:${lang.level}%;"></div>
@@ -558,8 +573,8 @@ function updatePreview() {
     if (cvData.interests.length > 0) {
         html += `
             <div class="cv-section" style="margin-top:15px;">
-                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:1.1em;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Intérêts</div>
-                <p style="font-size:0.95em;color:#333;">${cvData.interests.map(i => i.name).join(' • ')}</p>
+                <div class="cv-section-title" style="font-family:'${fontTitle}';font-size:${titleFontSize * 0.8}px;font-weight:700;color:${primaryColor};margin-bottom:10px;border-bottom:2px solid ${primaryColor};padding-bottom:5px;">Intérêts</div>
+                <p style="font-size:${bodyFontSize}px;color:#333;">${cvData.interests.map(i => i.name).join(' • ')}</p>
             </div>
         `;
     }
@@ -605,6 +620,8 @@ function exportJSON() {
         template: currentTemplate,
         fontTitle: document.getElementById('fontTitle').value,
         fontBody: document.getElementById('fontBody').value,
+        titleFontSize: titleFontSize,
+        bodyFontSize: bodyFontSize,
         primaryColor: document.getElementById('primaryColor').value,
         photo: currentPhotoData
     };
@@ -650,6 +667,15 @@ function importJSON(event) {
 
             document.getElementById('fontTitle').value = data.fontTitle || 'Poppins';
             document.getElementById('fontBody').value = data.fontBody || 'Roboto';
+            
+            // Restore font sizes
+            titleFontSize = data.titleFontSize || 32;
+            bodyFontSize = data.bodyFontSize || 14;
+            document.getElementById('titleFontSize').value = titleFontSize;
+            document.getElementById('bodyFontSize').value = bodyFontSize;
+            document.getElementById('titleSizeDisplay').textContent = titleFontSize + 'px';
+            document.getElementById('bodySizeDisplay').textContent = bodyFontSize + 'px';
+            
             document.getElementById('primaryColor').value = data.primaryColor || '#0ef';
 
             if (data.template) switchTemplate(data.template);
