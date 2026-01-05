@@ -2053,55 +2053,23 @@ img.loaded {
     }
 }
 
-/* ===== BOTPRESS CHAT WIDGET - FLOATING & ALWAYS VISIBLE ===== */
+/* ===== BOTPRESS CHAT WIDGET - FLOATING ONLY ===== */
 
-/* Force le widget Botpress à rester flottant et visible */
+/* Garder le widget Botpress flottant et visible - sans bloquer son fonctionnement */
 [class*="botpress"],
 [id*="botpress"],
 .bpContainer {
-    position: fixed !important;
-    bottom: 0 !important;
-    right: 0 !important;
     z-index: 9999 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    display: block !important;
 }
 
-/* Assurez-vous que l'iframe Botpress est visible */
-iframe[src*="botpress"],
-.bp-chat-iframe {
-    position: fixed !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    visibility: visible !important;
-    border: none !important;
-}
-
-/* Widget wrapper */
+/* Assurez-vous que le widget peut s'ouvrir sans restriction */
 .bp-widget-wrapper,
 #botpress-chat-widget,
-.botpress-chat-container {
-    position: fixed !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
+.botpress-chat-container,
+[class*="chat"],
+[class*="widget"] {
     visibility: visible !important;
-    max-width: 400px !important;
-    height: auto !important;
+    opacity: 1 !important;
 }
 
-/* Bouton de chat flottant */
-#open-chat-button {
-    position: fixed !important;
-    bottom: 20px !important;
-    right: 20px !important;
-    z-index: 9998 !important;
-}
-
-/* Masquer le bouton du footer si le widget Botpress est visible */
-footer #open-chat-button {
-    display: none !important;
-}
 
