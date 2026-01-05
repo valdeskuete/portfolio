@@ -49,7 +49,20 @@ window.EnvLoader = {
     try {
       const response = await fetch('/config.json');
       if (response.ok) {
-        this.config = await response.json();
+        const json = await response.json();
+        this.config = json;
+        
+        // Map config.json structure to VITE_ variables
+        if (json.gemini && json.gemini.apiKey) {
+          this.config.VITE_GEMINI_API_KEY = json.gemini.apiKey;
+        }
+        if (json.firebase && json.firebase.apiKey) {
+          this.config.VITE_FIREBASE_API_KEY = json.firebase.apiKey;
+        }
+        if (json.firebase && json.firebase.projectId) {
+          this.config.VITE_FIREBASE_PROJECT_ID = json.firebase.projectId;
+        }
+        
         console.log('[EnvLoader] Config chargée depuis config.json');
       }
     } catch (error) {
