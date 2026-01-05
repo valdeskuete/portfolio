@@ -129,10 +129,13 @@ window.TipsManager = {
         }
 
         try {
-            const snapshot = await window.db.collection('tips')
-                .where('published', '==', true)
-                .orderBy('createdAt', 'desc')
-                .get();
+            const q = window.db.query(
+                window.db.collection(window.db, 'tips'),
+                window.db.where('published', '==', true),
+                window.db.orderBy('createdAt', 'desc')
+            );
+            
+            const snapshot = await window.db.getDocs(q);
 
             this.state.allTips = [];
             snapshot.forEach(doc => {
