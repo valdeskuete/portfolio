@@ -1,0 +1,347 @@
+/**
+ * ========== STYLES ADMIN PANEL POUR AFFICHAGE PUBLIC ==========
+ * Design inspiré du modèle admin avec couleurs neon cyan
+ * À injecter dans le style.css existant
+ */
+
+/* ========== OVERRIDE: CONTENEUR ASTUCES EN MODE PANEL ========== */
+.tips-container:has(.tips-panel) {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ========== PANEL ASTUCES PUBLIQUE ========== */
+.tips-panel {
+    background: linear-gradient(135deg, rgba(0, 238, 255, 0.05), rgba(10, 175, 175, 0.05));
+    border: 2px solid rgba(0, 238, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 2rem 0;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.tips-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0ef, #0aafaf);
+}
+
+.tips-panel:hover {
+    border-color: rgba(0, 238, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 238, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.tips-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 238, 255, 0.1);
+    padding-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tips-panel-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(0, 238, 255, 0.1), rgba(10, 175, 175, 0.1));
+    border-radius: 0.8rem;
+    font-size: 1.8rem;
+    border: 1px solid rgba(0, 238, 255, 0.3);
+}
+
+.tips-panel-title {
+    color: #0ef;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
+    margin: 0;
+}
+
+.tips-panel-category {
+    display: inline-block;
+    background: rgba(0, 238, 255, 0.2);
+    color: #0ef;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: auto;
+    border: 1px solid rgba(0, 238, 255, 0.3);
+}
+
+.tips-panel-content {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tips-panel-content p {
+    margin-bottom: 1rem;
+}
+
+.tips-panel-content strong {
+    color: #0ef;
+    font-weight: 600;
+}
+
+.tips-panel-content code {
+    background: rgba(0, 238, 255, 0.1);
+    color: #0ef;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.tips-panel-content pre {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 3px solid #0ef;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* ========== PANEL CONSEILS PUBLICITÉ ========== */
+.advice-checklist {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.advice-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #ccc;
+    padding: 0.6rem 0.8rem;
+    background: rgba(0, 238, 255, 0.05);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.advice-item:hover {
+    background: rgba(0, 238, 255, 0.1);
+    color: #0ef;
+}
+
+.advice-item::before {
+    content: '✓';
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0ef, #0aafaf);
+    color: #1f242d;
+    border-radius: 0.4rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+/* ========== PANEL ACTIONS ========== */
+.tips-panel-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(0, 238, 255, 0.1);
+    padding-top: 1.5rem;
+}
+
+.panel-btn {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(0, 238, 255, 0.3);
+    background: rgba(0, 238, 255, 0.05);
+    color: #0ef;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.panel-btn:hover {
+    background: rgba(0, 238, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 238, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.panel-btn:active {
+    transform: translateY(0);
+}
+
+.panel-btn:focus {
+    outline: none;
+    border-color: #0ef;
+    box-shadow: 0 0 20px rgba(0, 238, 255, 0.4);
+}
+
+.tips-panel-header .panel-btn {
+    flex: 0 0 auto;
+    min-width: 100px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+
+.panel-btn.delete {
+    border-color: rgba(255, 51, 51, 0.3);
+    color: #ff6666;
+    background: rgba(255, 51, 51, 0.05);
+}
+
+.panel-btn.delete:hover {
+    background: rgba(255, 51, 51, 0.15);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
+}
+
+/* ========== SECTION DE CONTENU DYNAMIQUE ========== */
+.dynamic-content-section {
+    margin: 3rem 0;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #888;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #999;
+}
+
+.empty-state-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(135deg, #0ef, #0aafaf);
+    color: #1f242d;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.empty-state-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 238, 255, 0.4);
+}
+
+/* ========== LOADING STATE ========== */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 238, 255, 0.2);
+    border-top-color: #0ef;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========== AMÉLIORATION FORMULAIRES ========== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    background: rgba(0, 238, 255, 0.05);
+    border: 1px solid rgba(0, 238, 255, 0.2);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #0ef;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.2);
+    background: rgba(0, 238, 255, 0.08);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ========== ERROR STATE ========== */
+.form-error {
+    border-color: #ff3333 !important;
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.2) !important;
+}
+
+.error-message {
+    color: #ff6666;
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.error-message::before {
+    content: '⚠️';
+}
+
+/* ========== SUCCESS STATE ========== */
+.form-success {
+    border-color: #0ef !important;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.3) !important;
+}
+
+.success-message {
+    color: #0ef;
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.success-message::before {
+    content: '✅';
+}

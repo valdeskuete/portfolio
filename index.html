@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <title>Valdes Kuete | Maintenance Informatique & Sécurité IT - Douala</title>
     <meta charset="UTF-8">
-    <meta name="description" content="Valdes Kuete - Expert en maintenance informatique, réseaux et sécurité à Douala, Cameroun. Services professionnels pour entreprises et particuliers.">
-    <meta name="keywords" content="maintenance informatique Douala, technicien IT, réseaux, sécurité informatique, support technique, infrastructure, Cameroun">
+    <meta name="description" content="Valdes Kuete - Expert en maintenance informatique, réseaux, sécurité informatique et maintenance matériel à Douala, Cameroun. Services de dépannage, support technique, et infrastructure IT professionnels.">
+    <meta name="keywords" content="maintenance informatique Douala, maintenance matériel, technicien IT, réseaux, sécurité informatique, support technique, infrastructure IT, dépannage, Cameroun">
     <meta name="author" content="Valdes Kuete">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0ef">
+    
+    <!-- Configuration Gemini API (depuis .env si disponible) -->
+    <script>
+        // Charger la clé API Gemini depuis .env via processus de build
+        // Pour dev local: window.GEMINI_API_KEY = "AIzaSy...";
+        // Pour prod: passée par variables d'environnement ou Firebase config
+    </script>
     <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="language" content="French">
     <meta name="revisit-after" content="7 days">
     
     <meta property="og:title" content="Valdes Kuete | Solutions Informatiques Professionnelles - Douala">
-    <meta property="og:description" content="Expert en maintenance informatique, réseaux et sécurité. Découvrez mes services et projets réalisés.">
+    <meta property="og:description" content="Expert en maintenance informatique, matériel, réseaux et sécurité. Services de support technique, dépannage et infrastructure IT. Découvrez mes services et projets réalisés à Douala.">
     <meta property="og:image" content="https://valdeskuete.github.io/portfolio/images/og-image.jpg"> 
     <meta property="og:url" content="https://valdeskuete.github.io/portfolio/">
     <meta property="og:type" content="website">
@@ -24,16 +34,48 @@
 
     <link rel="canonical" href="https://valdeskuete.github.io/portfolio/">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-
-    <!-- Préchargement des ressources externes -->
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Valdes Tech">
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#0ef">
+    <meta name="msapplication-TileImage" content="images/icon-192x192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS inline -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root {
+            --bg-color: #1f242d;
+            --second-bg-color: #323946;
+            --text-color: #fff;
+            --main-color: #0ef;
+        }
+        html { font-size: 62.5%; scroll-behavior: smooth; }
+        body { background: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-color); z-index: 100; }
+        .home { min-height: 100vh; display: flex; align-items: center; }
+        section { padding: 10rem 7% 2rem; }
+    </style>
+    
+    <!-- Fonts optimisées (seulement les poids nécessaires) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Icons avec fallback en cas de lenteur réseau -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' media="print" onload="this.media='all'" onerror="console.warn('Boxicons CDN lent, utilisation de Font Awesome')">
+    <noscript><link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-panel-styles.css">
 </head>
 <body>
 
@@ -50,24 +92,24 @@
     <header class="header">
         <a href="#" class="logo">Valdes.<span class="neon-text">Tech</span></a>
 
-        <i class="fa-solid fa-bars" id="menu-icon"></i> 
+        <i class="fa-solid fa-bars" id="menu-icon" aria-label="Menu" aria-expanded="false" role="button" tabindex="0"></i> 
 
-        <nav class="navbar">
-            <a href="#home" class="active">Accueil</a>
-            <a href="#about">À propos</a>
-            <a href="#services">Services</a>
-            <a href="#skills">Compétences</a>
-            <a href="#testimonials">Témoignages</a>
-            <a href="#education">Parcours</a>
-            <a href="#portfolio">Projets</a>
-            <a href="#journal">Journal</a>
-            <a href="#tips">Conseils</a>
-            <a href="#contact">Contact</a>
+        <nav class="navbar" aria-label="Navigation principale">
+            <a href="#home" class="active" role="menuitem">Accueil</a>
+            <a href="#about" role="menuitem">À propos</a>
+            <a href="#services" role="menuitem">Services</a>
+            <a href="#skills" role="menuitem">Compétences</a>
+            <a href="#testimonials" role="menuitem">Témoignages</a>
+            <a href="#education" role="menuitem">Parcours</a>
+            <a href="#portfolio" role="menuitem">Projets</a>
+            <a href="#journal" role="menuitem">Journal</a>
+            <a href="#tips" role="menuitem">Conseils</a>
+            <a href="#contact" role="menuitem">Contact</a>
             
             <span class="lang-switch" style="margin-left: 2rem; color: white; font-size: 1.2rem;">
             </span>
 
-            <a href="#" id="admin-login-link" title="Admin"><i class="fa-solid fa-user-shield"></i></a>
+            <a href="#" id="admin-login-link" title="Admin" role="button" aria-label="Accès administrateur"><i class="fa-solid fa-user-shield"></i></a>
         </nav>
     </header>
 
@@ -95,8 +137,20 @@
         </div>
 
         <div class="home-img">
-            <img src="images/profile.jpg" alt="Valdes Kuete - Expert en Maintenance Informatique et Réseaux à Douala">
-
+            <picture>
+                <source 
+                    media="(max-width: 768px)" 
+                    srcset="images/profile.jpg 400w"
+                />
+                <img 
+                    src="images/profile.jpg" 
+                    alt="Valdes Kuete - Expert en Maintenance Informatique et Réseaux à Douala"
+                    loading="eager"
+                    width="600"
+                    height="600"
+                    style="max-width: 100%; height: auto;"
+                >
+            </picture>
         </div>
     </section>
 
@@ -105,39 +159,16 @@
         <h2 class="heading">À <span>Propos</span></h2>
         
         <div class="about-container">
-            <div class="about-content">
-                <h3>Qui suis-je?</h3>
-                <p>Je suis <strong>Valdes Kuete</strong>, expert en maintenance informatique et réseaux basé à <strong>Douala, Cameroun</strong>. Avec plusieurs années d'expérience, je m'engage à fournir des solutions informatiques de qualité professionnelle pour les entreprises et particuliers.</p>
-                
-                <h3>Ma Mission</h3>
-                <p>Mon objectif est de <strong>simplifier la complexité informatique</strong> en offrant des services transparents, fiables et accessibles. Je crois que la technologie doit servir vos besoins, pas l'inverse.</p>
-                
-                <h3>Mon Approche</h3>
-                <ul style="color: #fff; font-size: 1.1rem; line-height: 2; margin: 1.5rem 0;">
-                    <li>✓ <strong>Diagnostic précis</strong> - Comprendre vos vrais problèmes</li>
-                    <li>✓ <strong>Solutions durables</strong> - Pas de rustines, du vrai travail</li>
-                    <li>✓ <strong>Support proactif</strong> - Prévenir plutôt que guérir</li>
-                    <li>✓ <strong>Communication claire</strong> - Explications simples, pas de jargon</li>
-                    <li>✓ <strong>Tarifs justes</strong> - Qualité sans surprise</li>
-                </ul>
-                
-                <h3>Pourquoi me choisir?</h3>
-                <p><strong>Expertise + Fiabilité + Disponibilité</strong> = La garantie que votre infrastructure informatique fonctionne 24/7</p>
-                
-                <div class="about-stats">
-                    <div class="stat-box">
-                        <h4>+500</h4>
-                        <p>Clients Satisfaits</p>
-                    </div>
-                    <div class="stat-box">
-                        <h4>+1000</h4>
-                        <p>Interventions Réussies</p>
-                    </div>
-                    <div class="stat-box">
-                        <h4>24/7</h4>
-                        <p>Support Disponible</p>
-                    </div>
+            <div class="about-content" id="about-content-dynamic">
+                <!-- Contenu chargé dynamiquement depuis Firestore -->
+                <div style="text-align: center; color: #0ef; padding: 2rem;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
                 </div>
+            </div>
+            
+            <!-- STATISTIQUES DYNAMIQUES -->
+            <div class="about-stats" id="about-stats-dynamic" style="margin-top: 3rem;">
+                <!-- Chargées dynamiquement -->
             </div>
         </div>
     </section>
@@ -148,22 +179,32 @@
             <div class="services-box">
                 <i class="fa-solid fa-screwdriver-wrench"></i>
                 <h3>Maintenance Matérielle</h3>
-                <p>Diagnostic complet, remplacement (RAM, SSD, Écran), nettoyage interne.</p>
+                <p><strong>Expertise complète du hardware :</strong> Diagnostic précis, remplacement composants (RAM, SSD, batterie, écran), nettoyage interne, optimisation thermique. Récupération de données sur disques endommagés.</p>
             </div>
             <div class="services-box">
                 <i class="fa-brands fa-windows"></i>
                 <h3>Maintenance Logicielle</h3>
-                <p>Installation Windows/Ubuntu, suppression virus, récupération de données.</p>
+                <p><strong>Administration système avancée :</strong> Installation/migration Windows/Linux, suppression virus/malwares, optimisation système, installation logiciels professionnels, gestion utilisateurs, sauvegarde données.</p>
             </div>
             <div class="services-box">
                 <i class="fa-solid fa-network-wired"></i>
-                <h3>Réseaux & Internet</h3>
-                <p>Configuration Wi-Fi, dépannage routeurs, sécurisation réseau local.</p>
+                <h3>Réseaux & Infrastructure</h3>
+                <p><strong>Solutions réseau clé en main :</strong> Configuration Wi-Fi/Ethernet, dépannage routeurs/modems, sécurisation LAN, VPN, administration serveurs, optimisation bande passante, support 24/7.</p>
             </div>
             <div class="services-box">
                 <i class="fa-solid fa-shield-halved"></i>
                 <h3>Sécurité Informatique</h3>
-                <p>Scan vulnérabilités, protection malwares et bonnes pratiques.</p>
+                <p><strong>Protection et conformité :</strong> Audit vulnérabilités, mise en place antivirus/firewall, chiffrement données, gestion accès, formation sécurité, conformité RGPD/normes sectorielles.</p>
+            </div>
+            <div class="services-box">
+                <i class="fa-solid fa-phone-volume"></i>
+                <h3>Support Technique</h3>
+                <p><strong>Assistance réactive :</strong> Dépannage rapide, télésupport AnyDesk, support utilisateur, gestion tickets, escalade technique, SLA garantie selon contrat.</p>
+            </div>
+            <div class="services-box">
+                <i class="fa-solid fa-cogs"></i>
+                <h3>Consultation IT</h3>
+                <p><strong>Stratégie informatique :</strong> Audit infrastructure, recommandations technologiques, planification migrations, ROI IT, documentation systèmes, formation équipes IT.</p>
             </div>
         </div>
     </section>
@@ -255,12 +296,15 @@
 
    <section class="portfolio" id="portfolio">
         <h2 class="heading">Derniers <span>Projets</span></h2>
-        <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">Tous</button>
-            <button class="filter-btn" data-filter="Mise à jour">Mise à jour</button>
-            <button class="filter-btn" data-filter="Reprogrammation">Reprogrammation</button>
-            <button class="filter-btn" data-filter="Récupération">Récupération</button>
-            <button class="filter-btn" data-filter="Sécurité">Sécurité</button>
+        <div class="filter-buttons-wrapper">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="Mise à jour">Mise à jour</button>
+                <button class="filter-btn" data-filter="Reprogrammation">Reprogrammation</button>
+                <button class="filter-btn" data-filter="Récupération">Récupération</button>
+                <button class="filter-btn" data-filter="Sécurité">Sécurité</button>
+                <button class="filter-btn" data-filter="Maintenance matériel">Maintenance matériel</button>
+            </div>
         </div>
         <div class="portfolio-container" id="portfolio-list"></div>
     </section>
@@ -274,6 +318,27 @@
 
     <section class="tips" id="tips">
         <h2 class="heading">Conseils & <span>Astuces</span></h2>
+        
+        <!-- FILTRES PAR DIFFICULTÉ ET CATÉGORIE -->
+        <div class="tips-filter-section">
+            <div class="filter-group">
+                <label style="color: #0ef; font-weight: 600; margin-right: 1rem;">Difficulté:</label>
+                <button class="tip-filter-btn active" data-difficulty="all">Tous les niveaux</button>
+                <button class="tip-filter-btn" data-difficulty="debutant">🟢 Débutant</button>
+                <button class="tip-filter-btn" data-difficulty="intermediaire">🟡 Intermédiaire</button>
+                <button class="tip-filter-btn" data-difficulty="avance">🔴 Avancé</button>
+            </div>
+            <div class="filter-group" style="margin-top: 1rem;">
+                <label style="color: #0ef; font-weight: 600; margin-right: 1rem;">Catégorie:</label>
+                <button class="tip-filter-btn active" data-category="all">Tous</button>
+                <button class="tip-filter-btn" data-category="os">🖥️ Système</button>
+                <button class="tip-filter-btn" data-category="hardware">⚙️ Matériel</button>
+                <button class="tip-filter-btn" data-category="security">🔒 Sécurité</button>
+                <button class="tip-filter-btn" data-category="network">🌐 Réseau</button>
+                <button class="tip-filter-btn" data-category="software">📦 Logiciels</button>
+            </div>
+        </div>
+        
         <div class="tips-container" id="tips-display"></div>
     </section>
 
@@ -281,14 +346,29 @@
         <h2 class="heading">Contactez <span>Moi</span></h2>
         <form id="firebase-contact-form">
             <div class="input-box">
-                <input type="text" id="contact-name" placeholder="Nom complet" required>
-                <input type="email" id="contact-email" placeholder="Email" required>
+                <div style="width: 100%; display: flex; flex-direction: column;">
+                    <label for="contact-name" style="color: #0ef; font-weight: 600; margin-bottom: 0.5rem;">Nom complet</label>
+                    <input type="text" id="contact-name" placeholder="Votre nom" required aria-label="Nom complet">
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column;">
+                    <label for="contact-email" style="color: #0ef; font-weight: 600; margin-bottom: 0.5rem;">Email</label>
+                    <input type="email" id="contact-email" placeholder="Votre email" required aria-label="Email">
+                </div>
             </div>
             <div class="input-box">
-                <input type="tel" id="contact-phone" placeholder="Numéro de téléphone">
-                <input type="text" id="contact-subject" placeholder="Sujet de la demande">
+                <div style="width: 100%; display: flex; flex-direction: column;">
+                    <label for="contact-phone" style="color: #0ef; font-weight: 600; margin-bottom: 0.5rem;">Téléphone</label>
+                    <input type="tel" id="contact-phone" placeholder="Numéro de téléphone" aria-label="Téléphone">
+                </div>
+                <div style="width: 100%; display: flex; flex-direction: column;">
+                    <label for="contact-subject" style="color: #0ef; font-weight: 600; margin-bottom: 0.5rem;">Sujet</label>
+                    <input type="text" id="contact-subject" placeholder="Sujet de la demande" aria-label="Sujet">
+                </div>
             </div>
-            <textarea id="contact-message" cols="30" rows="10" placeholder="Votre message..." required></textarea>
+            <div style="display: flex; flex-direction: column;">
+                <label for="contact-message" style="color: #0ef; font-weight: 600; margin-bottom: 0.5rem;">Message</label>
+                <textarea id="contact-message" cols="30" rows="10" placeholder="Votre message..." required aria-label="Message"></textarea>
+            </div>
             <button type="submit" class="btn">Envoyer</button>
         </form>
         <div class="contact-info-direct" style="text-align: center; margin-top: 3rem; color: white;">
@@ -323,6 +403,7 @@
 
 
             <div class="admin-tabs">
+                <button class="tab-btn" onclick="openTab('tab-about')">👤 À Propos</button>
                 <button class="tab-btn active" onclick="openTab('tab-projets')">🚀 Projets</button>
                 <button class="tab-btn" onclick="openTab('tab-messages')">📩 Messages</button>
                 <button class="tab-btn" onclick="openTab('tab-tips')">💡 Astuces</button>
@@ -330,33 +411,99 @@
                 <button class="tab-btn" onclick="openTab('tab-reviews')">⭐ Avis</button>
             </div>
 
-            <div id="tab-projets" class="tab-content active">
-    <h3>Ajouter une Étude de Cas (Projet)</h3>
-    <form id="project-form" class="admin-form">
-        <div class="input-box">
-            <input type="text" id="p-title" placeholder="Titre du projet" required>
-            <select id="p-tag" required>
-                <option value="Mise à jour">Mise à jour</option>
-                <option value="Reprogrammation">Reprogrammation</option>
-                <option value="Récupération">Récupération de données</option>
-                <option value="Sécurité">Sécurité & Stérilisation</option>
-            </select>
-        </div>
-        <input type="url" id="p-image" placeholder="Lien de l'image (Mockup recommandé)">
-        
-        <textarea id="p-challenge" placeholder="Le Challenge : Quel était le problème client ?" required></textarea>
-        <textarea id="p-solution" placeholder="La Solution : Comment as-tu résolu le problème ?" required></textarea>
-        <textarea id="p-result" placeholder="Le Résultat : Quel bénéfice pour le client ?" required></textarea>
-        
-        <div class="input-box">
-            <input type="url" id="p-demo" placeholder="Lien Démo Live (Optionnel)">
-            <input type="url" id="p-github" placeholder="Lien Code Source (Optionnel)">
-        </div>
+            <div id="tab-about" class="tab-content">
+                <h3>👤 Gérer la Section "À Propos"</h3>
+                <form id="about-form" class="admin-form" style="margin-bottom: 2rem;">
+                    <div style="background: rgba(14, 239, 239, 0.1); padding: 1.5rem; border-radius: 0.8rem; margin-bottom: 1rem;">
+                        <h4 style="color: #0ef; margin-top: 0;">Section: Qui Suis-je?</h4>
+                        <textarea id="about-who" placeholder="Qui suis-je? (paragraphe principal)" required style="min-height: 100px;"></textarea>
+                    </div>
 
-        <button type="submit" class="btn">Publier l'étude de cas</button>
-    </form>
-    <div id="admin-portfolio-list" class="admin-grid-list"></div>
-</div>
+                    <div style="background: rgba(14, 239, 239, 0.1); padding: 1.5rem; border-radius: 0.8rem; margin-bottom: 1rem;">
+                        <h4 style="color: #0ef; margin-top: 0;">Section: Mon Parcours</h4>
+                        <textarea id="about-journey" placeholder="Décrivez votre parcours professionnel" required style="min-height: 100px;"></textarea>
+                    </div>
+
+                    <div style="background: rgba(14, 239, 239, 0.1); padding: 1.5rem; border-radius: 0.8rem; margin-bottom: 1rem;">
+                        <h4 style="color: #0ef; margin-top: 0;">Section: Ma Mission</h4>
+                        <textarea id="about-mission" placeholder="Décrivez votre mission et objectifs" required style="min-height: 100px;"></textarea>
+                    </div>
+
+                    <div style="background: rgba(14, 239, 239, 0.1); padding: 1.5rem; border-radius: 0.8rem; margin-bottom: 1rem;">
+                        <h4 style="color: #0ef; margin-top: 0;">Section: Mes Valeurs (séparées par |)</h4>
+                        <textarea id="about-values" placeholder="Exemple: Diagnostic approfondi|Solutions pérennes|Sécurité proactive" required style="min-height: 80px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">💾 Enregistrer la Section À Propos</button>
+                </form>
+
+                <h3 style="margin-top: 2rem; border-top: 1px solid rgba(0, 239, 255, 0.2); padding-top: 1rem;">📊 Statistiques & Chiffres Clés</h3>
+                <div id="about-stats-admin" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;"></div>
+
+                <form id="stats-form" class="admin-form">
+                    <h4>Ajouter/Modifier une Statistique</h4>
+                    <input type="text" id="stat-number" placeholder="Nombre (ex: +500)" required>
+                    <input type="text" id="stat-label" placeholder="Label (ex: Clients Satisfaits)" required>
+                    <button type="submit" class="btn">➕ Ajouter Stat</button>
+                </form>
+            </div>
+
+            <div id="tab-projets" class="tab-content active">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <!-- COLONNE GAUCHE : FORMULAIRE + TEMPLATES -->
+                    <div>
+                        <h3>📝 Nouvelle Étude de Cas</h3>
+                        
+                        <!-- TEMPLATES RAPIDES -->
+                        <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0, 239, 255, 0.05); border-radius: 0.8rem; border-left: 3px solid var(--main-color);">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #0ef;">📌 Charger un Template :</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                <button type="button" onclick="loadTemplate('maintenance')" class="btn" style="padding: 0.6rem; font-size: 0.9rem;">Maintenance</button>
+                                <button type="button" onclick="loadTemplate('securite')" class="btn" style="padding: 0.6rem; font-size: 0.9rem;">Sécurité</button>
+                                <button type="button" onclick="loadTemplate('reprogrammation')" class="btn" style="padding: 0.6rem; font-size: 0.9rem;">Reprogrammation</button>
+                                <button type="button" onclick="loadTemplate('recuperation')" class="btn" style="padding: 0.6rem; font-size: 0.9rem;">Récupération</button>
+                            </div>
+                        </div>
+
+                        <form id="project-form" class="admin-form">
+                            <div class="input-box">
+                                <input type="text" id="p-title" placeholder="Titre du projet" required>
+                                <select id="p-tag" required>
+                                    <option value="">-- Catégorie --</option>
+                                    <option value="Mise à jour">Mise à jour</option>
+                                    <option value="Reprogrammation">Reprogrammation</option>
+                                    <option value="Récupération">Récupération</option>
+                                    <option value="Sécurité">Sécurité</option>
+                                    <option value="Maintenance matériel">Maintenance matériel</option>
+                                </select>
+                            </div>
+                            <input type="url" id="p-image" placeholder="🖼️ Lien de l'image (Mockup recommandé)">
+                            
+                            <textarea id="p-challenge" placeholder="🎯 Défi : Quel était le problème client ?" required></textarea>
+                            <textarea id="p-solution" placeholder="⚙️ Solution : Comment as-tu résolu le problème ?" required></textarea>
+                            <textarea id="p-result" placeholder="✅ Résultat : Quel bénéfice pour le client ?" required></textarea>
+                            
+                            <div class="input-box">
+                                <input type="url" id="p-demo" placeholder="🔗 Démo Live (Optionnel)">
+                                <input type="url" id="p-github" placeholder="💻 Code Source (Optionnel)">
+                            </div>
+
+                            <button type="submit" class="btn" style="width: 100%; font-weight: 600;">✨ Publier l'étude de cas</button>
+                        </form>
+                    </div>
+
+                    <!-- COLONNE DROITE : PRÉVISUALISATION -->
+                    <div>
+                        <h3>👁️ Aperçu</h3>
+                        <div id="project-preview" style="padding: 1.5rem; background: rgba(0, 0, 0, 0.3); border-radius: 0.8rem; border: 1px solid rgba(0, 239, 255, 0.2); min-height: 300px; max-height: 600px; overflow-y: auto;">
+                            <p style="color: #888; text-align: center; margin-top: 4rem;">👈 Remplissez le formulaire pour voir l'aperçu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; border-top: 1px solid rgba(0, 239, 255, 0.2); padding-top: 1rem;">📚 Projets Publiés</h3>
+                <div id="admin-portfolio-list" class="admin-grid-list"></div>
+            </div>
 
 
             <div id="tab-messages" class="tab-content">
@@ -365,18 +512,54 @@
             </div>
 
             <div id="tab-tips" class="tab-content">
-                <h3>Gérer les Conseils Pro</h3>
-                <form id="tip-form" class="admin-form">
-                    <input type="text" id="tip-title" placeholder="Titre (ex: Booster Windows)" required>
-                    <select id="tip-category" required style="width: 100%; padding: 1.5rem; background: var(--second-bg-color); color: var(--text-color); border-radius: .8rem; margin: 1rem 0;">
-                        <option value="os">Système (OS)</option>
-                        <option value="hardware">Matériel</option>
-                        <option value="security">Sécurité</option>
-                        <option value="error">Erreur</option>
-                    </select>
-                    <textarea id="tip-content" placeholder="Contenu du conseil..." required></textarea>
-                    <button type="submit" class="btn">Ajouter l'astuce</button>
-                </form>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <!-- FORMULAIRE + TEMPLATES -->
+                    <div>
+                        <h3>💡 Nouvelle Astuce</h3>
+                        
+                        <!-- TEMPLATES D'ASTUCES RAPIDES -->
+                        <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0, 238, 255, 0.05); border-radius: 0.8rem; border-left: 3px solid #0ef;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #0ef;">⚡ Astuces Prêtes à Publier :</label>
+                            <button type="button" onclick="loadTipTemplate('defender')" class="btn" style="width: 100%; margin-bottom: 0.5rem; padding: 0.6rem; text-align: left;">🛡️ Configurer Windows Defender</button>
+                            <button type="button" onclick="loadTipTemplate('performance')" class="btn" style="width: 100%; margin-bottom: 0.5rem; padding: 0.6rem; text-align: left;">⚙️ Optimiser les Performances</button>
+                            <button type="button" onclick="loadTipTemplate('updates')" class="btn" style="width: 100%; margin-bottom: 0.5rem; padding: 0.6rem; text-align: left;">🔄 Gérer les Mises à jour</button>
+                            <button type="button" onclick="loadTipTemplate('backup')" class="btn" style="width: 100%; padding: 0.6rem; text-align: left;">💾 Sauvegarder ses Données</button>
+                        </div>
+
+                        <form id="tip-form" class="admin-form">
+                            <input type="text" id="tip-title" placeholder="📌 Titre (ex: Booster Windows)" required>
+                            <select id="tip-category" required style="width: 100%; padding: 1rem; background: var(--second-bg-color); color: var(--text-color); border-radius: .8rem; margin: 1rem 0; border: 1px solid rgba(0, 239, 255, 0.2);">
+                                <option value="">-- Catégorie --</option>
+                                <option value="os">🖥️ Système (OS)</option>
+                                <option value="hardware">⚙️ Matériel</option>
+                                <option value="security">🔒 Sécurité</option>
+                                <option value="network">🌐 Réseau</option>
+                                <option value="software">📦 Logiciels</option>
+                            </select>
+                            <select id="tip-difficulty" required style="width: 100%; padding: 1rem; background: var(--second-bg-color); color: var(--text-color); border-radius: .8rem; margin: 1rem 0; border: 1px solid rgba(0, 239, 255, 0.2);">
+                                <option value="">-- Niveau de Difficulté --</option>
+                                <option value="debutant">🟢 Débutant</option>
+                                <option value="intermediaire">🟡 Intermédiaire</option>
+                                <option value="avance">🔴 Avancé</option>
+                            </select>
+                            <textarea id="tip-content" placeholder="Description rapide de l'astuce..." style="min-height: 80px;"></textarea>
+                            <textarea id="tip-steps" placeholder="Étapes (une par ligne, par ex:&#10;1. Ouvrir les Paramètres&#10;2. Cliquer sur Sécurité&#10;3. Vérifier Defender)" style="min-height: 100px;"></textarea>
+                            <input type="text" id="tip-conseil" placeholder="💡 Conseil/Conseil important (optionnel)">
+                            <input type="text" id="tip-temps" placeholder="⏱️ Temps estimé (ex: 15 min)" style="margin-bottom: 1rem;">
+                            <button type="submit" class="btn" style="width: 100%; font-weight: 600;">🚀 Publier l'astuce</button>
+                        </form>
+                    </div>
+
+                    <!-- PRÉVISUALISATION ASTUCE -->
+                    <div>
+                        <h3>👁️ Aperçu de l'Astuce</h3>
+                        <div id="tip-preview" style="padding: 1.5rem; background: rgba(0, 238, 255, 0.05); border-radius: 0.8rem; border: 1px solid rgba(0, 238, 255, 0.2); min-height: 300px; max-height: 600px; overflow-y: auto;">
+                            <p style="color: #888; text-align: center; margin-top: 4rem;">👈 Remplissez le formulaire pour voir l'aperçu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; border-top: 1px solid rgba(0, 238, 255, 0.2); padding-top: 1rem;">📚 Astuces Publiées</h3>
                 <div id="admin-tips-list"></div>
             </div>
 
@@ -395,27 +578,29 @@
         </div>
     </div>
 
-    <div id="comments-modal" class="modal hidden">
+    <div id="comments-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="comments-header">
         <div class="modal-comments-content">
-            <span id="close-comments" class="close">×</span>
+            <span id="close-comments" class="close" role="button" tabindex="0" aria-label="Fermer">×</span>
             <div id="comments-header">
                 <h3 id="comments-project-title">Commentaires</h3>
             </div>
-            <div id="comments-container" class="comments-live-container"></div>
+            <div id="comments-container" class="comments-live-container" role="log" aria-live="polite"></div>
             <div class="comments-input-area">
-                <input type="text" id="comment-input" placeholder="Votre commentaire...">
-                <button id="send-comment-btn" class="btn">Envoyer</button>
+                <input type="text" id="comment-input" placeholder="Votre commentaire..." aria-label="Commentaire">
+                <button id="send-comment-btn" class="btn" aria-label="Envoyer le commentaire">Envoyer</button>
             </div>
         </div>
     </div>
 
-    <div id="login-modal" class="modal hidden">
+    <div id="login-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <div class="modal-content">
-            <span id="close-modal" class="close">×</span>
-            <h3 style="color:var(--main-color)">Connexion Admin</h3>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <span id="close-modal" class="close" role="button" tabindex="0" aria-label="Fermer">×</span>
+            <h3 id="login-title" style="color:var(--main-color)">Connexion Admin</h3>
+            <form id="login-form" aria-label="Formulaire de connexion">
+                <label for="login-email" style="display: block; color: #0ef; margin-bottom: 0.5rem;">Email</label>
+                <input type="email" id="login-email" placeholder="Email" required aria-label="Email">
+                <label for="login-password" style="display: block; color: #0ef; margin-bottom: 0.5rem; margin-top: 1rem;">Mot de passe</label>
+                <input type="password" id="login-password" placeholder="Mot de passe" required aria-label="Mot de passe">
                 <button type="submit" class="btn">Entrer</button>
             </form>
         </div>
@@ -433,7 +618,67 @@
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     
-    <script src="script.js"></script>
-    <script type="module" src="firebase-config.js"></script>
+    <!-- Configuration - ORDRE IMPORTANT -->
+    <script src="env-loader.js"></script>
+    <script src="gemini-config.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="gemini-ai.js" defer></script>
+    <script src="about-manager.js" defer></script>
+    <script src="init-demo-data.js" defer></script>
+    <script src="form-validation.js" defer></script>
+    <script src="lazy-loading.js" defer></script>
+    <script src="accessibility.js" defer></script>
+    
+    <!-- Attendre que Firebase soit prêt, puis charger script.js -->
+    <script>
+        // Marquer que le script a commencé son attente
+        window.firebaseReadyPromise = new Promise((resolve) => {
+            let attempts = 0;
+            const checkFirebase = setInterval(() => {
+                if (window.loadProjects && typeof window.loadProjects === 'function') {
+                    clearInterval(checkFirebase);
+                    console.log('✅ Firebase is ready for script.js');
+                    resolve();
+                    return;
+                }
+                attempts++;
+                if (attempts > 100) {
+                    clearInterval(checkFirebase);
+                    console.warn('⚠️ Firebase took too long, continuing anyway');
+                    resolve();
+                }
+            }, 50);
+        });
+    </script>
+
+    <!-- PWA Service Worker -->
+    <script src="pwa-init.js" async></script>
+    <script src="script.js" defer></script>
+    
+    <!-- ========== CRITIQUES - Chargés immédiatement ========== -->
+    <!-- Système de notifications toast -->
+    <script src="notifications.js" defer></script>
+    
+    <!-- Accessibilité ARIA & UX améliorée -->
+    <script src="accessibility-ux.js" defer></script>
+    
+    <!-- reCAPTCHA v3 protection -->
+    <script src="recaptcha-protection.js" defer></script>
+    
+    <!-- Adaptateur design admin panel pour public -->
+    <script src="public-panel-renderer.js" defer></script>
+    
+    <!-- ========== NON-CRITIQUES - Différés via task-scheduler ========== -->
+    <!-- Gestionnaire de tâches performance (défère social-links, tips-manager, admin-features) -->
+    <script src="task-scheduler.js" defer></script>
+    
+    <!-- Ces scripts sont maintenant déférés par task-scheduler.js -->
+    <script src="social-links.js" defer></script>
+    <script src="tips-manager.js" defer></script>
+    <script src="admin-features.js" defer></script>
+    
+    <!-- Scripts de maintenance système -->
+    <script src="diagnostic.js" defer></script>
+    <script src="performance-optimize.js" defer></script>
 </body>
 </html>

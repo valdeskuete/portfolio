@@ -16,26 +16,32 @@ cp .env.example .env
 nano .env
 ```
 
-### 2️⃣ Déployer localement
+### 2️⃣ Tester localement
 
 ```bash
-# Lancer un serveur local
+# Lancer un serveur local (Python)
 python -m http.server 8000
+
+# Ou avec Node (si npm installé)
+npx http-server
 
 # Accéder à http://localhost:8000
 ```
 
-### 3️⃣ Publier sur GitHub
+### 3️⃣ Publier les changements
 
 ```bash
-# Ajouter vos changements
+# 1. Ajouter vos changements
 git add .
 
-# Créer une version
+# 2. Créer une version
 git commit -m "Portfolio v2.0 - Améliorations sécurité"
 
-# Pousser
+# 3. Pousser vers GitHub (pour version control)
 git push origin main
+
+# 4. Déployer sur Firebase Hosting (pour publication)
+firebase deploy --only hosting
 ```
 
 ---
@@ -87,42 +93,44 @@ git push origin main
 
 ---
 
-## 🚀 **DÉPLOIEMENT GITHUB PAGES**
+## 🚀 **DÉPLOIEMENT FIREBASE HOSTING**
 
-### Première fois
+### Configuration (Déjà faite ✅)
 
-1. **Aller sur GitHub**
-   ```
-   https://github.com/valdeskuete/portfolio
-   ```
-
-2. **Accéder aux Settings**
-   ```
-   Repository → Settings → Pages
-   ```
-
-3. **Configurer**
-   ```
-   Source: Deploy from a branch
-   Branch: main
-   Folder: / (root)
-   ```
-
-4. **Sauvegarder**
-   - Cliquer "Save"
-   - Attendre 1-2 minutes
-   - Accéder à: https://valdeskuete.github.io/portfolio/
+Firebase Hosting est déjà configuré et le site est en ligne:
+```
+https://valde-tech.web.app
+```
 
 ### À chaque mise à jour
 
 ```bash
-# Faire les changements locaux
+# 1. Faire les changements locaux
 git add .
 git commit -m "Mon changement"
 git push origin main
 
-# GitHub Pages met à jour automatiquement!
-# (Attendre 30-60 secondes)
+# 2. Déployer sur Firebase
+firebase deploy --only hosting
+
+# Ou déployer tout (Firestore + Hosting)
+firebase deploy
+
+# 3. Attendre ~30 secondes
+# Le site https://valde-tech.web.app se met à jour automatiquement
+```
+
+### Vérifier le déploiement
+
+```bash
+# Voir l'historique des déploiements
+firebase hosting:channel:list
+
+# Voir les logs du déploiement
+firebase deploy:log
+
+# Ouvrir le site
+start https://valde-tech.web.app
 ```
 
 ---
@@ -282,12 +290,12 @@ Sentry.init({
 
 ---
 
-## 📅 **WORKFLOW CONTINU**
+## � **WORKFLOW CONTINU**
 
 ### Chaque matin (15 min)
 
 ```bash
-# 1. Récupérer les mises à jour
+# 1. Récupérer les mises à jour du repo
 git pull origin main
 
 # 2. Vérifier l'état
@@ -300,7 +308,7 @@ git log --oneline -5
 ### Chaque changement (5-10 min)
 
 ```bash
-# 1. Créer une branche
+# 1. Créer une branche (optionnel pour petit projet)
 git checkout -b feature/nom
 
 # 2. Faire les changements
@@ -308,22 +316,23 @@ git checkout -b feature/nom
 # 3. Tester localement
 # - Ouvrir http://localhost:8000
 # - Vérifier fonctionnalités
+# - DevTools (F12) pour erreurs
 
 # 4. Commiter
 git add .
 git commit -m "Courte description"
 
-# 5. Pousser
+# 5. Pousser vers GitHub (version control)
 git push origin feature/nom
 
-# 6. Créer PR sur GitHub
-# - Aller sur GitHub
+# 6. Créer PR sur GitHub (recommandé)
+# - Aller sur https://github.com/valdeskuete/portfolio
 # - Compare & pull request
 # - Ajouter description
 # - Créer la PR
 
 # 7. Fusionner
-# - Attendre validation
+# - Attendre validation (ou approuver soi-même)
 # - Merger sur GitHub
 # - Supprimer la branche
 ```
@@ -332,46 +341,60 @@ git push origin feature/nom
 
 ```bash
 # 1. Tests
-npm test (si applicable)
-
-# 2. Validation
-# - Lancer localement
+# - Lancer localement: http://localhost:8000
 # - Tester tous les formulaires
-# - Vérifier liens
-# - Tester mobile
+# - Vérifier les liens
+# - Tester sur mobile
+
+# 2. Sécurité
+# - Vérifier .env n'est pas commité
+# - Vérifier .gitignore protège .env
+# - Valider les règles Firestore
 
 # 3. Perf check
-# - PageSpeed Insights
-# - Lighthouse
-# - WebPageTest
+# - DevTools (F12) → Console (pas d'erreurs?)
+# - PageSpeed Insights: https://pagespeed.web.dev
+# - Lighthouse score 90+?
 
-# 4. Sécurité
-# - Vérifier .env n'est pas commité
-# - Valider les règles Firebase
-# - Checker pour XSS
-
-# 5. Déployer
-git push origin main
+# 4. Déployer
+git add .
+git commit -m "Description du changement"
+git push origin main           # Sauvegarder sur GitHub
+firebase deploy --only hosting  # Publier sur Firebase
 ```
 
 ---
 
 ## 🆘 **TROUBLESHOOTING**
 
-### Le site ne se met pas à jour sur GitHub Pages
+### Le site ne se met pas à jour sur Firebase
 
 ```bash
-# Solution 1: Forcer le refresh
-# Ctrl+Shift+R sur le site
+# Solution 1: Vérifier qu'on a bien déployé
+firebase hosting:channel:list
 
-# Solution 2: Vider le cache
-# Settings > Pages > uncheck cache > check cache
+# Solution 2: Vider le cache du navigateur
+# Ctrl+Shift+R (Refresh cache)
+# Ou DevTools (F12) → Network → Disable cache → Refresh
 
-# Solution 3: Vérifier le commit
-git log --oneline | head -5
+# Solution 3: Redéployer
+firebase deploy --only hosting
 
-# Solution 4: Forcer push (DANGER!)
-git push origin main --force
+# Solution 4: Vérifier les logs
+firebase deploy:log
+```
+
+### Erreur "Firebase not initialized"
+
+```bash
+# Vérifier que firebase-config.js est chargé
+# DevTools (F12) → Console
+# Chercher: ✅ Firebase initialized
+
+# Si erreur, vérifier:
+# 1. .env a les bonnes clés Firebase
+# 2. env-loader.js est en premier dans index.html
+# 3. firebase-config.js charge SANS defer
 ```
 
 ### Les fichiers .env ne se cachent pas
@@ -384,14 +407,16 @@ cat .gitignore | grep "\.env"
 echo ".env" >> .gitignore
 git add .gitignore
 git commit -m "Fix gitignore"
-git push
+git push origin main
 ```
 
-### Port 8000 déjà utilisé
+### Port 8000 déjà utilisé (test local)
 
 ```bash
 # Trouver le processus
 lsof -i :8000
+# ou sur Windows:
+netstat -ano | findstr :8000
 
 # Utiliser un autre port
 python -m http.server 8001
@@ -424,15 +449,22 @@ Avant de considérer votre projet terminé:
 
 - [ ] `.env` créé et dans `.gitignore`
 - [ ] Tous les fichiers validés (HTML/CSS/JS)
-- [ ] Lighthouse score 90+
-- [ ] Pas d'erreurs console
+- [ ] DevTools console: aucune erreur rouge
 - [ ] Responsive testé sur mobile réel
-- [ ] Formulaires testés
-- [ ] GitHub Pages activé et fonctionne
-- [ ] Documentation mise à jour
+- [ ] Formulaires testés (contact, testimonial, etc.)
+- [ ] Firebase Hosting actif et fonctionne: https://valde-tech.web.app
+- [ ] Firestore collections créées et sécurisées
+- [ ] Documentation mise à jour (README, guides)
 - [ ] Code commité avec bons messages
 - [ ] Collaborateurs informés
+- [ ] Backup .env SÉCURISÉ (pas en repo!)
+- [ ] Quota Firebase monitoring configuré
 
 ---
 
 **Bonne chance avec votre portfolio! 🚀**
+
+**Site en ligne**: https://valde-tech.web.app  
+**Repo GitHub**: https://github.com/valdeskuete/portfolio  
+**Database**: Firestore (Google Cloud)  
+**Hébergement**: Firebase Hosting

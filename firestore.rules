@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Fonction pour vérifier si l'utilisateur est admin
+    // Utilise Custom Claims pour plus de sécurité OU UID admin principal
+    function isAdmin() {
+      return (request.auth != null && request.auth.token.admin == true)
+          || request.auth.uid == "D6QdYhxO71OCvYmZcrqqrpOHpyP2";
+    }
+    
+    // ==================== PROJETS ====================
+    // Les projets sont publics en lecture
+    match /projets/{document=**} {
+      allow read: if true;
+      // Seulement l'admin peut créer/modifier/supprimer
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== COMMENTAIRES (PUBLICS IMMÉDIATEMENT) ====================
+    // Les commentaires sont publics en lecture immédiatement
+    match /comments/{document=**} {
+      allow read: if true;
+      // N'IMPORTE QUI peut créer des commentaires (pas d'authentification requise)
+      allow create: if request.resource.data.keys().hasAll(['projectId', 'text']);
+      // L'auteur peut éditer son commentaire pendant 15 min, admin peut aussi
+      allow update: if (resource.data.userId == request.auth.uid && request.time < resource.data.date + duration.value(15, 'm')) || isAdmin();
+      // L'auteur peut supprimer son commentaire, admin peut aussi
+      allow delete: if resource.data.userId == request.auth.uid || isAdmin();
+    }
+    
+    // ==================== TÉMOIGNAGES (MODÉRATION REQUISE) ====================
+    // Les témoignages avec approved:true sont publics, les autres seulement par admin
+    match /testimonials/{document=**} {
+      allow read: if resource.data.approved == true || isAdmin();
+      // N'IMPORTE QUI peut soumettre un avis (sans authentification)
+      // Les nouveaux avis ont approved:false par défaut
+      allow create: if request.resource.data.get('approved', false) == false 
+                   && request.resource.data.keys().hasAll(['nom', 'texte']);
+      // Seulement l'admin peut approuver/supprimer
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== MESSAGES DE CONTACT (MODÉRATION REQUISE) ====================
+    // Messages privés - seulement l'admin peut lire
+    match /messages/{document=**} {
+      allow read: if isAdmin();
+      // N'IMPORTE QUI peut envoyer un message (sans authentification requise)
+      allow create: if request.resource.data.keys().hasAll(['nom', 'email', 'message']);
+      // Seulement l'admin peut modifier/supprimer
+      allow delete: if isAdmin();
+      allow update: if isAdmin();
+    }
+    
+    // ==================== JOURNAL / ARTICLES ====================
+    // Le journal est public en lecture
+    match /journal/{document=**} {
+      allow read: if true;
+      // Seulement l'admin peut créer/modifier/supprimer
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== CONSEILS / TIPS ====================
+    // Les conseils sont publics en lecture
+    // Document structure: { titre: string, categorie: enum(os|hardware|security|network|software), 
+    //                       difficulte: enum(debutant|intermediaire|avance), description: string, date: timestamp }
+    match /tips/{document=**} {
+      allow read: if true;
+      // Seulement l'admin peut gérer
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==================== À PROPOS ====================
+    // Le contenu "À propos" est public en lecture
+    // Document structure: { whoAmI: string, myJourney: string, photo: url }
+    match /about/{document=**} {
+      allow read: if true;
+      // Seulement l'admin peut gérer
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==================== STATISTIQUES ====================
+    // Les statistiques sont publiques en lecture
+    // Document structure: { projectsCount: number, clientsCount: number, yearsExperience: number }
+    match /stats/{document=**} {
+      allow read: if true;
+      // Seulement l'admin peut gérer
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // ==================== RÈGLE PAR DÉFAUT ====================
+    // Tout ce qui n'est pas spécifié est bloqué
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

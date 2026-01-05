@@ -1,0 +1,35 @@
+{
+  "gemini": {
+    "apiKey": "",
+    "model": "gemini-1.5-flash",
+    "maxTokens": 1000,
+    "temperature": 0.7,
+    "rateLimitPerMinute": 60,
+    "enabled": true
+  },
+  "recaptcha": {
+    "siteKey": "6LdEVFspAAAAAI5Xz3xbFqFlFcR5VbVdqWJHmFU7",
+    "version": "v3",
+    "scoreThreshold": 0.5,
+    "enabled": true
+  },
+  "firebase": {
+    "projectId": "valde-tech",
+    "appId": "1:934046717:web:1234567890abcdef",
+    "apiKey": ""
+  },
+  "performance": {
+    "enableLazyLoading": true,
+    "enableCaching": true,
+    "cacheMaxAge": 86400,
+    "debounceDelay": 300,
+    "throttleDelay": 1000
+  },
+  "pwa": {
+    "enabled": true,
+    "installPrompt": true,
+    "offlineMode": true
+  },
+  "environment": "production",
+  "debug": false
+}
