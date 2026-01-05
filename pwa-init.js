@@ -10,10 +10,18 @@
     return;
   }
 
-  // Enregistrer le Service Worker au chargement
+  // Enregistrer le Service Worker APRÈS stabilité (non-bloquant)
   window.addEventListener('load', () => {
+    // Enregistrer immédiatement mais defer caching
     registerServiceWorker();
     setupPWAInstallPrompt();
+    
+    // Attendre la stabilité avant de faire le caching agressif
+    if (window.LoaderOptimized) {
+      window.LoaderOptimized.waitForStability().then(() => {
+        console.log('[PWA] Content stable - Service Worker can cache');
+      });
+    }
   });
 
   /**

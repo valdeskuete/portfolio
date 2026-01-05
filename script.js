@@ -97,9 +97,19 @@ async function initializeApp() {
         console.error('❌ Firebase not available even after waiting!');
     }
     
-        console.log('✅ script.js initialization complete');
+    console.log('✅ script.js initialization complete');
+    
+    // Signal que le contenu est stable (pour Service Worker caching)
+    setTimeout(() => {
+      if (window.LoaderOptimized) {
+        window.LoaderOptimized.markContentStable();
+      }
+    }, 500); // Petit délai pour s'assurer que tout est complètement rendu
     } catch (error) {
         if (window.logError) window.logError('initializeApp', error);
+        console.error('❌ Erreur lors de l\'initialisation:', error);
+    }
+}
         console.error('❌ Erreur lors de l\'initialisation:', error);
     }
 }
