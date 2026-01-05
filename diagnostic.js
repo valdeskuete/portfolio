@@ -12,15 +12,24 @@ window.AppDiagnostic = {
     // Check 1: Firebase
     this.check('Firebase', () => window.db && window.auth !== undefined);
     
-    // Check 2: Service Worker
+    // Check 2: Service Worker (async)
     if (navigator.serviceWorker) {
       navigator.serviceWorker.getRegistrations().then(registrations => {
         this.check('Service Worker', registrations.length > 0);
+      }).catch(err => {
+        console.warn('⚠️ SW check failed:', err);
+        this.check('Service Worker', false);
       });
     }
     
-    // Check 3: Gemini API
-    this.check('Gemini API', window.VITE_GEMINI_API_KEY && window.VITE_GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE');
+    // Check 3: Gemini API (optional - not critical)
+    // Gemini API is optional, so this is informational only
+    const hasGemini = window.VITE_GEMINI_API_KEY && window.VITE_GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE';
+    if (!hasGemini) {
+      console.info('ℹ️ Gemini API non configuré (optionnel)');
+    } else {
+      this.check('Gemini API', true);
+    }
     
     // Check 4: DOM Elements
     this.check('index.html', document.querySelector('header') !== null);
