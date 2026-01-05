@@ -1,9 +1,9 @@
 /**
  * ========== OPTIMIZED LOADER - INSTANT RENDERING + DEFERRED CACHING ==========
  * Stratégie:
- * 1. DOM se charge IMMÉDIATEMENT (visible en <100ms)
- * 2. Firebase se prépare EN PARALLÈLE (non-bloquant)
- * 3. Scripts s'exécutent APRÈS Firebase prêt
+ * 1. DOM se charge INSTANTANÉMENT (< 100ms, sans attendre Firebase)
+ * 2. Firebase se prépare EN PARALLÈLE (non-bloquant, en background)
+ * 3. Contenu dynamique s'affiche APRÈS Firebase (mais pas obligatoire)
  * 4. Service Worker cache APRÈS tout stable
  */
 
@@ -12,26 +12,37 @@ window.LoaderOptimized = {
   isFirebaseReady: false,
   isContentStable: false,
   startTime: performance.now(),
+  firebasePromise: null,
 
   /**
-   * Phase 1: DOM visible immédiatement
+   * Phase 1: DOM visible IMMÉDIATEMENT (< 100ms)
+   * Ne pas attendre Firebase - afficher le contenu statique tout de suite
    */
-  async renderPage() {
-    // Le DOM est déjà dans le HTML, rien à faire
-    // Juste marquer que c'est prêt
+  renderPage() {
+    // Le DOM est déjà dans le HTML, il est visible maintenant
+    // CSS inline rend la page visible sans attendre les scripts
     this.isPageReady = true;
-    console.log(`⚡ [Loader] Page DOM rendered instantly (${(performance.now() - this.startTime).toFixed(0)}ms)`);
+    const renderTime = performance.now() - this.startTime;
+    console.log(`⚡ [Loader] Page visible in ${renderTime.toFixed(0)}ms (instant, no Firebase wait)`);
     
-    // Trigger le chargement du contenu en parallèle
-    this.startFirebaseLoad();
+    // Déclencher Firebase en PARALLÈLE sans bloquer
+    this.startFirebaseLoadAsync();
   },
 
   /**
-   * Phase 2: Firebase charge EN PARALLÈLE (non-bloquant)
+   * Phase 2: Firebase charge EN ARRIÈRE-PLAN (non-bloquant)
+   * Ne pas utiliser await - laisser charger en parallèle
    */
-  async startFirebaseLoad() {
-    // Firebase est chargé via firebase-config.js (type="module")
-    // On attend juste que window.loadProjects soit disponible
+  startFirebaseLoadAsync() {
+    // Créer la promise mais ne pas l'attendre
+    this.firebasePromise = this.waitForFirebase();
+    // Retourner immédiatement sans attendre
+  },
+
+  /**
+   * Attendre Firebase (interne seulement)
+   */
+  waitForFirebase() {
     return new Promise((resolve) => {
       let attempts = 0;
       const checkFirebase = setInterval(() => {
@@ -39,35 +50,28 @@ window.LoaderOptimized = {
             window.db && window.auth !== undefined) {
           clearInterval(checkFirebase);
           this.isFirebaseReady = true;
-          console.log(`✅ [Loader] Firebase ready in ${(performance.now() - this.startTime).toFixed(0)}ms`);
-          resolve();
+          const fbTime = performance.now() - this.startTime;
+          console.log(`✅ [Loader] Firebase ready in ${fbTime.toFixed(0)}ms`);
           
-          // Quand Firebase est prêt, marquer que contenu peut commencer à charger
-          this.onFirebaseReady();
+          // Déclencher événement quand Firebase est prêt
+          window.dispatchEvent(new CustomEvent('firebase-ready', { 
+            detail: { time: fbTime } 
+          }));
+          resolve();
           return;
         }
         attempts++;
-        if (attempts > 300) { // 15 secondes de timeout
+        if (attempts > 300) { // 15 secondes max
           clearInterval(checkFirebase);
           this.isFirebaseReady = true;
-          console.warn('⚠️ [Loader] Firebase timeout, continuing anyway');
+          console.warn('⚠️ [Loader] Firebase timeout (15s), page works without it');
+          window.dispatchEvent(new CustomEvent('firebase-ready', { 
+            detail: { timeout: true } 
+          }));
           resolve();
-          this.onFirebaseReady();
         }
       }, 50);
     });
-  },
-
-  /**
-   * Called when Firebase is ready
-   */
-  onFirebaseReady() {
-    // Déclencher le chargement du contenu
-    window.dispatchEvent(new CustomEvent('firebase-ready', { 
-      detail: { 
-        time: performance.now() - this.startTime 
-      } 
-    }));
   },
 
   /**
@@ -80,14 +84,25 @@ window.LoaderOptimized = {
     
     // Trigger Service Worker caching (APRÈS stabilité)
     window.dispatchEvent(new CustomEvent('page-stable', { 
-      detail: { 
-        time: totalTime 
-      } 
+      detail: { time: totalTime } 
     }));
   },
 
   /**
-   * Attendre que tout soit prêt
+   * Attendre que Firebase soit prêt (pour les scripts qui en ont besoin)
+   */
+  async getFirebaseReady() {
+    if (this.isFirebaseReady) {
+      return Promise.resolve();
+    }
+    if (this.firebasePromise) {
+      return this.firebasePromise;
+    }
+    return Promise.resolve(); // Fallback
+  },
+
+  /**
+   * Attendre que tout soit stable
    */
   async waitForStability() {
     return new Promise((resolve) => {
@@ -121,14 +136,19 @@ window.LoaderOptimized = {
   }
 };
 
-// Auto-start on DOM ready
+// Auto-start on DOM ready (but don't block rendering)
+// Use requestAnimationFrame for truly instant rendering
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(() => {
+      window.LoaderOptimized.renderPage();
+    });
+  }, { once: true });
+} else {
+  // DOM already loaded - render immediately
+  requestAnimationFrame(() => {
     window.LoaderOptimized.renderPage();
   });
-} else {
-  // DOM already loaded
-  window.LoaderOptimized.renderPage();
 }
 
 // Expose metrics in console

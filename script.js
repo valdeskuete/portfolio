@@ -11,14 +11,14 @@ async function initializeApp() {
     try {
         console.log('🚀 script.js starting initialization...');
         
-        // Attendre que Firebase soit prêt si la promise existe
-        if (window.firebaseReadyPromise) {
-            console.log('⏳ Waiting for Firebase...');
-            await window.firebaseReadyPromise;
-            console.log('✅ Firebase promise resolved');
+        // Attendre que Firebase soit prêt en arrière-plan (sans bloquer)
+        if (window.LoaderOptimized) {
+            window.LoaderOptimized.getFirebaseReady().then(() => {
+                console.log('✅ Firebase ready from background');
+            });
         }
         
-        // Attendre que le DOM soit chargé
+        // Attendre que le DOM soit chargé (mais il l'est déjà)
         if (document.readyState === 'loading') {
             await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, {once: true}));
         }
@@ -107,9 +107,6 @@ async function initializeApp() {
     }, 500); // Petit délai pour s'assurer que tout est complètement rendu
     } catch (error) {
         if (window.logError) window.logError('initializeApp', error);
-        console.error('❌ Erreur lors de l\'initialisation:', error);
-    }
-}
         console.error('❌ Erreur lors de l\'initialisation:', error);
     }
 }
