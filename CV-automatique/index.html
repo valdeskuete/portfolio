@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de CV - Valdes.Tech</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <h1><i class="fas fa-file-alt"></i> Générateur de CV Professionnel</h1>
+            <p>Créez votre CV en quelques minutes - Format VADEX</p>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="content-wrapper">
+            <!-- FORMULAIRE (Gauche) -->
+            <div class="form-section">
+                <form id="cvForm">
+                    <!-- SECTION COULEURS -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-palette"></i> Personnalisation</h3>
+                        <label>Couleur principale:</label>
+                        <div class="color-palette">
+                            <input type="color" id="colorPrimary" value="#0ef" title="Couleur personnalisée">
+                            <button type="button" class="color-btn" data-color="#0ef" title="Cyan">Cyan</button>
+                            <button type="button" class="color-btn" data-color="#00d4ff" title="Bleu">Bleu</button>
+                            <button type="button" class="color-btn" data-color="#00ff88" title="Vert">Vert</button>
+                            <button type="button" class="color-btn" data-color="#ff00ff" title="Magenta">Magenta</button>
+                            <button type="button" class="color-btn" data-color="#ff6600" title="Orange">Orange</button>
+                        </div>
+                    </div>
+
+                    <!-- INFOS PERSONNELLES -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-user"></i> Informations Personnelles</h3>
+                        <input type="text" id="fullName" placeholder="Nom complet" required>
+                        <input type="text" id="jobTitle" placeholder="Titre/Profession" required>
+                        <input type="text" id="email" placeholder="Email">
+                        <input type="text" id="phone" placeholder="Téléphone">
+                        <input type="text" id="location" placeholder="Localisation (Ville, Pays)">
+                        <textarea id="about" placeholder="Résumé professionnel (2-3 lignes)"></textarea>
+                    </div>
+
+                    <!-- INTÉRÊTS -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-heart"></i> Intérêts</h3>
+                        <input type="text" id="interests" placeholder="Ex: Voyage, Sport, Lecture, Musique (séparés par des virgules)">
+                    </div>
+
+                    <!-- FORMATION -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-graduation-cap"></i> Formation</h3>
+                        <div id="educationList"></div>
+                        <button type="button" class="btn-add" onclick="addEducation()">+ Ajouter formation</button>
+                    </div>
+
+                    <!-- EXPÉRIENCES -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-briefcase"></i> Expériences</h3>
+                        <div id="experienceList"></div>
+                        <button type="button" class="btn-add" onclick="addExperience()">+ Ajouter expérience</button>
+                    </div>
+
+                    <!-- COMPÉTENCES -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-cogs"></i> Compétences</h3>
+                        <input type="text" id="skills" placeholder="Ex: Réseaux, DNS, DHCP, Virtualisation (séparés par des virgules)" required>
+                    </div>
+
+                    <!-- LANGUES -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-globe"></i> Langues</h3>
+                        <input type="text" id="languages" placeholder="Ex: Français (courant), Anglais (apprentissage)">
+                    </div>
+
+                    <!-- BOUTONS ACTION -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" onclick="exportPDF()">
+                            <i class="fas fa-download"></i> Télécharger PDF
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="exportPNG()">
+                            <i class="fas fa-image"></i> Télécharger Image
+                        </button>
+                        <button type="reset" class="btn btn-reset">
+                            <i class="fas fa-redo"></i> Réinitialiser
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PREVIEW CV (Droite) -->
+            <div class="preview-section">
+                <div id="cvPreview" class="cv-container">
+                    <!-- Le CV s'affichera ici en temps réel -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template CV caché (pour clonage) -->
+    <template id="cvTemplate">
+        <div class="cv-header">
+            <div class="cv-left">
+                <h1 class="cv-name">Nom Complet</h1>
+                <p class="cv-job">Titre Professionnel</p>
+            </div>
+            <div class="cv-right">
+                <p class="cv-info"><strong>Email:</strong> email@exemple.com</p>
+                <p class="cv-info"><strong>Tél:</strong> +237 6XX XXX XXX</p>
+                <p class="cv-info"><strong>Localisation:</strong> Douala, Cameroun</p>
+            </div>
+        </div>
+
+        <div class="cv-about">
+            <p>Résumé professionnel...</p>
+        </div>
+
+        <div class="cv-section">
+            <h3 class="cv-section-title">FORMATION</h3>
+            <div id="cvEducation"></div>
+        </div>
+
+        <div class="cv-section">
+            <h3 class="cv-section-title">EXPÉRIENCES</h3>
+            <div id="cvExperience"></div>
+        </div>
+
+        <div class="cv-row">
+            <div class="cv-col">
+                <h3 class="cv-section-title">COMPÉTENCES</h3>
+                <div id="cvSkills"></div>
+            </div>
+            <div class="cv-col">
+                <h3 class="cv-section-title">INTÉRÊTS</h3>
+                <div id="cvInterests"></div>
+                
+                <h3 class="cv-section-title">LANGUES</h3>
+                <div id="cvLanguages"></div>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
