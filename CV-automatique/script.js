@@ -6,65 +6,7 @@ let currentUserId = null;
 let db = null;
 let auth = null;
 
-// Initialize Firebase on page load
-function initFirebase() {
-    return new Promise((resolve) => {
-        const checkFirebase = setInterval(() => {
-            if (window.auth && window.db) {
-                clearInterval(checkFirebase);
-                auth = window.auth;
-                db = window.db;
-                
-                // Get IDs from sessionStorage
-                currentCVId = sessionStorage.getItem('currentCVId');
-                currentUserId = sessionStorage.getItem('currentUserId');
-                
-                console.log('✅ Firebase initialized for CV editor');
-                resolve();
-            }
-        }, 100);
-    });
-}
-
-// Auto-save to Firestore
-function autoSaveToFirebase() {
-    if (!currentCVId || !currentUserId || !window.CVDocumentManager) {
-        return Promise.resolve();
-    }
-
-    const cvData = {
-        fullName: document.getElementById('fullName').value,
-        jobTitle: document.getElementById('jobTitle').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        location: document.getElementById('location').value,
-        about: document.getElementById('about').value,
-        educations: cvData.educations,
-        experiences: cvData.experiences,
-        skills: cvData.skills,
-        languages: cvData.languages,
-        interests: cvData.interests,
-        template: currentTemplate,
-        fontTitle: document.getElementById('fontTitle').value,
-        fontBody: document.getElementById('fontBody').value,
-        nameSize: parseInt(document.getElementById('nameSize').value),
-        jobTitleSize: parseInt(document.getElementById('jobTitleSize').value),
-        metaSize: parseInt(document.getElementById('metaSize').value),
-        sectionTitleSize: parseInt(document.getElementById('sectionTitleSize').value),
-        bodyFontSize: parseInt(document.getElementById('bodyFontSize').value),
-        primaryColor: document.getElementById('primaryColor').value,
-        photoData: currentPhotoData
-    };
-
-    return window.CVDocumentManager.updateCV(currentCVId, cvData)
-        .catch(err => {
-            console.error('Error saving to Firebase:', err);
-            // Fallback to localStorage for offline
-            localStorage.setItem('cv-auto-save', JSON.stringify({ ...cvData, timestamp: new Date().toISOString() }));
-        });
-}
-
-// ===== GLOBAL STATE =====
+// ===== GLOBAL STATE - Define BEFORE functions use it =====
 let zoomLevel = 100;
 let nameSize = 36;
 let jobTitleSize = 16;
@@ -93,6 +35,64 @@ let experienceCount = 0;
 let skillCount = 0;
 let languageCount = 0;
 let interestCount = 0;
+
+// Initialize Firebase on page load
+function initFirebase() {
+    return new Promise((resolve) => {
+        const checkFirebase = setInterval(() => {
+            if (window.auth && window.db) {
+                clearInterval(checkFirebase);
+                auth = window.auth;
+                db = window.db;
+                
+                // Get IDs from sessionStorage
+                currentCVId = sessionStorage.getItem('currentCVId');
+                currentUserId = sessionStorage.getItem('currentUserId');
+                
+                console.log('✅ Firebase initialized for CV editor');
+                resolve();
+            }
+        }, 100);
+    });
+}
+
+// Auto-save to Firestore
+function autoSaveToFirebase() {
+    if (!currentCVId || !currentUserId || !window.CVDocumentManager) {
+        return Promise.resolve();
+    }
+
+    const saveData = {
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        location: document.getElementById('location').value,
+        about: document.getElementById('about').value,
+        educations: cvData.educations || [],
+        experiences: cvData.experiences || [],
+        skills: cvData.skills || [],
+        languages: cvData.languages || [],
+        interests: cvData.interests || [],
+        template: currentTemplate,
+        fontTitle: document.getElementById('fontTitle').value,
+        fontBody: document.getElementById('fontBody').value,
+        nameSize: parseInt(document.getElementById('nameSize').value),
+        jobTitleSize: parseInt(document.getElementById('jobTitleSize').value),
+        metaSize: parseInt(document.getElementById('metaSize').value),
+        sectionTitleSize: parseInt(document.getElementById('sectionTitleSize').value),
+        bodyFontSize: parseInt(document.getElementById('bodyFontSize').value),
+        primaryColor: document.getElementById('primaryColor').value,
+        photoData: currentPhotoData
+    };
+
+    return window.CVDocumentManager.updateCV(currentCVId, saveData)
+        .catch(err => {
+            console.error('Error saving to Firebase:', err);
+            // Fallback to localStorage for offline
+            localStorage.setItem('cv-auto-save', JSON.stringify({ ...saveData, timestamp: new Date().toISOString() }));
+        });
+}
 
 // ===== EXAMPLE TEMPLATES =====
 const exampleTemplates = {
