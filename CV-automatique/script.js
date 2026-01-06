@@ -1459,6 +1459,83 @@ function exportPNG() {
     });
 }
 
+function exportDOCX() {
+    showToast('Génération du document Word en cours...', 'info', 1500);
+    
+    const fullName = document.getElementById('fullName').value || 'Nom Complet';
+    const jobTitle = document.getElementById('jobTitle').value || 'Titre';
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const location = document.getElementById('location').value;
+    const about = document.getElementById('about').value;
+    
+    let docContent = `<?xml version="1.0" encoding="UTF-8"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:body>
+        <w:p><w:r><w:t xml:space="preserve">${escapeXml(fullName)}</w:t></w:r></w:p>
+        <w:p><w:r><w:t xml:space="preserve">${escapeXml(jobTitle)}</w:t></w:r></w:p>
+        <w:p><w:r><w:t xml:space="preserve">${escapeXml(email)} | ${escapeXml(phone)} | ${escapeXml(location)}</w:t></w:r></w:p>
+        <w:p></w:p>
+        <w:p><w:r><w:t xml:space="preserve">À PROPOS</w:t></w:r></w:p>
+        <w:p><w:r><w:t xml:space="preserve">${escapeXml(about)}</w:t></w:r></w:p>
+        <w:p></w:p>`;
+    
+    // Add sections
+    if (cvData.experiences.length > 0) {
+        docContent += `<w:p><w:r><w:t xml:space="preserve">EXPÉRIENCES</w:t></w:r></w:p>`;
+        cvData.experiences.forEach(exp => {
+            docContent += `<w:p><w:r><w:t xml:space="preserve">${escapeXml(exp.title)} - ${escapeXml(exp.company)} (${escapeXml(exp.period)})</w:t></w:r></w:p>`;
+            docContent += `<w:p><w:r><w:t xml:space="preserve">${escapeXml(exp.description)}</w:t></w:r></w:p>`;
+        });
+        docContent += `<w:p></w:p>`;
+    }
+    
+    if (cvData.educations.length > 0) {
+        docContent += `<w:p><w:r><w:t xml:space="preserve">FORMATION</w:t></w:r></w:p>`;
+        cvData.educations.forEach(edu => {
+            docContent += `<w:p><w:r><w:t xml:space="preserve">${escapeXml(edu.title)} - ${escapeXml(edu.school)} (${escapeXml(edu.year)})</w:t></w:r></w:p>`;
+        });
+        docContent += `<w:p></w:p>`;
+    }
+    
+    if (cvData.skills.length > 0) {
+        docContent += `<w:p><w:r><w:t xml:space="preserve">COMPÉTENCES</w:t></w:r></w:p>`;
+        docContent += `<w:p><w:r><w:t xml:space="preserve">${cvData.skills.map(s => s.name).join(', ')}</w:t></w:r></w:p>`;
+        docContent += `<w:p></w:p>`;
+    }
+    
+    if (cvData.languages.length > 0) {
+        docContent += `<w:p><w:r><w:t xml:space="preserve">LANGUES</w:t></w:r></w:p>`;
+        cvData.languages.forEach(lang => {
+            docContent += `<w:p><w:r><w:t xml:space="preserve">${escapeXml(lang.name)} - ${lang.level}%</w:t></w:r></w:p>`;
+        });
+    }
+    
+    docContent += `</w:body></w:document>`;
+    
+    // Create and download simple text as DOCX-like format
+    const blob = new Blob([docContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'CV.docx';
+    link.click();
+    
+    setTimeout(() => showToast('Document Word créé!', 'success'), 500);
+}
+
+function escapeXml(str) {
+    if (!str) return '';
+    return str.replace(/[<>&'"]/g, (c) => {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+        }
+    });
+}
+
 function exportJSON() {
     const data = {
         fullName: document.getElementById('fullName').value,
