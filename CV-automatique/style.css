@@ -770,8 +770,9 @@ html.dark-mode .btn-remove:hover {
     background: #ffffff;
     color: #000000;
     margin: 2rem auto;
-    padding: 45px;
+    padding: 40px 35px;
     min-height: 297mm;
+    max-height: 297mm;
     width: 210mm;
     box-shadow: 
         0 20px 60px rgba(0, 0, 0, 0.15),
@@ -783,6 +784,34 @@ html.dark-mode .btn-remove:hover {
     transition: all 0.3s ease;
     border: 1px solid #e8e8e8;
     border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Page number positioning */
+.cv-page::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Ensure content doesn't overflow */
+.cv-page > * {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Main content area */
+.cv-page-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== 6 TEMPLATES DESIGN ===== */
@@ -1046,24 +1075,30 @@ html.dark-mode .btn-remove:hover {
 
 /* Section titles improvements */
 .cv-page .cv-section-title {
-    margin-top: 20px;
-    margin-bottom: 15px;
+    margin-top: 18px;
+    margin-bottom: 12px;
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 /* Experience and Education items */
 .cv-page .cv-item,
 .cv-page .education-item,
 .cv-page .experience-item {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     position: relative;
+    overflow: hidden;
 }
 
 /* Entry styling for all templates */
 .cv-page .cv-entry {
-    margin-bottom: 18px;
-    padding-bottom: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
 .cv-page .cv-entry:last-child {
@@ -1077,6 +1112,10 @@ html.dark-mode .btn-remove:hover {
     font-size: 1.05em;
     margin-bottom: 3px;
     color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .cv-entry-subtitle {
@@ -1084,6 +1123,10 @@ html.dark-mode .btn-remove:hover {
     font-size: 0.95em;
     color: #555;
     margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .cv-entry-period {
@@ -1091,29 +1134,42 @@ html.dark-mode .btn-remove:hover {
     color: #888;
     font-weight: 500;
     margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .cv-entry-text {
     font-size: 0.9em;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #333;
     white-space: pre-wrap;
     word-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+    max-height: 4.5em;
 }
 
 /* Skills presentation */
 .cv-page .cv-skills {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    overflow: hidden;
+    max-height: none;
 }
 
 .cv-page .cv-skill {
     background: rgba(0, 0, 0, 0.05);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.9em;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.85em;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* Languages presentation */
