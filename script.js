@@ -120,28 +120,12 @@ async function initializeApp() {
 function initSmartHeaderScroll() {
     const header = document.querySelector('.header');
     let lastScrollY = 0;
-    let lastScrollDirection = 'up';
     let ticking = false;
     
     if (!header) return;
     
     function updateScroll() {
         const currentScrollY = window.scrollY;
-        
-        // Détecter la direction du scroll
-        if (currentScrollY > lastScrollY) {
-            // Scrolling DOWN
-            lastScrollDirection = 'down';
-            if (currentScrollY > 100) {
-                header.classList.add('scroll-hidden');
-                header.classList.remove('scroll-visible');
-            }
-        } else {
-            // Scrolling UP
-            lastScrollDirection = 'up';
-            header.classList.remove('scroll-hidden');
-            header.classList.add('scroll-visible');
-        }
         
         // Ajouter classe "scrolled" si on a scrollé plus de 50px
         if (currentScrollY > 50) {

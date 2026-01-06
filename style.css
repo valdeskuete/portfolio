@@ -300,16 +300,6 @@ span { color: var(--main-color); }
     padding: 0.8rem 5%;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
-
-/* État caché au scroll down (mais reste clickable) */
-.header.scroll-hidden {
-    transform: translateY(-100%);
-}
-
-/* État visible au scroll up */
-.header.scroll-visible {
-    transform: translateY(0);
-}
     transition: .3s;
     box-sizing: border-box;
     overflow: visible;
