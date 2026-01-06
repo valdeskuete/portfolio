@@ -198,12 +198,51 @@ const exampleTemplates = {
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ CV Generator Pro loaded');
+    initializeDarkMode();
     initializeEventListeners();
     renderDynamicLists();
     updateColorSwatchActive('#0ef');
     updatePreview();
     setupResponsive();
 });
+
+// ===== DARK MODE MANAGEMENT =====
+function initializeDarkMode() {
+    // Check localStorage for theme preference
+    const savedTheme = localStorage.getItem('cv-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+    
+    if (isDark) {
+        document.documentElement.classList.add('dark-mode');
+        updateThemeButton(true);
+    } else {
+        document.documentElement.classList.remove('dark-mode');
+        updateThemeButton(false);
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.documentElement.classList.toggle('dark-mode');
+    localStorage.setItem('cv-theme', isDark ? 'dark' : 'light');
+    updateThemeButton(isDark);
+}
+
+function updateThemeButton(isDark) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        const icon = btn.querySelector('i');
+        if (isDark) {
+            icon.className = 'fas fa-sun';
+            btn.textContent = ' Mode clair';
+            btn.insertAdjacentHTML('afterbegin', '<i class="fas fa-sun"></i>');
+        } else {
+            icon.className = 'fas fa-moon';
+            btn.textContent = ' Mode sombre';
+            btn.insertAdjacentHTML('afterbegin', '<i class="fas fa-moon"></i>');
+        }
+    }
+}
 
 // ===== RESPONSIVE SETUP =====
 function setupResponsive() {
