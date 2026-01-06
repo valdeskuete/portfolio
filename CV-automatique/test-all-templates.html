@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CV Templates - All Templates</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f0f0f0; padding: 40px 20px; font-family: 'Poppins', sans-serif; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; margin-bottom: 40px; font-size: 2.5em; }
+        .templates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .template-preview { background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); overflow: hidden; padding: 20px; }
+        .template-title { font-size: 1.3em; font-weight: 700; color: #0084ff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .template-content { max-height: 600px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .preview-container { position: relative; }
+        .note { text-align: center; color: #666; margin-top: 40px; padding: 20px; background: #fff; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-file-pdf"></i> Aperçu des Templates CV</h1>
+        
+        <div class="templates-grid">
+            <!-- PROFESSIONNEL TEMPLATE -->
+            <div class="template-preview">
+                <div class="template-title"><i class="fas fa-briefcase"></i> Pro 2-Colonnes</div>
+                <div class="template-content">
+                    <div id="preview-professionnel" class="cv-page professionnel-template" style="margin: 0; padding: 20px; width: 100%; min-height: auto; box-shadow: none; border: 1px solid #e0e0e0;"></div>
+                </div>
+            </div>
+            
+            <!-- ELEGANT TEMPLATE -->
+            <div class="template-preview">
+                <div class="template-title"><i class="fas fa-star"></i> Élégant</div>
+                <div class="template-content">
+                    <div id="preview-elegant" class="cv-page elegant-template" style="margin: 0; padding: 20px; width: 100%; min-height: auto; box-shadow: none; border: 1px solid #e0e0e0;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <p><strong>✓ 8 Templates Disponibles:</strong> Minimal, Classique, Moderne, Luxury, Créatif, Tech, Pro 2Col, Élégant</p>
+            <p style="font-size: 0.9em; color: #999; margin-top: 10px;">Format A4 | Responsive | Dark Mode | Auto-save | Multi-export (PDF/PNG/JSON)</p>
+        </div>
+    </div>
+
+    <script>
+        // Test data
+        const testData = {
+            fullName: 'Kamdem André Michaël',
+            jobTitle: 'Ingénieur Logiciel Senior',
+            email: 'kamdem.andre@email.com',
+            phone: '+237 650 123 456',
+            location: 'Yaoundé, Cameroun',
+            about: 'Ingénieur logiciel passionné par les technologies cloud et l\'architecture scalable. 8 ans d\'expérience en développement full-stack et gestion de projets informatiques. Spécialisé en microservices, DevOps et transformation digitale.',
+            primaryColor: '#0084ff'
+        };
+
+        const educations = [
+            { title: 'Master en Informatique', school: 'Université de Yaoundé I', year: '2016-2018' },
+            { title: 'Licence en Technologie', school: 'ENSET Douala', year: '2013-2016' }
+        ];
+
+        const experiences = [
+            { 
+                title: 'Ingénieur Senior - Architecture Cloud',
+                company: 'TechCorp Cameroun',
+                period: '2021 - Présent',
+                description: 'Leadership d\'une équipe de 5 développeurs. Conception et déploiement d\'applications cloud scalables. Réduction des coûts infrastructure de 35%.'
+            }
+        ];
+
+        const skills = ['JavaScript', 'Python', 'AWS', 'Docker', 'React.js', 'Node.js'];
+        const languages = [
+            { name: 'Français', level: 95 },
+            { name: 'Anglais', level: 85 }
+        ];
+        const interests = ['Cloud Computing', 'IA & ML', 'Open Source'];
+
+        // Professionnel Template
+        function generateProfessionnel() {
+            return `
+                <div style="display: grid; grid-template-columns: 280px 1fr; gap: 0; background: white;">
+                    <div style="background: #f5f5f5; padding: 40px 25px; border-right: 3px solid ${testData.primaryColor};">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="width: 100px; height: 100px; border-radius: 20px; border: 3px solid ${testData.primaryColor}; margin: 0 auto; background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+                        </div>
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <div style="font-weight: 700; color: #000; margin-bottom: 5px;">${testData.fullName}</div>
+                            <div style="font-size: 0.9em; color: #666;">${testData.jobTitle}</div>
+                        </div>
+                        <div style="font-size: 0.85em; color: #777; margin-bottom: 20px; border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                            <div><i style="color: ${testData.primaryColor};" class="fas fa-envelope"></i> ${testData.email}</div>
+                        </div>
+                        <div style="border-top: 1px solid #e0e0e0; padding-top: 20px; font-size: 0.9em;">
+                            <div style="font-weight: 700; color: ${testData.primaryColor}; margin-bottom: 10px;"><i class="fas fa-globe"></i> LANGUES</div>
+                            ${languages.map(l => `<div>${l.name}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div style="padding: 40px 35px;">
+                        <div style="margin-bottom: 25px;">
+                            <div style="font-weight: 700; color: ${testData.primaryColor}; margin-bottom: 10px;"><i class="fas fa-user-circle"></i> PROFIL</div>
+                            <div style="font-size: 0.9em; line-height: 1.6;">${testData.about}</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: ${testData.primaryColor}; margin-bottom: 10px;"><i class="fas fa-briefcase"></i> EXPÉRIENCES</div>
+                            ${experiences.map(e => `
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-weight: 700;">${e.title}</div>
+                                    <div style="color: ${testData.primaryColor};">${e.company}</div>
+                                    <div style="font-size: 0.85em; color: #999;">${e.period}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Elegant Template
+        function generateElegant() {
+            return `
+                <div>
+                    <div style="display: flex; align-items: flex-start; gap: 30px; padding: 30px 0; border-bottom: 2px solid ${testData.primaryColor};">
+                        <div style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid ${testData.primaryColor}; background: linear-gradient(135deg, #667eea, #764ba2); flex-shrink: 0;"></div>
+                        <div>
+                            <div style="font-size: 2em; font-weight: 700; margin-bottom: 5px;">${testData.fullName}</div>
+                            <div style="font-size: 1.2em; color: ${testData.primaryColor}; font-weight: 600; margin-bottom: 10px;">${testData.jobTitle}</div>
+                            <div style="color: #666; font-size: 0.9em;"><i style="color: ${testData.primaryColor};" class="fas fa-envelope"></i> ${testData.email}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 25px;">
+                        <div style="font-weight: 700; color: ${testData.primaryColor}; margin-bottom: 15px; border-bottom: 2px solid rgba(0,132,255,0.2); padding-bottom: 10px;">PROFIL</div>
+                        <div style="font-size: 0.9em; line-height: 1.6; margin-bottom: 25px;">${testData.about}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; color: ${testData.primaryColor}; margin-bottom: 15px; border-bottom: 2px solid rgba(0,132,255,0.2); padding-bottom: 10px;">EXPÉRIENCES</div>
+                        ${experiences.map(e => `
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-weight: 700;">${e.title}</div>
+                                <div style="color: ${testData.primaryColor}; font-size: 0.95em;">${e.company}</div>
+                                <div style="font-size: 0.85em; color: #999;">${e.period}</div>
+                                <div style="font-size: 0.9em;">${e.description}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render
+        document.getElementById('preview-professionnel').innerHTML = generateProfessionnel();
+        document.getElementById('preview-elegant').innerHTML = generateElegant();
+    </script>
+</body>
+</html>

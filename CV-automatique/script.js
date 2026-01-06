@@ -783,9 +783,11 @@ function renderPreview() {
 
     let html = '';
     
-    // Use special template for "professionnel"
+    // Use special templates for custom layouts
     if (currentTemplate === 'professionnel') {
         html = generateProfessionnelTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
+    } else if (currentTemplate === 'elegant') {
+        html = generateElegantTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
     } else {
         // Default templates logic
     // HEADER
@@ -1062,6 +1064,116 @@ function generateProfessionnelTemplate(fullName, jobTitle, email, phone, locatio
         </div>
     `;
     
+    return html;
+}
+
+// ===== ELEGANT TEMPLATE GENERATOR =====
+function generateElegantTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody) {
+    let html = `
+        <div style="display: flex; flex-direction: column; gap: 25px; background: white;">
+            <!-- HEADER WITH PHOTO -->
+            <div style="display: flex; align-items: flex-start; gap: 30px; padding: 30px 0; border-bottom: 2px solid ${primaryColor}; margin-top: 20px;">
+                ${currentPhotoData ? `
+                    <img src="${currentPhotoData}" alt="Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid ${primaryColor}; flex-shrink: 0;">
+                ` : `
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: rgba(0,0,0,0.1); border: 4px solid ${primaryColor}; flex-shrink: 0;"></div>
+                `}
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 2.5em; font-weight: 700; color: #000; margin-bottom: 8px; letter-spacing: 1px;">${fullName}</div>
+                    <div style="font-size: 1.3em; color: ${primaryColor}; font-weight: 600; margin-bottom: 12px;">${jobTitle}</div>
+                    <div style="display: flex; gap: 15px; font-size: 0.9em; color: #666; flex-wrap: wrap;">
+                        ${email ? `<span style="display: flex; align-items: center; gap: 6px;"><i style="color: ${primaryColor};" class="fas fa-envelope"></i>${email}</span>` : ''}
+                        ${phone ? `<span style="display: flex; align-items: center; gap: 6px;"><i style="color: ${primaryColor};" class="fas fa-phone"></i>${phone}</span>` : ''}
+                        ${location ? `<span style="display: flex; align-items: center; gap: 6px;"><i style="color: ${primaryColor};" class="fas fa-map-marker-alt"></i>${location}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ABOUT -->
+            ${about ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-user-circle"></i> PROFIL
+                    </div>
+                    <div style="font-size: 0.9em; color: #555; line-height: 1.6; text-align: justify;">${about}</div>
+                </div>
+            ` : ''}
+            
+            <!-- EXPERIENCES -->
+            ${cvData.experiences.length > 0 ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-briefcase"></i> EXPÉRIENCES
+                    </div>
+                    ${cvData.experiences.map(exp => `
+                        <div style="margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid #f0f0f0;">
+                            <div style="font-weight: 700; color: #000; font-size: 1em; margin-bottom: 4px;">${exp.title}</div>
+                            <div style="font-size: 0.95em; color: ${primaryColor}; font-weight: 600; margin-bottom: 4px;">${exp.company}</div>
+                            <div style="font-size: 0.85em; color: #999; margin-bottom: 6px;">${exp.period}</div>
+                            <div style="font-size: 0.9em; color: #555; line-height: 1.6; white-space: pre-wrap;">${exp.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <!-- FORMATION -->
+            ${cvData.educations.length > 0 ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-graduation-cap"></i> FORMATION
+                    </div>
+                    ${cvData.educations.map(edu => `
+                        <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f5f5f5;">
+                            <div style="font-weight: 700; color: #000; font-size: 0.95em;">${edu.title}</div>
+                            <div style="font-size: 0.85em; color: ${primaryColor}; font-weight: 600;">${edu.school}</div>
+                            <div style="font-size: 0.8em; color: #999;">${edu.year}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <!-- COMPETENCES -->
+            ${cvData.skills.length > 0 ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-cogs"></i> COMPÉTENCES
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        ${cvData.skills.map(s => `<div style="background: transparent; border: 1px solid ${primaryColor}; color: ${primaryColor}; padding: 6px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 500;">${s.name}</div>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- LANGUES -->
+            ${cvData.languages.length > 0 ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-globe"></i> LANGUES
+                    </div>
+                    ${cvData.languages.map(lang => `
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f5f5f5;">
+                            <div style="font-weight: 600; color: #000; font-size: 0.95em;">${lang.name}</div>
+                            <div style="height: 5px; background: #e0e0e0; border-radius: 2px; overflow: hidden;">
+                                <div style="height: 100%; background: ${primaryColor}; width: ${lang.level}%;"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <!-- INTÉRÊTS -->
+            ${cvData.interests.length > 0 ? `
+                <div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,132,255,0.2); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-heart"></i> INTÉRÊTS
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        ${cvData.interests.map(i => `<span style="font-size: 0.9em; color: #555;">${i.name}</span>`).join(' • ')}
+                    </div>
+                </div>
+            ` : ''}
+        </div>
+    `;
     return html;
 }
 
