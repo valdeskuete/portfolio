@@ -570,8 +570,10 @@
             // Load Firebase CV config
             const script = document.createElement('script');
             script.src = 'firebase-cv-config.js';
+            script.onload = () => console.log('✅ firebase-cv-config.js loaded');
+            script.onerror = () => console.error('❌ firebase-cv-config.js failed to load');
             document.body.appendChild(script);
-        }, 500);
+        }, 100);
     </script>
     <script>
         // ===== DATABASE MANAGEMENT =====
@@ -580,10 +582,15 @@
 
         function initAuth() {
             return new Promise((resolve) => {
-                // Wait for Firebase to be ready
+                // Wait for Firebase to be ready (with longer timeout for firebase-cv-config.js)
+                let attempts = 0;
+                const maxAttempts = 100; // 10 seconds max
                 const checkFirebase = setInterval(() => {
-                    if (window.auth) {
+                    attempts++;
+                    
+                    if (window.auth && window.CVDocumentManager) {
                         clearInterval(checkFirebase);
+                        console.log('✅ Firebase fully initialized');
                         
                         // Monitor auth state
                         window.auth.onAuthStateChanged(async (user) => {
@@ -616,6 +623,12 @@
                             }
                         });
                         
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        // Timeout - Firebase didn't load
+                        clearInterval(checkFirebase);
+                        console.error('Firebase initialization timeout');
+                        showToast('Erreur: Firebase non initialisé', 'error');
                         resolve();
                     }
                 }, 100);
@@ -756,8 +769,14 @@
                 return;
             }
 
-            if (!currentUser || !window.CVDocumentManager) {
-                showToast('Erreur: Système pas prêt', 'error');
+            if (!currentUser) {
+                showToast('Erreur: Veuillez attendre l\'authentification...', 'error');
+                return;
+            }
+            
+            if (!window.CVDocumentManager) {
+                showToast('Erreur: Firebase non prêt, veuillez attendre...', 'error');
+                console.warn('CVDocumentManager not ready. Available:', Object.keys(window).filter(k => k.includes('CV')));
                 return;
             }
 
