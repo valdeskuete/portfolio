@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Generator Pro - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0084ff;
+            --primary-dark: #0056b3;
+            --primary-light: #e6f0ff;
+            --accent: #26c281;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #1a1a1a;
+            --text-gray: #666666;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        html.dark-mode {
+            --bg-light: #1f242d;
+            --bg-white: #323946;
+            --text-dark: #ffffff;
+            --text-gray: #cccccc;
+            --border: rgba(14, 239, 255, 0.1);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .logo i {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 132, 255, 0.3);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+
+        /* ===== VIEW TOGGLE ===== */
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .view-btn {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-gray);
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ===== CV GRID ===== */
+        .cv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .cv-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .cv-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .cv-thumbnail {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, rgba(0, 132, 255, 0.05) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cv-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cv-initials {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .cv-info {
+            padding: 1.5rem;
+        }
+
+        .cv-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cv-title {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cv-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+
+        .cv-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .cv-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .cv-action-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* ===== NEW CV CARD ===== */
+        .new-cv-card {
+            background: var(--bg-white);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-cv-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .new-cv-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .new-cv-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .new-cv-subtext {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 1rem;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-cancel {
+            background: var(--border);
+            color: var(--text-gray);
+        }
+
+        .btn-cancel:hover {
+            background: var(--primary-light);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.error {
+            background: #ff4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .cv-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+                margin: 1.5rem auto;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-file-alt"></i> CV Pro
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" onclick="toggleDarkMode()" title="Basculer thème">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn-primary" onclick="createNewCV()">
+                <i class="fas fa-plus"></i> Nouveau CV
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <!-- SECTION HEADER -->
+        <div class="section-header">
+            <h1 class="section-title">Mes CVs</h1>
+            <p class="section-subtitle">Créez et gérez vos curriculum vitae</p>
+        </div>
+
+        <!-- VIEW TOGGLE -->
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="grid" onclick="switchView('grid')">
+                <i class="fas fa-th"></i> Grille
+            </button>
+            <button class="view-btn" data-view="list" onclick="switchView('list')">
+                <i class="fas fa-list"></i> Liste
+            </button>
+        </div>
+
+        <!-- CV GRID -->
+        <div id="cvGrid" class="cv-grid"></div>
+    </div>
+
+    <!-- NEW CV MODAL -->
+    <div id="newCVModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Créer un nouveau CV</h2>
+            <input type="text" id="newCVName" class="modal-input" placeholder="Nom du CV (ex: CV LinkedIn 2024)" onkeyup="handleModalKeypress(event)">
+            <div class="modal-actions">
+                <button class="modal-actions button btn-cancel" onclick="closeNewCVModal()">Annuler</button>
+                <button class="modal-actions button btn-primary" onclick="confirmNewCV()">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <script>
+        // ===== DATABASE MANAGEMENT =====
+        const DB_NAME = 'CVGeneratorDB';
+        const STORE_NAME = 'cvs';
+        let db;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        const store = database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                        store.createIndex('name', 'name', { unique: false });
+                        store.createIndex('created', 'created', { unique: false });
+                    }
+                };
+            });
+        }
+
+        function getAllCVs() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    const cvs = request.result.sort((a, b) => new Date(b.created) - new Date(a.created));
+                    resolve(cvs);
+                };
+            });
+        }
+
+        function getCV(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(id);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        function saveCV(cvData) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.put(cvData);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        function deleteCV(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve();
+            });
+        }
+
+        // ===== THEME MANAGEMENT =====
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        }
+
+        // ===== VIEW MANAGEMENT =====
+        function switchView(view) {
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+            
+            if (view === 'grid') {
+                document.getElementById('cvGrid').style.display = 'grid';
+            } else {
+                document.getElementById('cvGrid').style.display = 'flex';
+                document.getElementById('cvGrid').style.flexDirection = 'column';
+            }
+        }
+
+        // ===== CV CARD RENDERING =====
+        function renderCVCards() {
+            getAllCVs().then(cvs => {
+                const grid = document.getElementById('cvGrid');
+                
+                if (cvs.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1;">
+                            <div class="empty-state">
+                                <div class="empty-icon"><i class="fas fa-file-alt"></i></div>
+                                <h2 class="empty-title">Aucun CV créé</h2>
+                                <p class="empty-text">Commencez en créant votre premier CV</p>
+                                <button class="btn-primary" onclick="createNewCV()">
+                                    <i class="fas fa-plus"></i> Créer un CV
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = cvs.map(cv => `
+                    <div class="cv-card" onclick="editCV('${cv.id}')">
+                        <div class="cv-thumbnail">
+                            ${cv.photoData ? `<img src="${cv.photoData}" alt="${cv.fullName}">` : `<div class="cv-initials">${getInitials(cv.fullName)}</div>`}
+                        </div>
+                        <div class="cv-info">
+                            <div class="cv-name">${cv.fullName || 'Sans titre'}</div>
+                            <div class="cv-title">${cv.jobTitle || 'Titre professionnel'}</div>
+                            <div class="cv-meta">
+                                <span><i class="fas fa-clock"></i> ${formatDate(cv.created)}</span>
+                                <div class="cv-actions">
+                                    <button class="cv-action-btn" onclick="event.stopPropagation(); duplicateCV('${cv.id}')" title="Dupliquer">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="cv-action-btn" onclick="event.stopPropagation(); deleteCurrentCV('${cv.id}')" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date();
+            const yesterday = new Date(today.getTime() - 24*60*60*1000);
+            
+            if (date.toDateString() === today.toDateString()) return 'Aujourd\'hui';
+            if (date.toDateString() === yesterday.toDateString()) return 'Hier';
+            
+            return date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
+        }
+
+        // ===== CV OPERATIONS =====
+        function createNewCV() {
+            document.getElementById('newCVModal').classList.add('show');
+            document.getElementById('newCVName').focus();
+        }
+
+        function closeNewCVModal() {
+            document.getElementById('newCVModal').classList.remove('show');
+            document.getElementById('newCVName').value = '';
+        }
+
+        function handleModalKeypress(e) {
+            if (e.key === 'Enter') confirmNewCV();
+            if (e.key === 'Escape') closeNewCVModal();
+        }
+
+        function confirmNewCV() {
+            const name = document.getElementById('newCVName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+
+            const newCV = {
+                id: Date.now().toString(),
+                name: name,
+                fullName: '',
+                jobTitle: '',
+                email: '',
+                phone: '',
+                location: '',
+                about: '',
+                photoData: null,
+                educations: [],
+                experiences: [],
+                skills: [],
+                languages: [],
+                interests: [],
+                template: 'minimal',
+                fontTitle: 'Poppins',
+                fontBody: 'Roboto',
+                primaryColor: '#0084ff',
+                created: new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+
+            saveCV(newCV).then(() => {
+                showToast('CV créé! Redirection...', 'success');
+                setTimeout(() => {
+                    sessionStorage.setItem('currentCVId', newCV.id);
+                    window.location.href = 'index.html';
+                }, 500);
+            }).catch(err => {
+                showToast('Erreur lors de la création', 'error');
+                console.error(err);
+            });
+
+            closeNewCVModal();
+        }
+
+        function editCV(id) {
+            sessionStorage.setItem('currentCVId', id);
+            window.location.href = 'index.html';
+        }
+
+        function duplicateCV(id) {
+            getCV(id).then(cv => {
+                const duplicated = {
+                    ...cv,
+                    id: Date.now().toString(),
+                    name: cv.name + ' (Copie)',
+                    created: new Date().toISOString(),
+                    modified: new Date().toISOString()
+                };
+                return saveCV(duplicated);
+            }).then(() => {
+                showToast('CV dupliqué!', 'success');
+                renderCVCards();
+            }).catch(err => {
+                showToast('Erreur lors de la duplication', 'error');
+                console.error(err);
+            });
+        }
+
+        function deleteCurrentCV(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce CV ?')) {
+                deleteCV(id).then(() => {
+                    showToast('CV supprimé!', 'success');
+                    renderCVCards();
+                }).catch(err => {
+                    showToast('Erreur lors de la suppression', 'error');
+                    console.error(err);
+                });
+            }
+        }
+
+        // ===== TOAST =====
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + (type === 'error' ? 'error' : '');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        // ===== INITIALIZATION =====
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            initDB().then(() => renderCVCards());
+        });
+    </script>
+</body>
+</html>

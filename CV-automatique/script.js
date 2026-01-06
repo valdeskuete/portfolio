@@ -1,3 +1,71 @@
+// ===== DATABASE SETUP =====
+const DB_NAME = 'CVGeneratorDB';
+const STORE_NAME = 'cvs';
+let db;
+let currentCVId = null;
+
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+            db = request.result;
+            resolve(db);
+        };
+        request.onupgradeneeded = (e) => {
+            const database = e.target.result;
+            if (!database.objectStoreNames.contains(STORE_NAME)) {
+                database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            }
+        };
+    });
+}
+
+function saveCurrentCV() {
+    if (!db || !currentCVId) return Promise.resolve();
+    
+    const cvToSave = {
+        id: currentCVId,
+        name: document.getElementById('fullName').value || 'CV sans titre',
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        location: document.getElementById('location').value,
+        about: document.getElementById('about').value,
+        photoData: currentPhotoData,
+        educations: cvData.educations,
+        experiences: cvData.experiences,
+        skills: cvData.skills,
+        languages: cvData.languages,
+        interests: cvData.interests,
+        template: currentTemplate,
+        fontTitle: document.getElementById('fontTitle').value,
+        fontBody: document.getElementById('fontBody').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        created: sessionStorage.getItem('cvCreated') || new Date().toISOString(),
+        modified: new Date().toISOString()
+    };
+
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.put(cvToSave);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve();
+    });
+}
+
+function loadCVFromDB(cvId) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(cvId);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+    });
+}
+
 // ===== GLOBAL STATE =====
 let currentPhotoData = null;
 let currentTemplate = 'minimal';
@@ -196,17 +264,97 @@ const exampleTemplates = {
 };
 
 // ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('✅ CV Generator Pro loaded');
+    
+    // Initialize database
+    try {
+        await initDB();
+        console.log('✅ Database initialized');
+    } catch (err) {
+        console.error('Database init error:', err);
+    }
+    
+    // Load CV from sessionStorage (set by dashboard) or redirect to dashboard
+    currentCVId = sessionStorage.getItem('currentCVId');
+    
+    if (currentCVId && db) {
+        // Load existing CV from IndexedDB
+        try {
+            const cvData = await loadCVFromDB(currentCVId);
+            if (cvData) {
+                console.log('✅ CV loaded from database:', cvData.name);
+                restoreCVFromDatabase(cvData);
+            }
+        } catch (err) {
+            console.error('Error loading CV:', err);
+            restoreAutoSave();
+        }
+    } else {
+        // No CV selected, redirect to dashboard
+        console.log('No CV selected, redirecting to dashboard...');
+        window.location.href = 'dashboard.html';
+        return;
+    }
+    
     initializeDarkMode();
     restoreSessionState();
-    restoreAutoSave();
     initializeEventListeners();
     renderDynamicLists();
     updateColorSwatchActive('#0ef');
     updatePreview();
     setupResponsive();
 });
+
+function restoreCVFromDatabase(dbData) {
+    // Restore all fields from database
+    document.getElementById('fullName').value = dbData.fullName || '';
+    document.getElementById('jobTitle').value = dbData.jobTitle || '';
+    document.getElementById('email').value = dbData.email || '';
+    document.getElementById('phone').value = dbData.phone || '';
+    document.getElementById('location').value = dbData.location || '';
+    document.getElementById('about').value = dbData.about || '';
+    
+    // Restore data structures
+    cvData.educations = dbData.educations || [];
+    cvData.experiences = dbData.experiences || [];
+    cvData.skills = dbData.skills || [];
+    cvData.languages = dbData.languages || [];
+    cvData.interests = dbData.interests || [];
+    
+    // Restore counters
+    educationCount = Math.max(...(dbData.educations || []).map(e => e.id || 0), 0);
+    experienceCount = Math.max(...(dbData.experiences || []).map(e => e.id || 0), 0);
+    skillCount = Math.max(...(dbData.skills || []).map(s => s.id || 0), 0);
+    languageCount = Math.max(...(dbData.languages || []).map(l => l.id || 0), 0);
+    interestCount = Math.max(...(dbData.interests || []).map(i => i.id || 0), 0);
+    
+    // Restore photo
+    if (dbData.photoData) {
+        currentPhotoData = dbData.photoData;
+        updatePhotoPreview();
+    }
+    
+    // Restore design settings
+    document.getElementById('fontTitle').value = dbData.fontTitle || 'Poppins';
+    document.getElementById('fontBody').value = dbData.fontBody || 'Roboto';
+    document.getElementById('primaryColor').value = dbData.primaryColor || '#0084ff';
+    
+    // Restore font sizes if they exist
+    if (document.getElementById('nameSize')) {
+        document.getElementById('nameSize').value = dbData.nameSize || 36;
+        document.getElementById('jobTitleSize').value = dbData.jobTitleSize || 16;
+        document.getElementById('metaSize').value = dbData.metaSize || 11;
+        document.getElementById('sectionTitleSize').value = dbData.sectionTitleSize || 16;
+        document.getElementById('bodyFontSize').value = dbData.bodyFontSize || 13;
+    }
+    
+    // Restore template
+    if (dbData.template) switchTemplate(dbData.template);
+    
+    // Store created date for later
+    if (dbData.created) sessionStorage.setItem('cvCreated', dbData.created);
+}
 
 // ===== SESSION STATE MANAGEMENT =====
 function restoreSessionState() {
@@ -316,7 +464,12 @@ function autoSaveCV() {
             photo: currentPhotoData,
             timestamp: new Date().toISOString()
         };
+        // Save to localStorage (backup)
         localStorage.setItem('cv-auto-save', JSON.stringify(data));
+        // Save to IndexedDB (primary)
+        if (currentCVId && db) {
+            saveCurrentCV();
+        }
         console.log('💾 Auto-saved');
     }, 2000); // Auto-save after 2 seconds of inactivity
 }
@@ -1681,3 +1834,18 @@ function applyZoom() {
     // Store zoom in session
     sessionStorage.setItem('cv-zoom', zoomLevel);
 }
+
+// ===== NAVIGATION =====
+function goBackToDashboard() {
+    // Save before leaving
+    if (currentCVId && db) {
+        saveCurrentCV().then(() => {
+            sessionStorage.removeItem('currentCVId');
+            window.location.href = 'dashboard.html';
+        });
+    } else {
+        sessionStorage.removeItem('currentCVId');
+        window.location.href = 'dashboard.html';
+    }
+}
+
