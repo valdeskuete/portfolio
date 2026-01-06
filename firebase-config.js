@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import {
   getFirestore, collection, addDoc, onSnapshot, query,
   orderBy, where, deleteDoc, doc, updateDoc, getDocs,
-  increment, serverTimestamp
+  increment, serverTimestamp, setDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getAuth, signInWithEmailAndPassword,
@@ -78,6 +78,8 @@ window.updateDoc = updateDoc;
 window.getDocs = getDocs;
 window.increment = increment;
 window.serverTimestamp = serverTimestamp;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
 
 // Ajouter les méthodes à window.db pour compatibilité avec les scripts non-module
 window.db.collection = collection;

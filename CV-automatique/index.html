@@ -357,6 +357,63 @@
     <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
     
+    <!-- FIREBASE INITIALIZATION MODULE -->
+    <script type="module">
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getFirestore, collection, addDoc, onSnapshot, query,
+            orderBy, where, deleteDoc, doc, updateDoc, getDocs,
+            increment, serverTimestamp, setDoc, getDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import {
+            getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+            onAuthStateChanged, signOut, signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBirIXLKxkuWT7js3CB4_pGB6tk4wPa2AM",
+            authDomain: "valde-tech.firebaseapp.com",
+            projectId: "valde-tech",
+            storageBucket: "valde-tech.firebasestorage.app",
+            messagingSenderId: "1057527881640",
+            appId: "1:1057527881640:web:0fa2badcf46267bee7879d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Expose to window
+        window.db = db;
+        window.auth = auth;
+        window.getFirestore = getFirestore;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.where = where;
+        window.deleteDoc = deleteDoc;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+        window.getDocs = getDocs;
+        window.getDoc = getDoc;
+        window.increment = increment;
+        window.serverTimestamp = serverTimestamp;
+        window.setDoc = setDoc;
+
+        // Initialize after Firebase is ready
+        setTimeout(() => {
+            // Load Firebase CV config
+            const script = document.createElement('script');
+            script.src = 'firebase-cv-config.js';
+            document.body.appendChild(script);
+        }, 500);
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>

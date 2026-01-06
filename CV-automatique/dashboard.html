@@ -518,78 +518,128 @@
     <!-- TOAST -->
     <div id="toast" class="toast" style="display: none;"></div>
 
+    <script type="module">
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getFirestore, collection, addDoc, onSnapshot, query,
+            orderBy, where, deleteDoc, doc, updateDoc, getDocs,
+            increment, serverTimestamp, setDoc, getDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import {
+            getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+            onAuthStateChanged, signOut, signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBirIXLKxkuWT7js3CB4_pGB6tk4wPa2AM",
+            authDomain: "valde-tech.firebaseapp.com",
+            projectId: "valde-tech",
+            storageBucket: "valde-tech.firebasestorage.app",
+            messagingSenderId: "1057527881640",
+            appId: "1:1057527881640:web:0fa2badcf46267bee7879d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Expose to window
+        window.db = db;
+        window.auth = auth;
+        window.getFirestore = getFirestore;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.where = where;
+        window.deleteDoc = deleteDoc;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+        window.getDocs = getDocs;
+        window.getDoc = getDoc;
+        window.increment = increment;
+        window.serverTimestamp = serverTimestamp;
+        window.setDoc = setDoc;
+
+        // Initialize after Firebase is ready
+        setTimeout(() => {
+            // Load Firebase CV config
+            const script = document.createElement('script');
+            script.src = 'firebase-cv-config.js';
+            document.body.appendChild(script);
+        }, 500);
+    </script>
     <script>
         // ===== DATABASE MANAGEMENT =====
-        const DB_NAME = 'CVGeneratorDB';
-        const STORE_NAME = 'cvs';
-        let db;
+        let currentUser = null;
+        let unsubscribeCVs = null;
 
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, 1);
-                
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    db = request.result;
-                    resolve(db);
-                };
-                
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(STORE_NAME)) {
-                        const store = database.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                        store.createIndex('name', 'name', { unique: false });
-                        store.createIndex('created', 'created', { unique: false });
+        function initAuth() {
+            return new Promise((resolve) => {
+                // Wait for Firebase to be ready
+                const checkFirebase = setInterval(() => {
+                    if (window.auth) {
+                        clearInterval(checkFirebase);
+                        
+                        // Monitor auth state
+                        window.auth.onAuthStateChanged(async (user) => {
+                            if (user) {
+                                currentUser = user;
+                                console.log('✅ User logged in:', user.email);
+                                
+                                // Ensure user profile exists
+                                try {
+                                    await window.CVUserManager.ensureUserProfile(user.uid, user.email);
+                                } catch (err) {
+                                    console.error('Error ensuring user profile:', err);
+                                }
+                                
+                                renderCVCards();
+                            } else {
+                                // Sign in anonymously for demo
+                                try {
+                                    const anonResult = await window.signInAnonymously(window.auth);
+                                    currentUser = anonResult.user;
+                                    console.log('✅ Anonymous user:', currentUser.uid);
+                                    
+                                    // Create anon user profile
+                                    await window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local');
+                                    renderCVCards();
+                                } catch (err) {
+                                    console.error('Error with anonymous auth:', err);
+                                    resolve();
+                                }
+                            }
+                        });
+                        
+                        resolve();
                     }
-                };
+                }, 100);
             });
         }
 
         function getAllCVs() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.getAll();
+            return new Promise((resolve) => {
+                if (!currentUser || !window.CVDocumentManager) {
+                    resolve([]);
+                    return;
+                }
+
+                // Use real-time listener
+                if (unsubscribeCVs) unsubscribeCVs();
                 
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    const cvs = request.result.sort((a, b) => new Date(b.created) - new Date(a.created));
+                unsubscribeCVs = window.CVDocumentManager.onUserCVsUpdate(currentUser.uid, (cvs) => {
                     resolve(cvs);
-                };
+                });
             });
         }
 
         function getCV(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.get(id);
-                
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-            });
-        }
-
-        function saveCV(cvData) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.put(cvData);
-                
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-            });
-        }
-
-        function deleteCV(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.delete(id);
-                
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve();
-            });
+            return window.CVDocumentManager ? window.CVDocumentManager.getCV(id) : Promise.resolve(null);
         }
 
         // ===== THEME MANAGEMENT =====
@@ -644,10 +694,10 @@
                             ${cv.photoData ? `<img src="${cv.photoData}" alt="${cv.fullName}">` : `<div class="cv-initials">${getInitials(cv.fullName)}</div>`}
                         </div>
                         <div class="cv-info">
-                            <div class="cv-name">${cv.fullName || 'Sans titre'}</div>
+                            <div class="cv-name">${cv.fullName || cv.name || 'Sans titre'}</div>
                             <div class="cv-title">${cv.jobTitle || 'Titre professionnel'}</div>
                             <div class="cv-meta">
-                                <span><i class="fas fa-clock"></i> ${formatDate(cv.created)}</span>
+                                <span><i class="fas fa-clock"></i> ${formatDate(cv.updatedAt)}</span>
                                 <div class="cv-actions">
                                     <button class="cv-action-btn" onclick="event.stopPropagation(); duplicateCV('${cv.id}')" title="Dupliquer">
                                         <i class="fas fa-copy"></i>
@@ -706,76 +756,71 @@
                 return;
             }
 
-            const newCV = {
-                id: Date.now().toString(),
-                name: name,
-                fullName: '',
-                jobTitle: '',
-                email: '',
-                phone: '',
-                location: '',
-                about: '',
-                photoData: null,
-                educations: [],
-                experiences: [],
-                skills: [],
-                languages: [],
-                interests: [],
-                template: 'minimal',
-                fontTitle: 'Poppins',
-                fontBody: 'Roboto',
-                primaryColor: '#0084ff',
-                created: new Date().toISOString(),
-                modified: new Date().toISOString()
-            };
+            if (!currentUser || !window.CVDocumentManager) {
+                showToast('Erreur: Système pas prêt', 'error');
+                return;
+            }
 
-            saveCV(newCV).then(() => {
-                showToast('CV créé! Redirection...', 'success');
-                setTimeout(() => {
-                    sessionStorage.setItem('currentCVId', newCV.id);
-                    window.location.href = 'index.html';
-                }, 500);
-            }).catch(err => {
-                showToast('Erreur lors de la création', 'error');
-                console.error(err);
-            });
+            window.CVDocumentManager.createCV(currentUser.uid, name)
+                .then((cvId) => {
+                    showToast('CV créé! Redirection...', 'success');
+                    setTimeout(() => {
+                        sessionStorage.setItem('currentCVId', cvId);
+                        sessionStorage.setItem('currentUserId', currentUser.uid);
+                        window.location.href = 'index.html';
+                    }, 500);
+                })
+                .catch((err) => {
+                    showToast(err.message || 'Erreur lors de la création', 'error');
+                    console.error(err);
+                });
 
             closeNewCVModal();
         }
 
         function editCV(id) {
+            if (!currentUser) {
+                showToast('Veuillez vous connecter', 'error');
+                return;
+            }
             sessionStorage.setItem('currentCVId', id);
+            sessionStorage.setItem('currentUserId', currentUser.uid);
             window.location.href = 'index.html';
         }
 
         function duplicateCV(id) {
-            getCV(id).then(cv => {
-                const duplicated = {
-                    ...cv,
-                    id: Date.now().toString(),
-                    name: cv.name + ' (Copie)',
-                    created: new Date().toISOString(),
-                    modified: new Date().toISOString()
-                };
-                return saveCV(duplicated);
-            }).then(() => {
-                showToast('CV dupliqué!', 'success');
-                renderCVCards();
-            }).catch(err => {
-                showToast('Erreur lors de la duplication', 'error');
-                console.error(err);
-            });
+            if (!currentUser || !window.CVDocumentManager) {
+                showToast('Erreur: Système pas prêt', 'error');
+                return;
+            }
+
+            window.CVDocumentManager.duplicateCV(id, currentUser.uid)
+                .then(() => {
+                    showToast('CV dupliqué!', 'success');
+                    renderCVCards();
+                })
+                .catch((err) => {
+                    showToast(err.message || 'Erreur lors de la duplication', 'error');
+                    console.error(err);
+                });
         }
 
         function deleteCurrentCV(id) {
+            if (!currentUser || !window.CVDocumentManager) {
+                showToast('Erreur: Système pas prêt', 'error');
+                return;
+            }
+
             if (confirm('Êtes-vous sûr de vouloir supprimer ce CV ?')) {
-                deleteCV(id).then(() => {
-                    showToast('CV supprimé!', 'success');
-                    renderCVCards();
-                }).catch(err => {
-                    showToast('Erreur lors de la suppression', 'error');
-                    console.error(err);
-                });
+                window.CVDocumentManager.deleteCV(id, currentUser.uid)
+                    .then(() => {
+                        showToast('CV supprimé!', 'success');
+                        renderCVCards();
+                    })
+                    .catch((err) => {
+                        showToast(err.message || 'Erreur lors de la suppression', 'error');
+                        console.error(err);
+                    });
             }
         }
 
@@ -791,7 +836,9 @@
         // ===== INITIALIZATION =====
         window.addEventListener('DOMContentLoaded', () => {
             loadTheme();
-            initDB().then(() => renderCVCards());
+            initAuth().then(() => {
+                // CVs will be rendered when Firebase is ready
+            });
         });
     </script>
 </body>

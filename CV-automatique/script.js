@@ -1,39 +1,44 @@
-// ===== DATABASE SETUP =====
-const DB_NAME = 'CVGeneratorDB';
-const STORE_NAME = 'cvs';
-let db;
+// ===== FIREBASE SETUP =====
+let currentPhotoData = null;
+let currentTemplate = 'minimal';
 let currentCVId = null;
+let currentUserId = null;
+let db = null;
+let auth = null;
 
-function initDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-            db = request.result;
-            resolve(db);
-        };
-        request.onupgradeneeded = (e) => {
-            const database = e.target.result;
-            if (!database.objectStoreNames.contains(STORE_NAME)) {
-                database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+// Initialize Firebase on page load
+function initFirebase() {
+    return new Promise((resolve) => {
+        const checkFirebase = setInterval(() => {
+            if (window.auth && window.db) {
+                clearInterval(checkFirebase);
+                auth = window.auth;
+                db = window.db;
+                
+                // Get IDs from sessionStorage
+                currentCVId = sessionStorage.getItem('currentCVId');
+                currentUserId = sessionStorage.getItem('currentUserId');
+                
+                console.log('✅ Firebase initialized for CV editor');
+                resolve();
             }
-        };
+        }, 100);
     });
 }
 
-function saveCurrentCV() {
-    if (!db || !currentCVId) return Promise.resolve();
-    
-    const cvToSave = {
-        id: currentCVId,
-        name: document.getElementById('fullName').value || 'CV sans titre',
+// Auto-save to Firestore
+function autoSaveToFirebase() {
+    if (!currentCVId || !currentUserId || !window.CVDocumentManager) {
+        return Promise.resolve();
+    }
+
+    const cvData = {
         fullName: document.getElementById('fullName').value,
         jobTitle: document.getElementById('jobTitle').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         location: document.getElementById('location').value,
         about: document.getElementById('about').value,
-        photoData: currentPhotoData,
         educations: cvData.educations,
         experiences: cvData.experiences,
         skills: cvData.skills,
@@ -42,28 +47,21 @@ function saveCurrentCV() {
         template: currentTemplate,
         fontTitle: document.getElementById('fontTitle').value,
         fontBody: document.getElementById('fontBody').value,
+        nameSize: parseInt(document.getElementById('nameSize').value),
+        jobTitleSize: parseInt(document.getElementById('jobTitleSize').value),
+        metaSize: parseInt(document.getElementById('metaSize').value),
+        sectionTitleSize: parseInt(document.getElementById('sectionTitleSize').value),
+        bodyFontSize: parseInt(document.getElementById('bodyFontSize').value),
         primaryColor: document.getElementById('primaryColor').value,
-        created: sessionStorage.getItem('cvCreated') || new Date().toISOString(),
-        modified: new Date().toISOString()
+        photoData: currentPhotoData
     };
 
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.put(cvToSave);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve();
-    });
-}
-
-function loadCVFromDB(cvId) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.get(cvId);
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve(request.result);
-    });
+    return window.CVDocumentManager.updateCV(currentCVId, cvData)
+        .catch(err => {
+            console.error('Error saving to Firebase:', err);
+            // Fallback to localStorage for offline
+            localStorage.setItem('cv-auto-save', JSON.stringify({ ...cvData, timestamp: new Date().toISOString() }));
+        });
 }
 
 // ===== GLOBAL STATE =====
@@ -267,27 +265,45 @@ const exampleTemplates = {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('✅ CV Generator Pro loaded');
     
-    // Initialize database
+    // Initialize Firebase
     try {
-        await initDB();
-        console.log('✅ Database initialized');
+        await initFirebase();
+        console.log('✅ Firebase initialized');
     } catch (err) {
-        console.error('Database init error:', err);
+        console.error('Firebase init error:', err);
     }
     
     // Load CV from sessionStorage (set by dashboard) or redirect to dashboard
     currentCVId = sessionStorage.getItem('currentCVId');
+    currentUserId = sessionStorage.getItem('currentUserId');
     
-    if (currentCVId && db) {
-        // Load existing CV from IndexedDB
+    if (currentCVId && currentUserId) {
+        // Load existing CV from Firestore
         try {
-            const cvData = await loadCVFromDB(currentCVId);
-            if (cvData) {
-                console.log('✅ CV loaded from database:', cvData.name);
-                restoreCVFromDatabase(cvData);
+            if (window.CVDocumentManager) {
+                const cvData = await window.CVDocumentManager.getCV(currentCVId);
+                if (cvData) {
+                    console.log('✅ CV loaded from Firestore:', cvData.name);
+                    restoreCVFromDatabase(cvData);
+                    
+                    // Set up real-time listener for collaborative editing
+                    window.CVDocumentManager.onCVUpdate(currentCVId, (updatedData) => {
+                        // Only update if user is not actively editing
+                        if (!document.activeElement.matches('input, textarea, select')) {
+                            console.log('📡 CV updated in real-time');
+                            // Optionally notify user of external changes
+                        }
+                    });
+                } else {
+                    console.log('CV not found, trying auto-save...');
+                    restoreAutoSave();
+                }
+            } else {
+                console.log('CVDocumentManager not available, using auto-save');
+                restoreAutoSave();
             }
         } catch (err) {
-            console.error('Error loading CV:', err);
+            console.error('Error loading CV from Firestore:', err);
             restoreAutoSave();
         }
     } else {
@@ -464,12 +480,14 @@ function autoSaveCV() {
             photo: currentPhotoData,
             timestamp: new Date().toISOString()
         };
+        
+        // Save to Firestore (primary)
+        if (currentCVId && currentUserId && window.CVDocumentManager) {
+            autoSaveToFirebase();
+        }
+        
         // Save to localStorage (backup)
         localStorage.setItem('cv-auto-save', JSON.stringify(data));
-        // Save to IndexedDB (primary)
-        if (currentCVId && db) {
-            saveCurrentCV();
-        }
         console.log('💾 Auto-saved');
     }, 2000); // Auto-save after 2 seconds of inactivity
 }
@@ -1838,13 +1856,20 @@ function applyZoom() {
 // ===== NAVIGATION =====
 function goBackToDashboard() {
     // Save before leaving
-    if (currentCVId && db) {
-        saveCurrentCV().then(() => {
+    if (currentCVId && currentUserId && window.CVDocumentManager) {
+        autoSaveToFirebase().then(() => {
             sessionStorage.removeItem('currentCVId');
+            sessionStorage.removeItem('currentUserId');
+            window.location.href = 'dashboard.html';
+        }).catch(() => {
+            // Save failed, still go back but user will see error
+            sessionStorage.removeItem('currentCVId');
+            sessionStorage.removeItem('currentUserId');
             window.location.href = 'dashboard.html';
         });
     } else {
         sessionStorage.removeItem('currentCVId');
+        sessionStorage.removeItem('currentUserId');
         window.location.href = 'dashboard.html';
     }
 }
