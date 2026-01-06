@@ -94,6 +94,39 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // ==================== CV-AUTOMATIQUE: USER PROFILES ====================
+    // Utilisateurs avec plans et quotas
+    match /cv_users/{userId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow create: if request.auth.uid == userId;
+      allow update: if request.auth.uid == userId || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== CV-AUTOMATIQUE: CV DOCUMENTS ====================
+    // Documents CV appartenant aux utilisateurs
+    match /cv_documents/{cvId} {
+      allow read: if resource.data.userId == request.auth.uid || isAdmin();
+      allow create: if request.auth.uid != null && request.resource.data.userId == request.auth.uid;
+      allow update: if resource.data.userId == request.auth.uid || isAdmin();
+      allow delete: if resource.data.userId == request.auth.uid || isAdmin();
+    }
+    
+    // ==================== CV-AUTOMATIQUE: BILLING ====================
+    // Informations de facturation par utilisateur
+    match /cv_billing/{userId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // ==================== CV-AUTOMATIQUE: ACTIVITY LOG ====================
+    // Journal d'activités pour analytics et audit
+    match /cv_activity/{docId} {
+      allow read: if resource.data.userId == request.auth.uid || isAdmin();
+      allow create: if request.auth.uid != null;
+      allow delete: if isAdmin();
+    }
+    
     // ==================== RÈGLE PAR DÉFAUT ====================
     // Tout ce qui n'est pas spécifié est bloqué
     match /{document=**} {
