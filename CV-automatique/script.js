@@ -216,6 +216,37 @@ function restoreSessionState() {
     }
 }
 
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type = 'success', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+        <i class="toast-icon ${icons[type] || icons.info}"></i>
+        <div class="toast-message">${message}</div>
+        <button class="toast-close" onclick="this.parentElement.remove();">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    if (duration > 0) {
+        setTimeout(() => {
+            toast.classList.add('exit');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+}
+
 // ===== DARK MODE MANAGEMENT =====
 function initializeDarkMode() {
     // Check localStorage for theme preference
@@ -794,6 +825,7 @@ function adjustZoomForScreen() {
 
 // ===== EXPORT =====
 function exportPDF() {
+    showToast('Génération du PDF en cours...', 'info', 1500);
     const element = document.getElementById('cvPreview');
     
     // Crée une copie temporaire pour le PDF avec les styles appliqués
@@ -831,15 +863,20 @@ function exportPDF() {
             format: 'a4'
         }
     }).from(element).save();
+    setTimeout(() => showToast('PDF téléchargé avec succès!', 'success'), 1000);
 }
 
 function exportPNG() {
+    showToast('Génération de l\'image en cours...', 'info', 1500);
     const element = document.getElementById('cvPreview');
     html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         link.download = 'CV.png';
         link.click();
+        setTimeout(() => showToast('PNG téléchargé avec succès!', 'success'), 500);
+    }).catch(() => {
+        showToast('Erreur lors de la génération du PNG', 'error');
     });
 }
 
@@ -873,6 +910,7 @@ function exportJSON() {
     link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     link.download = 'cv-data.json';
     link.click();
+    showToast('Données sauvegardées avec succès!', 'success');
 }
 
 function triggerJSONImport() {
@@ -936,9 +974,9 @@ function importJSON(event) {
 
             renderDynamicLists();
             updatePreview();
-            alert('✅ CV chargé avec succès!');
+            showToast('CV chargé avec succès!', 'success');
         } catch (error) {
-            alert('❌ Erreur lors du chargement');
+            showToast('Erreur lors du chargement du fichier', 'error');
             console.error(error);
         }
     };
