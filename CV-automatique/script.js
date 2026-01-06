@@ -199,12 +199,22 @@ const exampleTemplates = {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ CV Generator Pro loaded');
     initializeDarkMode();
+    restoreSessionState();
     initializeEventListeners();
     renderDynamicLists();
     updateColorSwatchActive('#0ef');
     updatePreview();
     setupResponsive();
 });
+
+// ===== SESSION STATE MANAGEMENT =====
+function restoreSessionState() {
+    const savedZoom = sessionStorage.getItem('cv-zoom');
+    if (savedZoom) {
+        zoomLevel = parseInt(savedZoom);
+        applyZoom();
+    }
+}
 
 // ===== DARK MODE MANAGEMENT =====
 function initializeDarkMode() {
@@ -320,19 +330,45 @@ function switchTab(tabName) {
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 }
 
-// ===== PHOTO HANDLING =====
+// ===== PHOTO HANDLING WITH COMPRESSION =====
 function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        currentPhotoData = e.target.result;
-        const preview = document.getElementById('photoPreview');
-        preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-        updatePreview();
-    };
-    reader.readAsDataURL(file);
+    // Check file size - compress if needed
+    const maxSize = 500 * 1024; // 500KB max
+    if (file.size > maxSize) {
+        const canvas = document.createElement('canvas');
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Resize image
+                canvas.width = img.width * 0.8;
+                canvas.height = img.height * 0.8;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                currentPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+                updatePhotoPreview();
+                updatePreview();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            currentPhotoData = e.target.result;
+            updatePhotoPreview();
+            updatePreview();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function updatePhotoPreview() {
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
 }
 
 // ===== DYNAMIC SECTIONS =====
@@ -549,17 +585,50 @@ function applyColorPreset(presetName) {
     setColor(presets[presetName]);
 }
 
-// ===== PREVIEW UPDATE WITH DEBOUNCE =====
+// ===== PREVIEW UPDATE WITH DEBOUNCE & CACHE =====
 let previewTimeout;
+let lastPreviewState = null;
+let lastPreviewHTML = '';
 
 function updatePreview() {
     clearTimeout(previewTimeout);
     previewTimeout = setTimeout(() => {
         renderPreview();
-    }, 150); // Debounce 150ms
+    }, 100); // Debounce 100ms (optimized from 150)
 }
 
 function renderPreview() {
+    // Create current state for cache check
+    const currentState = {
+        fullName: document.getElementById('fullName').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        location: document.getElementById('location').value,
+        about: document.getElementById('about').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        fontTitle: document.getElementById('fontTitle').value,
+        fontBody: document.getElementById('fontBody').value,
+        nameSize: document.getElementById('nameSize')?.value || nameSize,
+        jobTitleSize: document.getElementById('jobTitleSize')?.value || jobTitleSize,
+        metaSize: document.getElementById('metaSize')?.value || metaSize,
+        sectionTitleSize: document.getElementById('sectionTitleSize')?.value || sectionTitleSize,
+        bodyFontSize: document.getElementById('bodyFontSize')?.value || bodyFontSize,
+        template: currentTemplate,
+        photo: currentPhotoData,
+        skills: cvData.skills.length,
+        experiences: cvData.experiences.length,
+        educations: cvData.educations.length,
+        languages: cvData.languages.length,
+        interests: cvData.interests.length
+    };
+    
+    // Compare with last state for cache hit
+    if (lastPreviewState && JSON.stringify(lastPreviewState) === JSON.stringify(currentState) && lastPreviewHTML) {
+        return; // Skip render if nothing changed
+    }
+    
+    lastPreviewState = currentState;
     const preview = document.getElementById('cvPreview');
     
     // Get form values
@@ -693,6 +762,7 @@ function renderPreview() {
     }
 
     preview.innerHTML = html;
+    lastPreviewHTML = html; // Cache the output
     
     // Auto-adjust zoom for mobile
     adjustZoomForScreen();
@@ -914,4 +984,6 @@ function applyZoom() {
     container.style.transform = `scale(${zoomLevel / 100})`;
     container.style.transformOrigin = 'top center';
     document.getElementById('zoomLevel').textContent = zoomLevel + '%';
+    // Store zoom in session
+    sessionStorage.setItem('cv-zoom', zoomLevel);
 }
