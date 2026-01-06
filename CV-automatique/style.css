@@ -53,13 +53,27 @@ html.dark-mode {
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-html { font-size: 62.5%; scroll-behavior: smooth; }
+html { 
+    font-size: 62.5%; 
+    scroll-behavior: smooth; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 body { 
     background: var(--bg-color);
     color: var(--text-color);
     overflow-x: hidden;
     line-height: 1.6;
     transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.editor-sidebar {
+    -webkit-overflow-scrolling: touch;
+}
+
+.editor-preview {
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ===== LAYOUT PRINCIPAL ===== */
@@ -229,6 +243,8 @@ html.dark-mode .theme-toggle:hover {
     gap: 0.5rem;
     text-align: center;
     font-weight: 600;
+    min-height: 48px;
+    position: relative;
 }
 
 .nav-btn:hover {
@@ -303,6 +319,8 @@ html.dark-mode .theme-toggle:hover {
 /* ===== FORM GROUPS ===== */
 .form-group {
     margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-row {
@@ -314,9 +332,9 @@ html.dark-mode .theme-toggle:hover {
 .form-group label {
     display: block;
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
     color: var(--text-color);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .form-group input,
@@ -327,10 +345,11 @@ html.dark-mode .theme-toggle:hover {
     background: var(--input-bg);
     border: 1px solid var(--input-border);
     color: var(--text-color);
-    border-radius: 0.6rem;
-    font-family: 'Poppins', sans-serif;
+    border-radius: 6px;
     font-size: 1rem;
-    transition: var(--transition);
+    font-family: inherit;
+    transition: all 0.2s ease;
+    min-height: 44px;
 }
 
 .form-group input:focus,
@@ -2450,5 +2469,297 @@ html.dark-mode .btn-remove:hover {
     .cv-page {
         padding: 10px;
         width: 100%;
+    }
+}
+/* ===== TOUCH DEVICE OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase touch targets to 44x44px minimum */
+    button, .btn-remove, input[type="button"], input[type="submit"], .btn-add {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px 16px;
+    }
+    
+    select, input[type="text"], textarea {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    /* Remove hover states on touch devices */
+    button:hover, .btn-remove:hover {
+        background: none;
+        transform: none;
+    }
+    
+    /* Optimize touch interactions */
+    input, select, textarea {
+        border: 2px solid var(--input-border);
+    }
+    
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 3px rgba(14, 239, 255, 0.1);
+    }
+}
+
+/* ===== LANDSCAPE MODE OPTIMIZATIONS ===== */
+@media (max-height: 600px) and (orientation: landscape) {
+    .editor-preview {
+        padding: 1rem;
+    }
+    
+    .cv-page {
+        margin: 1rem auto;
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    .editor-sidebar {
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+}
+
+/* ===== LARGE DESKTOP (>= 1400px) ===== */
+@media (min-width: 1400px) {
+    .cv-editor {
+        grid-template-columns: 450px 1fr;
+    }
+    
+    .editor-sidebar {
+        width: 450px;
+    }
+    
+    .cv-page {
+        width: 210mm;
+        padding: 50px;
+    }
+}
+
+/* ===== VERY LARGE DESKTOP (>= 1600px) ===== */
+@media (min-width: 1600px) {
+    .cv-editor {
+        grid-template-columns: 500px 1fr;
+    }
+    
+    .cv-page {
+        padding: 55px;
+        max-width: 100%;
+    }
+}
+
+/* ===== IMPROVE SMALL TABLETS (480px - 600px) ===== */
+@media (min-width: 480px) and (max-width: 600px) {
+    html {
+        font-size: 56%;
+    }
+    
+    .cv-page {
+        padding: 18px;
+    }
+    
+    .cv-page.minimal-template .cv-name {
+        font-size: 2em;
+    }
+    
+    .cv-page.classic-template .cv-photo {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* ===== MEDIUM TABLETS (768px - 1024px) ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .cv-editor {
+        grid-template-columns: 330px 1fr;
+    }
+    
+    .editor-sidebar {
+        width: 330px;
+    }
+    
+    .cv-page {
+        width: 100%;
+        max-width: 600px;
+        padding: 35px;
+    }
+}
+
+/* ===== RESPONSIVE SIDEBAR FOR TABLETS ===== */
+@media (max-width: 920px) {
+    .editor-nav {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    .panel-section h3 {
+        font-size: 1.1rem;
+    }
+    
+    .editor-sidebar {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ===== OPTIMIZE FORM INPUTS ON ALL MOBILE ===== */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="phone"],
+    input[type="color"],
+    select,
+    textarea {
+        font-size: 16px;
+        border-radius: 8px;
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-group label {
+        font-size: 1rem;
+        display: block;
+        margin-bottom: 6px;
+    }
+    
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+}
+
+/* ===== IMPROVE GRID LAYOUTS ON MOBILE ===== */
+@media (max-width: 600px) {
+    .examples-grid {
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 8px;
+    }
+    
+    .templates-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .color-palette {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .color-presets {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== OPTIMIZE BUTTONS AND ICONS ON MOBILE ===== */
+@media (max-width: 768px) {
+    button {
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    button:active {
+        transform: scale(0.98);
+    }
+    
+    .nav-btn {
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+    
+    .nav-btn i {
+        margin-right: 6px;
+    }
+}
+
+/* ===== SAFE AREA FOR NOTCHED DEVICES ===== */
+@supports (padding: max(0px)) {
+    @media (max-width: 768px) {
+        .editor-sidebar {
+            padding-left: max(12px, env(safe-area-inset-left));
+            padding-right: max(12px, env(safe-area-inset-right));
+        }
+        
+        .editor-preview {
+            padding-left: max(12px, env(safe-area-inset-left));
+            padding-right: max(12px, env(safe-area-inset-right));
+        }
+    }
+}
+
+/* ===== PRINT OPTIMIZATION ===== */
+@media print {
+    .editor-sidebar,
+    .sidebar-toggle,
+    .preview-wrapper > * {
+        display: none;
+    }
+    
+    .cv-page {
+        box-shadow: none;
+        margin: 0;
+        padding: 40px;
+        page-break-after: always;
+    }
+    
+    .cv-page:last-child {
+        page-break-after: avoid;
+    }
+    
+    body {
+        background: white;
+    }
+}
+
+/* ===== MOBILE FIRST BUTTONS ===== */
+@media (max-width: 768px) {
+    .btn-add, .btn-remove {
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-add i, .btn-remove i {
+        margin-right: 4px;
+    }
+}
+
+/* ===== RESPONSIVE DYNAMIC LISTS ===== */
+@media (max-width: 768px) {
+    .dynamic-item {
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+    
+    .item-header {
+        margin-bottom: 10px;
+    }
+    
+    .item-header span {
+        font-size: 0.95rem;
+    }
+    
+    .dynamic-item input,
+    .dynamic-item textarea {
+        margin-bottom: 8px;
+    }
+}
+
+/* ===== HIGH DPI SCREENS (Retina) ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .cv-page {
+        border: 1px solid #f0f0f0;
+    }
+    
+    button, .nav-btn {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ===== PREVENT TEXT ZOOM ON LANDSCAPE ===== */
+@media (max-width: 768px) {
+    input, select, textarea, button {
+        font-size: 16px !important;
     }
 }
