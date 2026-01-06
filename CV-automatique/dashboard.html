@@ -581,6 +581,8 @@
         let unsubscribeCVs = null;
         let authReady = false;
 
+        let authInitialized = false; // Prevent double-initialization
+        
         function initAuth() {
             return new Promise((resolve) => {
                 // Wait for Firebase to be ready (with longer timeout for firebase-cv-config.js)
@@ -599,36 +601,53 @@
                         
                         // Monitor auth state - this will set currentUser and authReady
                         window.auth.onAuthStateChanged(async (user) => {
-                            console.log('Auth state changed, user:', user?.uid);
+                            console.log('🔍 Auth state changed, user:', user?.uid || 'none');
+                            
+                            // Skip if already initialized (prevents double-execution)
+                            if (authInitialized) {
+                                console.log('⚠️ Auth already initialized, skipping duplicate processing');
+                                return;
+                            }
                             
                             try {
                                 if (user) {
-                                    // User already logged in
+                                    // User already logged in or just signed in
                                     currentUser = user;
-                                    console.log('✅ User logged in:', user.email);
+                                    console.log('✅ User authenticated:', user.uid, user.email);
                                     
                                     // Ensure user profile exists
                                     await window.CVUserManager.ensureUserProfile(user.uid, user.email);
+                                    authInitialized = true;
                                 } else {
                                     // No user logged in yet - sign in anonymously
-                                    console.log('⏳ Signing in anonymously...');
-                                    const anonResult = await window.auth.signInAnonymously();
-                                    currentUser = anonResult.user;
-                                    console.log('✅ Anonymous user authenticated:', currentUser.uid);
+                                    console.log('⏳ No user found, signing in anonymously...');
                                     
-                                    // Create anon user profile
-                                    await window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local');
+                                    try {
+                                        const anonResult = await window.auth.signInAnonymously();
+                                        currentUser = anonResult.user;
+                                        console.log('✅ Anonymous signin completed:', currentUser.uid);
+                                        
+                                        // Create anon user profile
+                                        await window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local');
+                                        authInitialized = true;
+                                    } catch (anonErr) {
+                                        console.error('❌ Anonymous signin failed:', anonErr);
+                                        currentUser = null;
+                                        authInitialized = true;
+                                    }
                                 }
                                 
                                 // Mark auth as READY - all async operations completed
                                 authReady = true;
-                                console.log('✅✅ AUTH READY! currentUser:', currentUser?.uid);
+                                console.log('✅✅ AUTH READY! currentUser:', currentUser?.uid || 'NONE');
                                 renderCVCards();
                                 resolve();
                                 
                             } catch (err) {
                                 console.error('❌ Error in auth state change:', err);
+                                currentUser = null;
                                 authReady = true; // Mark ready even on error to unblock UI
+                                authInitialized = true;
                                 resolve();
                             }
                         });
@@ -637,7 +656,7 @@
                         // Timeout - Firebase didn't load
                         clearInterval(checkFirebase);
                         console.error('❌ Firebase initialization timeout after 20 seconds');
-                        showToast('Erreur: Système non prêt', 'error');
+                        showToast('⚠️ Erreur: Système ne répond pas, rechargez la page', 'error');
                         authReady = true; // Unblock UI to show error
                         resolve();
                     }
@@ -775,22 +794,31 @@
         function confirmNewCV() {
             const name = document.getElementById('newCVName').value.trim();
             if (!name) {
-                showToast('Veuillez entrer un nom', 'error');
+                showToast('⚠️ Veuillez entrer un nom', 'error');
                 return;
             }
 
+            console.log('confirmNewCV() - Checking auth state:', {
+                authReady,
+                currentUser: currentUser?.uid || null,
+                cvManager: !!window.CVDocumentManager
+            });
+
             if (!authReady) {
-                showToast('⏳ Veuillez attendre l\'authentification...', 'error');
+                showToast('⏳ Authentification en cours... Patientez quelques secondes', 'error');
+                console.log('Auth not ready yet, waiting...');
                 return;
             }
 
             if (!currentUser) {
-                showToast('❌ Authentification échouée, rechargez la page', 'error');
+                showToast('❌ Erreur authentification - Rechargez la page (F5)', 'error');
+                console.error('currentUser is null but authReady is true - this is a bug');
                 return;
             }
             
             if (!window.CVDocumentManager) {
-                showToast('⏳ Firebase en cours de chargement...', 'error');
+                showToast('⏳ Modules en cours de chargement...', 'error');
+                console.error('CVDocumentManager not loaded');
                 return;
             }
 
