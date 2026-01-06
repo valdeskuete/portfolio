@@ -564,6 +564,10 @@
         window.increment = increment;
         window.serverTimestamp = serverTimestamp;
         window.setDoc = setDoc;
+        window.signInAnonymously = signInAnonymously;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signOut = signOut;
 
         // Initialize after Firebase is ready
         setTimeout(() => {
@@ -623,7 +627,7 @@
                         
                         // Immediately attempt anonymous sign in (don't wait for onAuthStateChanged)
                         console.log('⏳ Attempting immediate anonymous signin...');
-                        window.auth.signInAnonymously()
+                        window.signInAnonymously(window.auth)
                             .then((result) => {
                                 console.log('✅✅ Anonymous signin succeeded:', result.user.uid);
                                 currentUser = result.user;
@@ -648,7 +652,7 @@
                                 console.error('❌ Anonymous signin failed:', err);
                                 // Try again once more
                                 console.log('🔄 Retrying anonymous signin...');
-                                window.auth.signInAnonymously()
+                                window.signInAnonymously(window.auth)
                                     .then((result) => {
                                         console.log('✅ Retry succeeded:', result.user.uid);
                                         currentUser = result.user;
