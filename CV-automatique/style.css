@@ -54,6 +54,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    gap: 2rem;
 }
 
 /* ===== SIDEBAR TOGGLE BUTTON ===== */
@@ -530,6 +531,14 @@ body {
 .preview-container {
     perspective: 1000px;
     transform-style: preserve-3d;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .preview-container {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* ===== APERÇU BLANC PAR DÉFAUT ===== */
@@ -1184,6 +1193,7 @@ body {
 @media (max-width: 768px) {
     .cv-editor { 
         grid-template-columns: 1fr;
+        overflow: hidden;
     }
     
     .sidebar-toggle {
@@ -1203,6 +1213,24 @@ body {
         box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
         transform: translateX(-100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 150;
+    }
+    
+    .editor-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0);
+        transition: background 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .editor-sidebar.open::before {
+        background: rgba(0, 0, 0, 0.4);
+        pointer-events: auto;
     }
     
     .editor-sidebar.open {

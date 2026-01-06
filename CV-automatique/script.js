@@ -665,14 +665,13 @@ function adjustZoomForScreen() {
     const isTablet = window.innerWidth <= 1024;
     
     if (isMobile) {
-        // Mobile: fit to screen width
-        const container = document.getElementById('previewContainer');
-        const cvPage = document.getElementById('cvPreview');
-        if (cvPage && container) {
-            const containerWidth = container.parentElement.clientWidth - 40; // padding
-            const pageWidth = 210; // mm
-            const zoom = (containerWidth / (pageWidth * 3.78)) * 100; // mm to px conversion
-            zoomLevel = Math.min(zoom, 100);
+        // Mobile: fit content to viewport
+        const pageContainer = document.getElementById('previewContainer');
+        if (pageContainer && pageContainer.parentElement) {
+            const availableWidth = Math.max(pageContainer.parentElement.clientWidth - 40, 250);
+            // A4 width is 210mm = ~794px at 96dpi
+            const targetZoom = (availableWidth / 794) * 100;
+            zoomLevel = Math.max(Math.min(targetZoom, 100), 50);
             applyZoom();
         }
     } else if (isTablet) {
