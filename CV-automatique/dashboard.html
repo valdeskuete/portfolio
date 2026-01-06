@@ -597,60 +597,74 @@
                     if (window.auth && window.CVDocumentManager && !authListenerSet) {
                         authListenerSet = true;
                         clearInterval(checkFirebase);
-                        console.log('✅ Firebase fully initialized, setting up auth listener...');
+                        console.log('✅ Firebase fully initialized, initializing auth...');
                         
-                        // Monitor auth state - this will set currentUser and authReady
+                        // Setup auth state listener (for future changes)
                         window.auth.onAuthStateChanged(async (user) => {
-                            console.log('🔍 Auth state changed, user:', user?.uid || 'none');
+                            console.log('🔍 onAuthStateChanged fired, user:', user?.uid || 'none');
                             
-                            // Skip if already initialized (prevents double-execution)
-                            if (authInitialized) {
-                                console.log('⚠️ Auth already initialized, skipping duplicate processing');
-                                return;
+                            if (!user) {
+                                console.log('ℹ️ No user in onAuthStateChanged, will sign in anonymously');
+                                return; // Let the explicit signInAnonymously below handle this
                             }
+                            
+                            // User is logged in (either from session or from signInAnonymously call below)
+                            currentUser = user;
+                            console.log('✅ User object set:', user.uid);
                             
                             try {
-                                if (user) {
-                                    // User already logged in or just signed in
-                                    currentUser = user;
-                                    console.log('✅ User authenticated:', user.uid, user.email);
-                                    
-                                    // Ensure user profile exists
-                                    await window.CVUserManager.ensureUserProfile(user.uid, user.email);
-                                    authInitialized = true;
-                                } else {
-                                    // No user logged in yet - sign in anonymously
-                                    console.log('⏳ No user found, signing in anonymously...');
-                                    
-                                    try {
-                                        const anonResult = await window.auth.signInAnonymously();
-                                        currentUser = anonResult.user;
-                                        console.log('✅ Anonymous signin completed:', currentUser.uid);
-                                        
-                                        // Create anon user profile
-                                        await window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local');
-                                        authInitialized = true;
-                                    } catch (anonErr) {
-                                        console.error('❌ Anonymous signin failed:', anonErr);
-                                        currentUser = null;
-                                        authInitialized = true;
-                                    }
-                                }
-                                
-                                // Mark auth as READY - all async operations completed
-                                authReady = true;
-                                console.log('✅✅ AUTH READY! currentUser:', currentUser?.uid || 'NONE');
-                                renderCVCards();
-                                resolve();
-                                
+                                // Ensure user profile exists
+                                await window.CVUserManager.ensureUserProfile(user.uid, user.email || 'anon@demo.local');
+                                console.log('✅ User profile ensured');
                             } catch (err) {
-                                console.error('❌ Error in auth state change:', err);
-                                currentUser = null;
-                                authReady = true; // Mark ready even on error to unblock UI
-                                authInitialized = true;
-                                resolve();
+                                console.error('❌ Error ensuring user profile:', err);
                             }
                         });
+                        
+                        // Immediately attempt anonymous sign in (don't wait for onAuthStateChanged)
+                        console.log('⏳ Attempting immediate anonymous signin...');
+                        window.auth.signInAnonymously()
+                            .then((result) => {
+                                console.log('✅✅ Anonymous signin succeeded:', result.user.uid);
+                                currentUser = result.user;
+                                authInitialized = true;
+                                authReady = true;
+                                console.log('✅✅ AUTH READY IMMEDIATELY!');
+                                
+                                // Ensure profile exists
+                                window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local')
+                                    .then(() => {
+                                        console.log('✅ Anonymous user profile ready');
+                                        renderCVCards();
+                                        resolve();
+                                    })
+                                    .catch(err => {
+                                        console.error('❌ Error creating anon profile:', err);
+                                        renderCVCards();
+                                        resolve();
+                                    });
+                            })
+                            .catch((err) => {
+                                console.error('❌ Anonymous signin failed:', err);
+                                // Try again once more
+                                console.log('🔄 Retrying anonymous signin...');
+                                window.auth.signInAnonymously()
+                                    .then((result) => {
+                                        console.log('✅ Retry succeeded:', result.user.uid);
+                                        currentUser = result.user;
+                                        authInitialized = true;
+                                        authReady = true;
+                                        renderCVCards();
+                                        resolve();
+                                    })
+                                    .catch((retryErr) => {
+                                        console.error('❌ Retry failed:', retryErr);
+                                        authReady = true;
+                                        authInitialized = true;
+                                        showToast('⚠️ Impossible de initialiser le système, rechargez F5', 'error');
+                                        resolve();
+                                    });
+                            });
                         
                     } else if (attempts >= maxAttempts) {
                         // Timeout - Firebase didn't load
