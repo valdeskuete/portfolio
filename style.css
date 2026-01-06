@@ -509,6 +509,56 @@ section {
     box-shadow: 0 0 1rem var(--main-color);
 }
 
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.scroll-indicator-text {
+    font-size: 1.4rem;
+    color: var(--main-color);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-indicator-icon {
+    font-size: 2rem;
+    color: var(--main-color);
+    animation: bounce 2s infinite;
+    transition: all 0.3s ease;
+}
+
+.scroll-indicator:hover .scroll-indicator-icon {
+    transform: translateY(5px);
+    text-shadow: 0 0 10px var(--main-color);
+}
+
+.scroll-indicator:hover .scroll-indicator-text {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--main-color);
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
 .home-img img {
     width: 35vw;
     border-radius: 50%;
