@@ -680,16 +680,19 @@ html.dark-mode .btn-remove:hover {
 .cv-page {
     background: #ffffff;
     color: #000000;
-    margin: 0 auto;
+    margin: 2rem auto;
     padding: 40px;
     min-height: 297mm;
     width: 210mm;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        0 10px 50px rgba(0, 0, 0, 0.2),
+        0 0 1px rgba(0, 0, 0, 0.1);
     page-break-after: always;
     position: relative;
     font-size: 1rem;
     line-height: 1.6;
     transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
 }
 
 /* ===== 6 TEMPLATES DESIGN ===== */
@@ -981,6 +984,196 @@ html.dark-mode .btn-remove:hover {
     margin-bottom: 12px;
 }
 
+/* 7. PROFESSIONNEL TEMPLATE (2 COLONNES - STYLE CAMEROUNAIS) */
+.cv-page.professionnel-template {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    padding: 0;
+    background: white;
+    height: auto;
+    min-height: auto;
+    page-break-inside: avoid;
+    overflow: visible;
+}
+
+.cv-page.professionnel-template .cv-sidebar {
+    background: #f5f5f5;
+    padding: 40px 25px;
+    border-right: 3px solid var(--cv-primary, #0084ff);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    grid-row: 1 / -1;
+    page-break-inside: avoid;
+}
+
+.cv-page.professionnel-template .cv-main {
+    padding: 40px 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    page-break-inside: auto;
+    overflow: visible;
+}
+
+.cv-page.professionnel-template .cv-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 20px;
+    object-fit: cover;
+    border: 3px solid var(--cv-primary, #0084ff);
+    margin: 0 auto 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cv-page.professionnel-template .cv-header {
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.cv-page.professionnel-template .cv-name {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cv-page.professionnel-template .cv-title {
+    font-size: 0.95em;
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.cv-page.professionnel-template .cv-meta {
+    font-size: 0.85em;
+    color: #777;
+    line-height: 1.8;
+    text-align: left;
+}
+
+.cv-page.professionnel-template .cv-meta span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cv-page.professionnel-template .cv-sidebar-section {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+.cv-page.professionnel-template .cv-sidebar-section:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.cv-page.professionnel-template .cv-section {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+    margin: 0;
+}
+
+.cv-page.professionnel-template .cv-section:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.cv-page.professionnel-template .cv-section-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--cv-primary, #0084ff);
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    padding: 0;
+}
+
+.cv-page.professionnel-template .cv-sidebar-title {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--cv-primary, #0084ff);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.cv-page.professionnel-template .cv-entry {
+    margin-bottom: 12px;
+}
+
+.cv-page.professionnel-template .cv-entry-title {
+    font-weight: 700;
+    color: #000;
+    font-size: 0.95em;
+    margin-bottom: 2px;
+}
+
+.cv-page.professionnel-template .cv-entry-subtitle {
+    font-size: 0.9em;
+    color: var(--cv-primary, #0084ff);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.cv-page.professionnel-template .cv-entry-period {
+    font-size: 0.85em;
+    color: #999;
+    margin-bottom: 4px;
+}
+
+.cv-page.professionnel-template .cv-entry-text {
+    font-size: 0.85em;
+    color: #555;
+    line-height: 1.5;
+}
+
+.cv-page.professionnel-template .cv-skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.cv-page.professionnel-template .cv-skill-tag {
+    background: var(--cv-primary, #0084ff);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+}
+
+.cv-page.professionnel-template .cv-language-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+}
+
+.cv-page.professionnel-template .cv-language-name {
+    font-weight: 500;
+    color: #000;
+}
+
+.cv-page.professionnel-template .cv-language-level {
+    color: #999;
+    font-size: 0.85em;
+}
+
 /* ===== COMMON CV ELEMENTS ===== */
 .cv-header {
     margin-bottom: 20px;
@@ -1079,6 +1272,29 @@ html.dark-mode .btn-remove:hover {
     height: 100%;
     background: var(--cv-primary, #0ef);
     transition: width 0.3s ease;
+}
+
+/* ===== PAGE BREAK VISUALIZATION ===== */
+@media screen {
+    .cv-page {
+        position: relative;
+    }
+    
+    .cv-page::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1));
+        border-top: 2px dashed #ccc;
+        pointer-events: none;
+    }
+    
+    .preview-container {
+        position: relative;
+    }
 }
 
 /* ===== SCROLLBAR ===== */

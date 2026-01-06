@@ -782,7 +782,12 @@ function renderPreview() {
     bodyFontSize = parseInt(body);
 
     let html = '';
-
+    
+    // Use special template for "professionnel"
+    if (currentTemplate === 'professionnel') {
+        html = generateProfessionnelTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
+    } else {
+        // Default templates logic
     // HEADER
     html += `
         <div class="cv-header">
@@ -881,6 +886,8 @@ function renderPreview() {
             </div>
         `;
     }
+    
+    } // Close else block for default templates
 
     preview.innerHTML = html;
     lastPreviewHTML = html; // Cache the output
@@ -911,6 +918,151 @@ function adjustZoomForScreen() {
         zoomLevel = 100;
         applyZoom();
     }
+}
+
+// ===== PROFESSIONAL 2-COLUMN TEMPLATE =====
+function generateProfessionnelTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody) {
+    let html = `
+        <div style="display: grid; grid-template-columns: 280px 1fr; gap: 0; height: 100%; background: white;">
+            <!-- SIDEBAR (LEFT) -->
+            <div style="background: #f5f5f5; padding: 40px 25px; border-right: 2px solid ${primaryColor}; display: flex; flex-direction: column; gap: 25px;">
+    `;
+    
+    // PHOTO
+    if (currentPhotoData) {
+        html += `
+            <div style="text-align: center;">
+                <img src="${currentPhotoData}" alt="Photo" style="width: 140px; height: 140px; border-radius: 20px; object-fit: cover; border: 3px solid ${primaryColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: block; margin: 0 auto;">
+            </div>
+        `;
+    }
+    
+    // PROFILE NAME & TITLE (sidebar)
+    html += `
+        <div style="border-top: 1px solid #e0e0e0; padding-top: 20px; text-align: center;">
+            <div style="font-size: 1.6em; font-weight: 700; color: #000; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">${fullName}</div>
+            <div style="font-size: 0.95em; color: #666; font-weight: 500;">${jobTitle}</div>
+        </div>
+    `;
+    
+    // CONTACT INFO
+    html += `
+        <div style="border-top: 1px solid #e0e0e0; padding-top: 20px; font-size: 0.85em; color: #777; line-height: 1.8;">
+            ${email ? `<div style="margin-bottom: 5px;"><i style="color: ${primaryColor}; margin-right: 5px;" class="fas fa-envelope"></i>${email}</div>` : ''}
+            ${phone ? `<div style="margin-bottom: 5px;"><i style="color: ${primaryColor}; margin-right: 5px;" class="fas fa-phone"></i>${phone}</div>` : ''}
+            ${location ? `<div style="margin-bottom: 5px;"><i style="color: ${primaryColor}; margin-right: 5px;" class="fas fa-map-marker"></i>${location}</div>` : ''}
+        </div>
+    `;
+    
+    // INTERESTS
+    if (cvData.interests.length > 0) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;">
+                    <i class="fas fa-heart"></i> INTÉRÊTS
+                </div>
+                <div style="font-size: 0.9em; color: #555; line-height: 1.6;">
+                    ${cvData.interests.map(i => `<div style="margin-bottom: 5px;">• ${i.name}</div>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // LANGUAGES
+    if (cvData.languages.length > 0) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;">
+                    <i class="fas fa-globe"></i> LANGUES
+                </div>
+                ${cvData.languages.map(lang => `
+                    <div style="margin-bottom: 10px; font-size: 0.9em;">
+                        <div style="font-weight: 500; color: #000; margin-bottom: 3px;">${lang.name}</div>
+                        <div style="height: 4px; background: #e0e0e0; border-radius: 2px; overflow: hidden;">
+                            <div style="height: 100%; background: ${primaryColor}; width: ${lang.level}%;"></div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    html += `
+            </div>
+            
+            <!-- MAIN CONTENT (RIGHT) -->
+            <div style="padding: 40px 35px; display: flex; flex-direction: column; gap: 25px;">
+    `;
+    
+    // ABOUT
+    if (about) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user-circle"></i> PROFIL
+                </div>
+                <div style="font-size: 0.9em; color: #555; line-height: 1.6; text-align: justify;">${about}</div>
+            </div>
+        `;
+    }
+    
+    // FORMATION
+    if (cvData.educations.length > 0) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-graduation-cap"></i> FORMATION
+                </div>
+                ${cvData.educations.map(edu => `
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-weight: 700; color: #000; font-size: 0.95em;">${edu.title}</div>
+                        <div style="color: ${primaryColor}; font-weight: 600; font-size: 0.9em;">${edu.school}</div>
+                        <div style="color: #999; font-size: 0.85em;">${edu.year}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    // COMPETENCES
+    if (cvData.skills.length > 0) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-cogs"></i> COMPÉTENCES
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${cvData.skills.map(s => `<div style="background: ${primaryColor}; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.85em;">${s.name}</div>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // EXPERIENCES
+    if (cvData.experiences.length > 0) {
+        html += `
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <div style="font-size: 1.2em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-briefcase"></i> EXPÉRIENCES
+                </div>
+                ${cvData.experiences.map(exp => `
+                    <div style="margin-bottom: 12px;">
+                        <div style="font-weight: 700; color: #000; font-size: 0.95em;">${exp.title}</div>
+                        <div style="color: ${primaryColor}; font-weight: 600; font-size: 0.9em;">${exp.company}</div>
+                        <div style="color: #999; font-size: 0.85em; margin-bottom: 4px;">${exp.period}</div>
+                        <div style="font-size: 0.85em; color: #555; line-height: 1.5; white-space: pre-wrap;">${exp.description}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    html += `
+            </div>
+        </div>
+    `;
+    
+    return html;
 }
 
 // ===== EXPORT =====
