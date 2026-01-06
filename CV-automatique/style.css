@@ -2016,11 +2016,18 @@ html.dark-mode .btn-remove:hover {
 
 /* ===== DYNAMIC FORM ELEMENTS ===== */
 .dynamic-item {
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
-    padding: 1.2rem;
-    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(0, 132, 255, 0.03) 0%, rgba(0, 239, 255, 0.03) 100%);
+    border: 2px solid var(--input-border);
+    padding: 1.3rem;
+    border-radius: 10px;
     margin-bottom: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dynamic-item:hover {
+    background: linear-gradient(135deg, rgba(0, 132, 255, 0.06) 0%, rgba(0, 239, 255, 0.06) 100%);
+    border-color: var(--main-color);
+    box-shadow: 0 4px 12px rgba(0, 132, 255, 0.1);
 }
 
 .item-header {
@@ -2028,14 +2035,53 @@ html.dark-mode .btn-remove:hover {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.9rem;
+    border-bottom: 2px solid var(--input-border);
 }
 
 .item-header span {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--main-color);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Style inputs inside dynamic-item */
+.dynamic-item input,
+.dynamic-item textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 8px;
     font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0.8rem;
+}
+
+.dynamic-item input::placeholder,
+.dynamic-item textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    opacity: 0.6;
+}
+
+.dynamic-item input:focus,
+.dynamic-item textarea:focus {
+    background: var(--second-bg-color);
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 4px rgba(0, 132, 255, 0.15), 
+                0 4px 12px rgba(0, 132, 255, 0.2);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.dynamic-item textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
 }
 
 .btn-remove {
