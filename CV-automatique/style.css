@@ -681,18 +681,19 @@ html.dark-mode .btn-remove:hover {
     background: #ffffff;
     color: #000000;
     margin: 2rem auto;
-    padding: 40px;
+    padding: 45px;
     min-height: 297mm;
     width: 210mm;
     box-shadow: 
-        0 10px 50px rgba(0, 0, 0, 0.2),
-        0 0 1px rgba(0, 0, 0, 0.1);
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
     page-break-after: always;
     position: relative;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.7;
     transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px;
 }
 
 /* ===== 6 TEMPLATES DESIGN ===== */
@@ -705,34 +706,46 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.minimal-template .cv-header {
-    border-bottom: 2px solid #000;
-    padding-bottom: 15px;
+    border-bottom: 3px solid #000;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .cv-page.minimal-template .cv-name {
-    font-size: 2.5em;
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-size: 2.8em;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
 .cv-page.minimal-template .cv-title {
-    font-size: 1.2em;
-    color: #666;
+    font-size: 1.3em;
+    color: #555;
     font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.cv-page.minimal-template .cv-meta {
+    font-size: 0.95em;
+    color: #888;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .cv-page.minimal-template .cv-section {
-    margin-top: 15px;
+    margin-top: 22px;
 }
 
 .cv-page.minimal-template .cv-section-title {
-    font-size: 1.3em;
-    font-weight: 700;
+    font-size: 1.4em;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #000;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
+    letter-spacing: 1.5px;
+    border-bottom: 3px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #000;
 }
 
 /* 2. CLASSIC TEMPLATE */
@@ -749,23 +762,36 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.classic-template .cv-photo {
-    width: 150px;
-    height: 150px;
-    border-radius: 8px;
+    width: 160px;
+    height: 160px;
+    border-radius: 10px;
     object-fit: cover;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid var(--cv-primary, #0084ff);
+}
+
+.cv-page.classic-template .cv-sidebar {
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.03);
 }
 
 .cv-page.classic-template .cv-sidebar-section {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.cv-page.classic-template .cv-sidebar-section:last-child {
+    margin-bottom: 0;
 }
 
 .cv-page.classic-template .cv-sidebar-title {
-    font-size: 1.1em;
-    font-weight: 700;
+    font-size: 1.15em;
+    font-weight: 800;
     color: var(--cv-primary, #333);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--cv-primary, #ccc);
+    padding-bottom: 8px;
 }
 
 /* 3. MODERN TEMPLATE (2 COLUMNS) */
@@ -785,26 +811,25 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.modern-template .cv-photo {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--cv-primary, #0ef);
-}
-
-.cv-page.modern-template .cv-header-content {
-    flex: 1;
+    border: 4px solid var(--cv-primary, #0ef);
+    box-shadow: 0 8px 25px rgba(14, 239, 255, 0.2);
+    flex-shrink: 0;
 }
 
 .cv-page.modern-template .cv-name {
-    font-size: 2em;
-    font-weight: 700;
+    font-size: 2.3em;
+    font-weight: 800;
+    margin-bottom: 5px;
 }
 
 .cv-page.modern-template .cv-title {
-    font-size: 1.2em;
+    font-size: 1.25em;
     color: var(--cv-primary, #0ef);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .cv-page.modern-template .cv-section-title {
@@ -832,24 +857,26 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.luxury-template .cv-photo {
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid white;
-    margin: 0 auto 20px;
+    border: 6px solid white;
+    margin: 0 auto 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
 .cv-page.luxury-template .cv-name {
-    font-size: 2.8em;
-    font-weight: 700;
-    margin-bottom: 10px;
+    font-size: 3.2em;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
 }
 
 .cv-page.luxury-template .cv-title {
-    font-size: 1.4em;
-    font-weight: 600;
-    opacity: 0.95;
+    font-size: 1.5em;
+    font-weight: 700;
+    opacity: 0.98;
 }
 
 .cv-page.luxury-template .cv-section-title {
@@ -886,13 +913,15 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.creative-template .cv-photo {
-    width: 110px;
-    height: 110px;
-    border-radius: 20px;
+    width: 130px;
+    height: 130px;
+    border-radius: 25px;
     object-fit: cover;
-    border: 4px solid var(--cv-primary, #ff6600);
+    border: 5px solid var(--cv-primary, #ff6600);
     float: left;
-    margin-right: 20px;
+    margin-right: 25px;
+    margin-bottom: 15px;
+    box-shadow: 0 12px 30px rgba(255, 102, 0, 0.15);
 }
 
 .cv-page.creative-template .cv-name {
@@ -924,13 +953,136 @@ html.dark-mode .btn-remove:hover {
     border-bottom: 2px dashed var(--cv-primary, #ff6600);
 }
 
-/* 6. TECH TEMPLATE */
-.cv-page.tech-template {
-    background: linear-gradient(to bottom, #f8f9fa, white);
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+/* ===== GLOBAL CV ELEMENTS ===== */
+
+/* Section titles improvements */
+.cv-page .cv-section-title {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    position: relative;
 }
+
+/* Experience and Education items */
+.cv-page .cv-item,
+.cv-page .education-item,
+.cv-page .experience-item {
+    margin-bottom: 18px;
+    position: relative;
+}
+
+/* Entry styling for all templates */
+.cv-page .cv-entry {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cv-page .cv-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.cv-entry-title {
+    font-weight: 700;
+    font-size: 1.05em;
+    margin-bottom: 3px;
+    color: #000;
+}
+
+.cv-entry-subtitle {
+    font-weight: 600;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.cv-entry-period {
+    font-size: 0.85em;
+    color: #888;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.cv-entry-text {
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Skills presentation */
+.cv-page .cv-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cv-page .cv-skill {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Languages presentation */
+.cv-page .cv-languages {
+    display: grid;
+    gap: 8px;
+}
+
+.cv-page .cv-language {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.cv-language-bar {
+    width: 100px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cv-language-bar .fill {
+    height: 100%;
+    background: var(--cv-primary, #0ef);
+    border-radius: 3px;
+}
+
+/* Contact information improvements */
+.cv-page .cv-contact {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.cv-page .cv-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+/* About/Summary section */
+.cv-page .cv-about {
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 5px;
+    text-align: justify;
+}
+
+/* Templates with professional spacing */
+.cv-page.professionnel-template .cv-about,
+.cv-page.luxury-template .cv-about,
+.cv-page.elegant-template .cv-about {
+    margin-bottom: 8px;
+}
+
+
 
 .cv-page.tech-template .cv-header {
     background: linear-gradient(135deg, var(--cv-primary, #0ef), rgba(10, 175, 175, 0.8));
@@ -943,26 +1095,25 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.tech-template .cv-photo {
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 8px;
     object-fit: cover;
-    border: 3px solid white;
-}
-
-.cv-page.tech-template .cv-header-content {
-    flex: 1;
+    border: 4px solid white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .cv-page.tech-template .cv-name {
-    font-size: 2em;
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-size: 2.2em;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
 }
 
 .cv-page.tech-template .cv-title {
-    font-size: 1.1em;
-    opacity: 0.95;
+    font-size: 1.2em;
+    opacity: 0.96;
+    font-weight: 600;
 }
 
 .cv-page.tech-template .cv-section {
@@ -1018,13 +1169,13 @@ html.dark-mode .btn-remove:hover {
 }
 
 .cv-page.professionnel-template .cv-photo {
-    width: 140px;
-    height: 140px;
+    width: 150px;
+    height: 150px;
     border-radius: 20px;
     object-fit: cover;
-    border: 3px solid var(--cv-primary, #0084ff);
-    margin: 0 auto 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 4px solid var(--cv-primary, #0084ff);
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 25px rgba(0, 132, 255, 0.15);
 }
 
 .cv-page.professionnel-template .cv-header {
