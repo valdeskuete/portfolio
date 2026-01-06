@@ -151,7 +151,7 @@ window.openTab = function(tabName, clickedBtn) {
     }
 };
 
-/* ==================== 3. SCROLL SPY & NAVIGATION ==================== */
+/* ==================== 3. SCROLL SPY & NAVIGATION (OPTIMISÉ) ==================== */
 let sections = document.querySelectorAll('section');
 let navLinks = document.querySelectorAll('header nav a');
 
@@ -159,14 +159,22 @@ let navLinks = document.querySelectorAll('header nav a');
 let scrollTimeout;
 let lastScrollTime = 0;
 
+// Calcul dynamique de la hauteur du header
+function getHeaderOffset() {
+    const header = document.querySelector('header');
+    return header ? header.offsetHeight + 50 : 200; // 50px padding supplémentaire
+}
+
 window.addEventListener('scroll', () => {
     const now = Date.now();
     if (now - lastScrollTime < 100) return; // Debounce 100ms
     lastScrollTime = now;
     
+    const headerOffset = getHeaderOffset(); // CALCUL DYNAMIQUE
+    
     sections.forEach(sec => {
         let top = window.scrollY;
-        let offset = sec.offsetTop - 150;
+        let offset = sec.offsetTop - headerOffset; // Utiliser la hauteur dynamique
         let height = sec.offsetHeight;
         let id = sec.getAttribute('id');
 

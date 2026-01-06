@@ -126,6 +126,14 @@ span { color: var(--main-color); }
 }
 
 /* --- HEADER & NAV --- */
+/* Z-INDEX HIERARCHY:
+ * 100  - Header (fixed top navigation)
+ * 200  - Navbar Mobile (full-screen menu overlay)
+ * 250  - Menu Icon (hamburger menu button, above navbar)
+ * 300  - Modales/Dialogs (login, forms)
+ * 350  - Comments Modal (modal secondaire)
+ * 400  - Botpress Chat Widget & Notifications (always on top)
+ */
 .header {
     position: fixed;
     top: 0;
@@ -136,7 +144,7 @@ span { color: var(--main-color); }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 1000;
+    z-index: 100;
     transition: .3s;
     box-sizing: border-box;
     overflow: visible;
@@ -1279,7 +1287,7 @@ textarea { resize: none; height: 18rem; }
 
 /* --- MODAL COMMENTAIRES (Live Chat Style) --- */
 #comments-modal {
-    z-index: 2001;
+    z-index: 350;
 }
 
 .modal-comments-content {
@@ -1428,7 +1436,7 @@ textarea { resize: none; height: 18rem; }
 /* --- MODALE (Login) --- */
 .modal {
     position: fixed; 
-    z-index: 2000; 
+    z-index: 300; 
     left: 0; 
     top: 0;
     width: 100vw; 
@@ -1547,7 +1555,7 @@ textarea { resize: none; height: 18rem; }
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 101;
+        z-index: 250;
         position: fixed;
         top: 1.5rem;
         right: 2rem;
@@ -1564,18 +1572,19 @@ textarea { resize: none; height: 18rem; }
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         background: var(--bg-color);
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 99;
+        justify-content: flex-start;
+        align-items: stretch;
+        z-index: 200;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
-        gap: 2.5rem;
+        gap: 0;
         padding: 5rem 2rem 2rem;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
     .navbar.active {
@@ -1599,6 +1608,7 @@ textarea { resize: none; height: 18rem; }
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: 0 auto 0.8rem;
     }
     
     .navbar a:hover,
@@ -1670,14 +1680,16 @@ textarea { resize: none; height: 18rem; }
     
     /* Menu modal responsive */
     .navbar {
-        gap: 2rem;
+        gap: 0.8rem;
         padding: 4rem 1.5rem 2rem;
+        justify-content: flex-start;
     }
     
     .navbar a { 
         font-size: 1.8rem;
         padding: 1.2rem 1.5rem;
-        width: 85%;
+        width: calc(100% - 3rem);
+        margin: 0 auto 0.5rem;
     }
     
     #menu-icon {
@@ -1700,7 +1712,7 @@ textarea { resize: none; height: 18rem; }
 
 /* Mobile Small (iPhone 12 Pro, etc) */
 @media (max-width: 480px) {
-    html { font-size: 44%; }
+    html { font-size: 50%; }
     section { padding: 6rem 3% 1.5rem !important; }
     
     /* Menu modal pour petit écran */
@@ -1760,7 +1772,7 @@ textarea { resize: none; height: 18rem; }
 
 /* Mobile Extra Small (iPhone 12 mini, iPhone SE) */
 @media (max-width: 375px) {
-    html { font-size: 42%; }
+    html { font-size: 48%; }
     section { padding: 6rem 3% 1rem !important; }
     
     /* Menu modal pour très petit écran */
@@ -1787,12 +1799,12 @@ textarea { resize: none; height: 18rem; }
 
 /* Mobile Tiny (iPhone 5S, SE1) */
 @media (max-width: 320px) {
-    html { font-size: 40%; }
+    html { font-size: 46%; }
     
     /* Menu modal optimisé */
     .navbar {
         gap: 1.3rem;
-        padding: 2.5rem 0.5rem 1rem;
+        padding: 2.5rem 0.5rem 1.5rem;
     }
     
     .navbar a { 
@@ -1813,25 +1825,6 @@ textarea { resize: none; height: 18rem; }
     .logo { font-size: 1.4rem; }
 }
 
-/* Mobile Extra Small (iPhone SE, etc) */
-@media (max-width: 375px) {
-    html { font-size: 42%; }
-    
-    .navbar { width: 80%; }
-    .navbar a { font-size: 1.5rem; margin: 1rem 0; }
-    .home-content h1 { font-size: 2.5rem; }
-    
-    section { padding: 6rem 2% 2rem; }
-    .header { padding: 1rem 2%; }
-}
-
-/* Mobile Ultra Small (Galaxy S5, etc) */
-@media (max-width: 320px) {
-    html { font-size: 40%; }
-    .navbar { width: 85%; }
-    .home-content h1 { font-size: 2.2rem; }
-    section { padding: 5rem 1% 1rem; }
-}
 
 .cta-group {
     display: flex;
@@ -2055,13 +2048,11 @@ img.loaded {
 
 /* ===== BOTPRESS CHAT WIDGET - FLOATING ONLY ===== */
 
-/* Garder le widget Botpress flottant et visible - sans bloquer son fonctionnement */
+/* Garder le widget Botpress flottant avec z-index approprié (notifications level) */
 [class*="botpress"],
 [id*="botpress"],
 .bpContainer {
-    z-index: 9999 !important;
-}
-
+    z-index: 400 !important;
 /* Assurez-vous que le widget peut s'ouvrir sans restriction */
 .bp-widget-wrapper,
 #botpress-chat-widget,
