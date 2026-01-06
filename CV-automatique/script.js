@@ -106,7 +106,7 @@ const exampleTemplates = {
         template: 'tech',
         fontTitle: 'Montserrat',
         fontBody: 'Roboto',
-        primaryColor: '#0ef',
+        primaryColor: '#00eeff',
         educations: [
             { school: 'École 42', title: 'Inception (Curriculum Programming)', year: '2017-2018' },
             { school: 'Université Sorbonne', title: 'Master Informatique', year: '2015-2017' }
@@ -159,7 +159,7 @@ const exampleTemplates = {
         template: 'modern',
         fontTitle: 'Montserrat',
         fontBody: 'Inter',
-        primaryColor: '#0ef',
+        primaryColor: '#00eeff',
         educations: [
             { school: 'HEC Paris', title: 'Executive MBA - Innovation & Entrepreneurship', year: '2020-2022' },
             { school: 'Université Sorbonne', title: 'Master Informatique & Data Science', year: '2015-2017' }
@@ -213,7 +213,7 @@ const exampleTemplates = {
         template: 'tech',
         fontTitle: 'Montserrat',
         fontBody: 'Roboto',
-        primaryColor: '#0ef',
+        primaryColor: '#00eeff',
         educations: [
             { school: 'Université Toulouse III', title: 'Doctorat Machine Learning - NLP', year: '2017-2020' },
             { school: 'Université Toulouse III', title: 'Master Data Science & AI', year: '2015-2017' }
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     restoreSessionState();
     initializeEventListeners();
     renderDynamicLists();
-    updateColorSwatchActive('#0ef');
+    updateColorSwatchActive('#00eeff');
     updatePreview();
     setupResponsive();
 });
@@ -847,10 +847,10 @@ function loadExample(exampleName) {
     // Design
     document.getElementById('fontTitle').value = example.fontTitle || 'Poppins';
     document.getElementById('fontBody').value = example.fontBody || 'Roboto';
-    document.getElementById('primaryColor').value = example.primaryColor || '#0ef';
+    document.getElementById('primaryColor').value = example.primaryColor || '#00eeff';
 
     switchTemplate(example.template);
-    updateColorSwatchActive(example.primaryColor || '#0ef');
+    updateColorSwatchActive(example.primaryColor || '#00eeff');
     renderDynamicLists();
     switchTab('content');
     updatePreview();
@@ -866,7 +866,7 @@ function switchTemplate(templateName) {
 
 function applyColorPreset(presetName) {
     const presets = {
-        modern: '#0ef',
+        modern: '#00eeff',
         classic: '#1a5f7a',
         bold: '#ff6600',
         minimal: '#000000'
