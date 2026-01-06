@@ -165,6 +165,32 @@
                         <button class="template-btn" data-template="tech" onclick="switchTemplate('tech')">Tech</button>
                         <button class="template-btn" data-template="professionnel" onclick="switchTemplate('professionnel')">Pro 2Col</button>
                         <button class="template-btn" data-template="elegant" onclick="switchTemplate('elegant')">Élégant</button>
+                        <button class="template-btn" data-template="corporate" onclick="switchTemplate('corporate')">Corporate</button>
+                        <button class="template-btn" data-template="academic" onclick="switchTemplate('academic')">Academic</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-image"></i> Photo</h3>
+                    <div style="margin-bottom: 15px;">
+                        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" style="display: none;">
+                        <button onclick="document.getElementById('photoInput').click()" style="width: 100%; padding: 10px; background: #0084ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-upload"></i> Télécharger Photo
+                        </button>
+                    </div>
+                    <div id="photoEditorTools" style="display: none; gap: 10px;">
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Crop (%):</small>
+                            <input type="range" id="cropSlider" min="0" max="50" value="0" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Brightness:</small>
+                            <input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Contrast:</small>
+                            <input type="range" id="contrastSlider" min="50" max="150" value="100" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
                     </div>
                 </div>
 

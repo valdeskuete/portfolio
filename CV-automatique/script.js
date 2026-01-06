@@ -788,6 +788,10 @@ function renderPreview() {
         html = generateProfessionnelTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
     } else if (currentTemplate === 'elegant') {
         html = generateElegantTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
+    } else if (currentTemplate === 'corporate') {
+        html = generateCorporateTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
+    } else if (currentTemplate === 'academic') {
+        html = generateAcademicTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody);
     } else {
         // Default templates logic
     // HEADER
@@ -1175,6 +1179,227 @@ function generateElegantTemplate(fullName, jobTitle, email, phone, location, abo
         </div>
     `;
     return html;
+}
+
+// ===== CORPORATE TEMPLATE GENERATOR =====
+function generateCorporateTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody) {
+    let html = `
+        <div>
+            <!-- HEADER -->
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; padding: 40px; background: #f8f9fa; border-bottom: 1px solid #e0e0e0; align-items: center;">
+                ${currentPhotoData ? `
+                    <img src="${currentPhotoData}" alt="Photo" style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 3px solid ${primaryColor};">
+                ` : `
+                    <div style="width: 100px; height: 100px; border-radius: 8px; background: rgba(0,0,0,0.1); border: 3px solid ${primaryColor};"></div>
+                `}
+                <div>
+                    <div style="font-size: 2.2em; font-weight: 700; color: #000; margin-bottom: 5px;">${fullName}</div>
+                    <div style="font-size: 1.1em; color: ${primaryColor}; font-weight: 600; margin-bottom: 8px;">${jobTitle}</div>
+                    <div style="display: flex; gap: 20px; font-size: 0.9em; color: #666;">
+                        ${email ? `<span><i style="color: ${primaryColor};" class="fas fa-envelope"></i> ${email}</span>` : ''}
+                        ${phone ? `<span><i style="color: ${primaryColor};" class="fas fa-phone"></i> ${phone}</span>` : ''}
+                        ${location ? `<span><i style="color: ${primaryColor};" class="fas fa-map-marker-alt"></i> ${location}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTIONS -->
+            ${about ? `
+                <div style="padding: 30px 40px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid ${primaryColor};">
+                        <i class="fas fa-user-circle"></i> À PROPOS
+                    </div>
+                    <div style="font-size: 0.9em; color: #555; line-height: 1.6;">${about}</div>
+                </div>
+            ` : ''}
+            
+            ${cvData.experiences.length > 0 ? `
+                <div style="padding: 30px 40px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid ${primaryColor};">
+                        <i class="fas fa-briefcase"></i> EXPÉRIENCES
+                    </div>
+                    ${cvData.experiences.map(exp => `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-weight: 700; color: #000; font-size: 1em;">${exp.title}</div>
+                            <div style="color: ${primaryColor}; font-weight: 600; font-size: 0.95em;">${exp.company}</div>
+                            <div style="color: #999; font-size: 0.85em; margin-bottom: 4px;">${exp.period}</div>
+                            <div style="color: #555; font-size: 0.9em; line-height: 1.5;">${exp.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            ${cvData.educations.length > 0 ? `
+                <div style="padding: 30px 40px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid ${primaryColor};">
+                        <i class="fas fa-graduation-cap"></i> FORMATION
+                    </div>
+                    ${cvData.educations.map(edu => `
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-weight: 700; color: #000; font-size: 1em;">${edu.title}</div>
+                            <div style="color: ${primaryColor}; font-weight: 600; font-size: 0.95em;">${edu.school}</div>
+                            <div style="color: #999; font-size: 0.85em;">${edu.year}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            ${cvData.skills.length > 0 ? `
+                <div style="padding: 30px 40px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid ${primaryColor};">
+                        <i class="fas fa-cogs"></i> COMPÉTENCES
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
+                        ${cvData.skills.map(s => `<div style="background: ${primaryColor}; color: white; padding: 8px 12px; border-radius: 4px; font-size: 0.85em; text-align: center;">${s.name}</div>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            ${cvData.languages.length > 0 ? `
+                <div style="padding: 30px 40px; border-bottom: 1px solid #f0f0f0;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: ${primaryColor}; text-transform: uppercase; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid ${primaryColor};">
+                        <i class="fas fa-globe"></i> LANGUES
+                    </div>
+                    ${cvData.languages.map(lang => `
+                        <div style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-weight: 600; font-size: 0.9em;">${lang.name}</span>
+                                <span style="color: #999; font-size: 0.85em;">${lang.level}%</span>
+                            </div>
+                            <div style="height: 5px; background: #e0e0e0; border-radius: 2px; overflow: hidden;">
+                                <div style="height: 100%; background: ${primaryColor}; width: ${lang.level}%;"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+    return html;
+}
+
+// ===== ACADEMIC TEMPLATE GENERATOR =====
+function generateAcademicTemplate(fullName, jobTitle, email, phone, location, about, primaryColor, fontTitle, fontBody) {
+    let html = `
+        <div style="font-family: 'Georgia', serif;">
+            <!-- HEADER -->
+            <div style="padding: 40px; text-align: center; border-bottom: 2px solid #333;">
+                ${currentPhotoData ? `
+                    <img src="${currentPhotoData}" alt="Photo" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #333; margin-bottom: 15px;">
+                ` : ''}
+                <div style="font-size: 1.8em; font-weight: 700; color: #000; margin-bottom: 5px; font-family: 'Times New Roman', serif;">${fullName}</div>
+                <div style="font-size: 1em; color: #555; font-weight: 600; font-style: italic; margin-bottom: 10px;">${jobTitle}</div>
+                <div style="display: flex; justify-content: center; gap: 15px; font-size: 0.9em; color: #666; flex-wrap: wrap;">
+                    ${email ? `<span><i class="fas fa-envelope"></i> ${email}</span>` : ''}
+                    ${phone ? `<span><i class="fas fa-phone"></i> ${phone}</span>` : ''}
+                    ${location ? `<span><i class="fas fa-map-marker-alt"></i> ${location}</span>` : ''}
+                </div>
+            </div>
+            
+            <!-- ABOUT -->
+            ${about ? `
+                <div style="padding: 25px 40px; border-top: 1px solid #ddd;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 12px; font-family: 'Times New Roman', serif;">
+                        <i class="fas fa-user-circle"></i> PROFILE
+                    </div>
+                    <div style="font-size: 0.9em; color: #555; line-height: 1.6;">${about}</div>
+                </div>
+            ` : ''}
+            
+            <!-- EDUCATION -->
+            ${cvData.educations.length > 0 ? `
+                <div style="padding: 25px 40px; border-top: 1px solid #ddd;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 12px; font-family: 'Times New Roman', serif;">
+                        <i class="fas fa-graduation-cap"></i> EDUCATION
+                    </div>
+                    ${cvData.educations.map(edu => `
+                        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0;">
+                            <div style="font-weight: 700; color: #000; font-size: 1em;">${edu.title}</div>
+                            <div style="color: #666; font-style: italic; font-size: 0.95em;">${edu.school}</div>
+                            <div style="color: #999; font-size: 0.85em;">${edu.year}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <!-- EXPERIENCE -->
+            ${cvData.experiences.length > 0 ? `
+                <div style="padding: 25px 40px; border-top: 1px solid #ddd;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 12px; font-family: 'Times New Roman', serif;">
+                        <i class="fas fa-briefcase"></i> PROFESSIONAL EXPERIENCE
+                    </div>
+                    ${cvData.experiences.map(exp => `
+                        <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;">
+                            <div style="font-weight: 700; color: #000; font-size: 1em;">${exp.title}</div>
+                            <div style="color: #666; font-style: italic; font-size: 0.95em;">${exp.company}</div>
+                            <div style="color: #999; font-size: 0.85em; margin-bottom: 4px;">${exp.period}</div>
+                            <div style="color: #555; font-size: 0.9em; line-height: 1.6;">${exp.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <!-- SKILLS -->
+            ${cvData.skills.length > 0 ? `
+                <div style="padding: 25px 40px; border-top: 1px solid #ddd;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 12px; font-family: 'Times New Roman', serif;">
+                        <i class="fas fa-cogs"></i> SKILLS
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        ${cvData.skills.map(s => `<div style="border: 1px solid #999; padding: 4px 8px; border-radius: 0; font-size: 0.9em;">${s.name}</div>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- LANGUAGES -->
+            ${cvData.languages.length > 0 ? `
+                <div style="padding: 25px 40px; border-top: 1px solid #ddd;">
+                    <div style="font-size: 1.1em; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 12px; font-family: 'Times New Roman', serif;">
+                        <i class="fas fa-globe"></i> LANGUAGES
+                    </div>
+                    ${cvData.languages.map(lang => `
+                        <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9em;">
+                                <span style="font-weight: 600;">${lang.name}</span>
+                                <span style="color: #999;">${lang.level}%</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+    return html;
+}
+
+// ===== PHOTO EDITOR FUNCTIONS =====
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentPhotoData = e.target.result;
+            document.getElementById('photoEditorTools').style.display = 'block';
+            updatePreview();
+            showToast('Photo téléchargée avec succès!', 'success', 2000);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function applyPhotoFilter() {
+    const crop = parseInt(document.getElementById('cropSlider').value) || 0;
+    const brightness = parseInt(document.getElementById('brightnessSlider').value) || 100;
+    const contrast = parseInt(document.getElementById('contrastSlider').value) || 100;
+    
+    // Apply filters to current photo display (would need canvas manipulation for true crop)
+    const photoElements = document.querySelectorAll('.cv-photo, img[alt="Photo"]');
+    photoElements.forEach(el => {
+        el.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+        el.style.borderRadius = Math.min(crop / 2, 50) + '%';
+    });
+    
+    updatePreview();
 }
 
 // ===== EXPORT =====
