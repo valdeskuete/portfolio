@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Pro - Connexion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --main-color: #0084ff;
+            --bg-gradient: linear-gradient(135deg, #1f242d 0%, #323946 100%);
+            --accent: #00eeff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--main-color);
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: var(--main-color);
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--main-color);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: var(--main-color);
+            box-shadow: 0 0 0 4px rgba(0, 132, 255, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-group.error input {
+            border-color: #ff4141;
+            background: #fff5f5;
+        }
+
+        .form-error {
+            color: #ff4141;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .form-group.error .form-error {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--main-color);
+        }
+
+        .form-checkbox label {
+            margin: 0;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--main-color) 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 132, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary.loading {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .btn-primary i {
+            display: none;
+        }
+
+        .btn-primary.loading i {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #ccc;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .auth-divider span {
+            padding: 0 1rem;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .auth-footer p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: #2ecc71;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .toast.error {
+            background: #ff4141;
+        }
+
+        .toast.loading {
+            background: var(--main-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .auth-switch {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .auth-switch p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-switch a {
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .toast {
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo"><i class="fas fa-file-alt"></i></div>
+                <h1 class="auth-title">CV Pro</h1>
+                <p class="auth-subtitle">Créateur de CV Premium</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="votre@email.com" required>
+                    <span class="form-error" id="loginEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    <span class="form-error" id="loginPasswordError"></span>
+                </div>
+
+                <div class="form-checkbox">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Se souvenir de moi</label>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <i class="fas fa-spinner"></i> Connexion
+                </button>
+            </form>
+
+            <!-- SIGNUP FORM -->
+            <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupFirstName">Prénom</label>
+                        <input type="text" id="signupFirstName" placeholder="Jean" required>
+                        <span class="form-error" id="signupFirstNameError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Nom</label>
+                        <input type="text" id="signupLastName" placeholder="Dupont" required>
+                        <span class="form-error" id="signupLastNameError"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="votre@email.com" required>
+                    <span class="form-error" id="signupEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Mot de passe</label>
+                    <input type="password" id="signupPassword" placeholder="Min 8 caractères" minlength="8" required>
+                    <span class="form-error" id="signupPasswordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPasswordConfirm">Confirmer mot de passe</label>
+                    <input type="password" id="signupPasswordConfirm" placeholder="••••••••" minlength="8" required>
+                    <span class="form-error" id="signupPasswordConfirmError"></span>
+                </div>
+
+                <div class="form-checkbox">
+                    <input type="checkbox" id="acceptTerms" required>
+                    <label for="acceptTerms">J'accepte les conditions d'utilisation</label>
+                </div>
+
+                <button type="submit" class="btn-primary" id="signupBtn">
+                    <i class="fas fa-spinner"></i> Créer un compte
+                </button>
+            </form>
+
+            <div class="auth-switch" id="authSwitch">
+                <p>Pas encore de compte?</p>
+                <a onclick="switchAuthTab('signup')">S'inscrire maintenant</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import {
+            getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import {
+            getFirestore, doc, setDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBirIXLKxkuWT7js3CB4_pGB6tk4wPa2AM",
+            authDomain: "valde-tech.firebaseapp.com",
+            projectId: "valde-tech",
+            storageBucket: "valde-tech.firebasestorage.app",
+            messagingSenderId: "1057527881640",
+            appId: "1:1057527881640:web:0fa2badcf46267bee7879d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Expose to window
+        window.auth = auth;
+        window.db = db;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.setDoc = setDoc;
+        window.doc = doc;
+
+        // Check if user already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+
+    <script>
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('authSwitch').style.display = 'none';
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+                document.getElementById('authSwitch').style.display = 'none';
+            }
+            
+            // Clear errors
+            document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+            document.querySelectorAll('.form-error').forEach(e => e.textContent = '');
+        }
+
+        function setError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (field) {
+                field.parentElement.classList.add('error');
+                errorElement.textContent = message;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+
+            if (!email || !password) {
+                setError('loginEmail', 'Email requis');
+                setError('loginPassword', 'Mot de passe requis');
+                return;
+            }
+
+            btn.classList.add('loading');
+            btn.innerHTML = '<i class="fas fa-spinner"></i> Connexion...';
+
+            try {
+                const userCredential = await window.signInWithEmailAndPassword(window.auth, email, password);
+                showToast('✅ Connexion réussie!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let message = 'Erreur de connexion';
+                if (error.code === 'auth/invalid-email') {
+                    message = 'Email invalide';
+                    setError('loginEmail', message);
+                } else if (error.code === 'auth/user-not-found') {
+                    message = 'Utilisateur non trouvé';
+                    setError('loginEmail', message);
+                } else if (error.code === 'auth/wrong-password') {
+                    message = 'Mot de passe incorrect';
+                    setError('loginPassword', message);
+                }
+                
+                showToast(message, 'error');
+            } finally {
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-spinner"></i> Connexion';
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const firstName = document.getElementById('signupFirstName').value;
+            const lastName = document.getElementById('signupLastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            const btn = document.getElementById('signupBtn');
+
+            // Validations
+            let hasError = false;
+            if (!firstName) {
+                setError('signupFirstName', 'Prénom requis');
+                hasError = true;
+            }
+            if (!lastName) {
+                setError('signupLastName', 'Nom requis');
+                hasError = true;
+            }
+            if (!email) {
+                setError('signupEmail', 'Email requis');
+                hasError = true;
+            }
+            if (!password || password.length < 8) {
+                setError('signupPassword', 'Min 8 caractères');
+                hasError = true;
+            }
+            if (password !== passwordConfirm) {
+                setError('signupPasswordConfirm', 'Les mots de passe ne correspondent pas');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            btn.classList.add('loading');
+            btn.innerHTML = '<i class="fas fa-spinner"></i> Création du compte...';
+
+            try {
+                const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, password);
+                const user = userCredential.user;
+
+                // Create user profile in Firestore
+                await window.setDoc(window.doc(window.db, 'cv_users', user.uid), {
+                    userId: user.uid,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    fullName: `${firstName} ${lastName}`,
+                    plan: 'free',
+                    quotaUsed: 0,
+                    quotaMax: 2,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    metadata: {
+                        lastLogin: new Date().toISOString(),
+                        loginCount: 1,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    }
+                });
+
+                showToast('✅ Compte créé avec succès!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+            } catch (error) {
+                console.error('Signup error:', error);
+                
+                let message = 'Erreur lors de la création du compte';
+                if (error.code === 'auth/email-already-in-use') {
+                    message = 'Cet email est déjà utilisé';
+                    setError('signupEmail', message);
+                } else if (error.code === 'auth/invalid-email') {
+                    message = 'Email invalide';
+                    setError('signupEmail', message);
+                } else if (error.code === 'auth/weak-password') {
+                    message = 'Mot de passe trop faible';
+                    setError('signupPassword', message);
+                }
+                
+                showToast(message, 'error');
+            } finally {
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-spinner"></i> Créer un compte';
+            }
+        }
+    </script>
+</body>
+</html>
