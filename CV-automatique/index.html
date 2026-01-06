@@ -11,12 +11,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="cv-editor">
+    <div class="cv-editor" id="cvEditor">
+        <!-- MOBILE TOGGLE BUTTON -->
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <!-- SIDEBAR -->
-        <aside class="editor-sidebar">
+        <aside class="editor-sidebar" id="editorSidebar">
             <div class="sidebar-header">
                 <h1><i class="fas fa-file-alt"></i> CV Pro</h1>
                 <p>Créateur Premium</p>
+                <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()" style="display:none;" aria-label="Close sidebar">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
             <!-- TABS -->
@@ -289,10 +297,12 @@
         </aside>
 
         <!-- APERÇU -->
-        <main class="editor-preview">
-            <div class="preview-container" id="previewContainer">
-                <div class="cv-page minimal-template" id="cvPreview">
-                    <!-- Contenu généré dynamiquement -->
+        <main class="editor-preview" id="editorPreview">
+            <div class="preview-wrapper">
+                <div class="preview-container" id="previewContainer">
+                    <div class="cv-page minimal-template" id="cvPreview">
+                        <!-- Contenu généré dynamiquement -->
+                    </div>
                 </div>
             </div>
         </main>

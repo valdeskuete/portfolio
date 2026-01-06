@@ -7,6 +7,8 @@ let jobTitleSize = 16;
 let metaSize = 11;
 let sectionTitleSize = 16;
 let bodyFontSize = 13;
+let isMobileOpen = false;
+let resizeTimeout;
 
 let cvData = {
     fullName: '',
@@ -200,7 +202,64 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDynamicLists();
     updateColorSwatchActive('#0ef');
     updatePreview();
+    setupResponsive();
 });
+
+// ===== RESPONSIVE SETUP =====
+function setupResponsive() {
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        const sidebar = document.getElementById('editorSidebar');
+        const toggle = document.getElementById('sidebarToggle');
+        if (window.innerWidth <= 768 && isMobileOpen) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                closeSidebar();
+            }
+        }
+    });
+    
+    // Handle window resize with debounce
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            handleResponsiveResize();
+        }, 250);
+    });
+    
+    // Close sidebar when switching to desktop
+    handleResponsiveResize();
+}
+
+function handleResponsiveResize() {
+    if (window.innerWidth > 768) {
+        openSidebar();
+        document.getElementById('sidebarToggle').style.display = 'none';
+    } else {
+        document.getElementById('sidebarToggle').style.display = 'flex';
+    }
+}
+
+function toggleSidebar() {
+    if (isMobileOpen) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+function openSidebar() {
+    const sidebar = document.getElementById('editorSidebar');
+    sidebar.classList.add('open');
+    isMobileOpen = true;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('editorSidebar');
+    sidebar.classList.remove('open');
+    isMobileOpen = false;
+    document.body.style.overflow = 'auto';
+}
 
 // ===== EVENT LISTENERS =====
 function initializeEventListeners() {
@@ -451,8 +510,17 @@ function applyColorPreset(presetName) {
     setColor(presets[presetName]);
 }
 
-// ===== PREVIEW UPDATE =====
+// ===== PREVIEW UPDATE WITH DEBOUNCE =====
+let previewTimeout;
+
 function updatePreview() {
+    clearTimeout(previewTimeout);
+    previewTimeout = setTimeout(() => {
+        renderPreview();
+    }, 150); // Debounce 150ms
+}
+
+function renderPreview() {
     const preview = document.getElementById('cvPreview');
     
     // Get form values
@@ -586,6 +654,34 @@ function updatePreview() {
     }
 
     preview.innerHTML = html;
+    
+    // Auto-adjust zoom for mobile
+    adjustZoomForScreen();
+}
+
+// ===== SMART ZOOM FOR RESPONSIVE =====
+function adjustZoomForScreen() {
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth <= 1024;
+    
+    if (isMobile) {
+        // Mobile: fit to screen width
+        const container = document.getElementById('previewContainer');
+        const cvPage = document.getElementById('cvPreview');
+        if (cvPage && container) {
+            const containerWidth = container.parentElement.clientWidth - 40; // padding
+            const pageWidth = 210; // mm
+            const zoom = (containerWidth / (pageWidth * 3.78)) * 100; // mm to px conversion
+            zoomLevel = Math.min(zoom, 100);
+            applyZoom();
+        }
+    } else if (isTablet) {
+        zoomLevel = 85;
+        applyZoom();
+    } else {
+        zoomLevel = 100;
+        applyZoom();
+    }
 }
 
 // ===== EXPORT =====
