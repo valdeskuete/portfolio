@@ -258,7 +258,7 @@ html.dark-mode .theme-toggle:hover {
 .panel-section {
     margin-bottom: 2rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(14, 239, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .panel-section:last-child {
@@ -1091,18 +1091,18 @@ html.dark-mode .btn-remove:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(14, 239, 255, 0.3);
+    background: var(--main-color-light);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(14, 239, 255, 0.6);
+    background: var(--main-color);
 }
 
 /* ===== DYNAMIC FORM ELEMENTS ===== */
 .dynamic-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(14, 239, 255, 0.2);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     padding: 1.2rem;
     border-radius: 8px;
     margin-bottom: 1rem;
@@ -1114,7 +1114,7 @@ html.dark-mode .btn-remove:hover {
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.8rem;
-    border-bottom: 1px solid rgba(14, 239, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .item-header span {
@@ -1140,20 +1140,21 @@ html.dark-mode .btn-remove:hover {
 }
 
 .btn-add-item {
-    background: linear-gradient(135deg, rgba(14, 239, 255, 0.3), rgba(14, 239, 255, 0.1));
+    background: var(--main-color-light);
     color: var(--main-color);
     border: 1px solid var(--main-color);
     padding: 0.5rem 1rem;
-    border-radius: 5px;
+    border-radius: 0.6rem;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     font-size: 0.9rem;
 }
 
 .btn-add-item:hover {
-    background: linear-gradient(135deg, rgba(14, 239, 255, 0.5), rgba(14, 239, 255, 0.3));
-    box-shadow: 0 0 15px rgba(14, 239, 255, 0.3);
+    background: var(--main-color);
+    color: white;
+    box-shadow: var(--shadow-md);
 }
 
 .skill-input-group {
@@ -1221,7 +1222,7 @@ html.dark-mode .btn-remove:hover {
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background: rgba(14, 239, 255, 0.2);
+    background: var(--input-border);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
@@ -1235,14 +1236,14 @@ html.dark-mode .btn-remove:hover {
     border-radius: 50%;
     background: var(--main-color);
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(14, 239, 255, 0.5);
-    transition: all 0.2s ease;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
 }
 
 .size-input-wrapper input[type="range"]::-webkit-slider-thumb:hover {
     width: 18px;
     height: 18px;
-    box-shadow: 0 0 15px rgba(14, 239, 255, 0.8);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .size-input-wrapper input[type="range"]::-moz-range-thumb {
@@ -1252,14 +1253,14 @@ html.dark-mode .btn-remove:hover {
     background: var(--main-color);
     cursor: pointer;
     border: none;
-    box-shadow: 0 0 10px rgba(14, 239, 255, 0.5);
-    transition: all 0.2s ease;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
 }
 
 .size-input-wrapper input[type="range"]::-moz-range-thumb:hover {
     width: 18px;
     height: 18px;
-    box-shadow: 0 0 15px rgba(14, 239, 255, 0.8);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 #titleSizeDisplay,
@@ -1269,7 +1270,7 @@ html.dark-mode .btn-remove:hover {
     color: var(--main-color);
     font-weight: 600;
     font-size: 0.9rem;
-    background: rgba(14, 239, 255, 0.1);
+    background: var(--main-color-light);
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
 }
@@ -1288,18 +1289,18 @@ html.dark-mode .btn-remove:hover {
     border-radius: 8px;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 .color-swatch:hover {
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 .color-swatch.active {
-    border-color: white;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 0 0 20px rgba(14, 239, 255, 0.3);
+    border-color: var(--text-color);
+    box-shadow: 0 0 0 3px var(--main-color-light), var(--shadow-md);
 }
 
 /* ===== RESPONSIVE ===== */
