@@ -65,8 +65,6 @@ function autoSaveToFirebase() {
 }
 
 // ===== GLOBAL STATE =====
-let currentPhotoData = null;
-let currentTemplate = 'minimal';
 let zoomLevel = 100;
 let nameSize = 36;
 let jobTitleSize = 16;
