@@ -166,6 +166,8 @@ window.ConfirmDialog = {
             box-shadow: 0 0 30px rgba(14, 239, 255, 0.3);
             animation: slideUp 0.3s ease-out;
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10001;
         `;
 
         dialog.innerHTML = `

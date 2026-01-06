@@ -35,15 +35,6 @@
     <link rel="canonical" href="https://valdeskuete.github.io/portfolio/">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Valdes Tech">
-    <link rel="apple-touch-icon" href="images/icon-192x192.png">
-    <meta name="msapplication-TileColor" content="#0ef">
-    <meta name="msapplication-TileImage" content="images/icon-192x192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://unpkg.com">
@@ -147,8 +138,25 @@
             </div>
 
             <div class="cta-group">
-                <a href="CV_Valdes_Kuete_Technicien_IT.pdf" class="btn" download>Télécharger mon CV</a>
-                <a href="#portfolio" class="btn-outline">Voir mes Projets</a>
+                <a href="CV-automatique/index.html" class="btn" target="_blank">⏱️ CV en 2 minutes</a>
+                <a href="CV_Valdes_Kuete_Technicien_IT.pdf" class="btn" download>📥 Télécharger mon CV</a>
+                <div class="project-btn-wrapper">
+                    <!-- Flèche animée pointant vers le bouton Projets -->
+                    <div class="cv-arrow">
+                        <svg width="40" height="60" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <style>
+                                    .arrow-line { stroke: #0ef; stroke-width: 3; stroke-linecap: round; }
+                                    .arrow-head { fill: #0ef; }
+                                </style>
+                            </defs>
+                            <line class="arrow-line" x1="20" y1="10" x2="20" y2="45"/>
+                            <polygon class="arrow-head" points="20,55 10,40 30,40"/>
+                        </svg>
+                        <p>Cliquez ici!</p>
+                    </div>
+                    <a href="#portfolio" class="btn-outline">📁 Voir mes Projets</a>
+                </div>
             </div>
         </div>
 
@@ -229,7 +237,7 @@
             <h2>Besoin d'une réponse <span class="neon-text">immédiate</span> ?</h2>
             <p class="intro">Rencontrez <span class="neon-text">Valdes.IA</span> : Mon assistant virtuel intelligent.</p>
             <p class="description">Il connaît mon expertise par cœur : IUGET, AnyDesk, Bonamoussadi. Posez-lui votre question !</p>
-            <button id="open-chat-button" class="btn" onclick="if(window.botpressWebChat) window.botpressWebChat.sendEvent({ type: 'show' })">
+            <button id="open-chat-button" class="btn">
                 Discuter avec l'Assistant
             </button>
     </section>
@@ -677,8 +685,6 @@
         });
     </script>
 
-    <!-- PWA Service Worker -->
-    <script src="pwa-init.js" async></script>
     <script src="script.js" defer></script>
     
     <!-- ========== CRITIQUES - Chargés immédiatement ========== -->

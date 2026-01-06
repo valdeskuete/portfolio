@@ -311,6 +311,36 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+/* ==================== BOTPRESS CHAT - SIMPLE & ROBUSTE ====================*/
+// Exécution après le DOMContentLoaded pour être sûr que Botpress est chargé
+document.addEventListener('DOMContentLoaded', () => {
+    const chatButton = document.getElementById('open-chat-button');
+    
+    if (chatButton) {
+        chatButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('🤖 Ouverture du chat Botpress...');
+            
+            function showBotpressChat() {
+                // Vérifie si l'objet Botpress est chargé et prêt
+                if (window.botpressWebChat && window.botpressWebChat.sendEvent) {
+                    // C'est l'appel API qui ouvre la fenêtre de chat
+                    console.log('✅ Botpress prêt, ouverture du chat');
+                    window.botpressWebChat.sendEvent({type: 'show'}); 
+                } else {
+                    // Si l'objet n'est pas encore prêt, on réessaie après un court délai
+                    console.warn("⏳ Botpress en chargement, nouvelle tentative...");
+                    setTimeout(showBotpressChat, 100); 
+                }
+            }
+            // Lance la vérification
+            showBotpressChat();
+        });
+    } else {
+        console.warn("⚠️ Bouton #open-chat-button non trouvé");
+    }
+});
+
 /* ==================== 5. FONCTIONS GLOBALES FIREBASE ====================*/
 // IMPORTANT: Toutes les fonctions Firebase sont définies dans firebase-config.js
 // - window.deleteItem()
@@ -320,9 +350,3 @@ window.addEventListener('DOMContentLoaded', () => {
 // - window.openCommentsModal()
 // - window.closeCommentsModal()
 // - window.addComment()
-// Aucune duplication ici pour éviter les conflits
-
-// Initialiser les globals utilisateur
-window.currentProjectId = null;
-window.currentUserId = localStorage.getItem('valdes_user_id') || 'guest_' + Date.now();
-localStorage.setItem('valdes_user_id', window.currentUserId);

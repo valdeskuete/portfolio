@@ -124,13 +124,38 @@ onAuthStateChanged(auth, async (user) => {
 
 // Ouverture du Modal (Cadenas Menu OU Texte Footer)
 const openLogin = (e) => { 
-    e.preventDefault(); 
+    e.preventDefault();
+    // Si déjà authentifié, aller directement au panneau admin
+    if (window.isAdmin) {
+        const adminPanel = document.getElementById('admin-panel');
+        if (adminPanel) adminPanel.scrollIntoView({ behavior: 'smooth' });
+        return;
+    }
     if(el.loginModal) el.loginModal.classList.remove('hidden'); 
 };
 
 if(el.adminTriggerNav) el.adminTriggerNav.onclick = openLogin;
 if(el.adminTriggerFooter) el.adminTriggerFooter.onclick = openLogin;
-if(el.closeModal) el.closeModal.onclick = () => el.loginModal.classList.add('hidden');
+if(el.closeModal) el.closeModal.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(el.loginModal) el.loginModal.classList.add('hidden');
+};
+
+// Fermer le modal en cliquant en dehors ou Escape
+if(el.loginModal) {
+    el.loginModal.addEventListener('click', (e) => {
+        if (e.target === el.loginModal) {
+            el.loginModal.classList.add('hidden');
+        }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && el.loginModal && !el.loginModal.classList.contains('hidden')) {
+            el.loginModal.classList.add('hidden');
+        }
+    });
+}
 
 // Connexion avec gestion d'erreurs améliorée + notifications
 el.loginForm?.addEventListener('submit', async (e) => {

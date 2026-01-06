@@ -243,9 +243,18 @@ window.SocialLinks = {
             return;
         }
 
-        // Chercher un endroit pour ajouter le bouton (footer ou header)
+        // Chercher le footer - TRÈS IMPORTANT
         const footer = document.querySelector('footer');
-        if (!footer) return;
+        if (!footer) {
+            console.warn('⚠️ Footer non trouvé au moment de addSocialButton()');
+            // Réessayer après que le DOM soit COMPLÈTEMENT prêt
+            setTimeout(() => {
+                if (!document.querySelector('#social-media-button')) {
+                    this.addSocialButton();
+                }
+            }, 1000);
+            return;
+        }
 
         const buttonContainer = document.createElement('div');
         buttonContainer.style.cssText = `
@@ -280,10 +289,14 @@ window.SocialLinks = {
             button.style.boxShadow = '0 4px 15px rgba(14, 239, 239, 0.3)';
         };
 
-        button.onclick = () => this.showSocialModal();
+        button.onclick = () => {
+            console.log('✅ Bouton "Suivre sur les réseaux" cliqué');
+            this.showSocialModal();
+        };
 
         buttonContainer.appendChild(button);
         footer.appendChild(buttonContainer);
+        console.log('✅ Bouton "Suivre sur les réseaux" ajouté au footer');
     },
 
     // Initialiser

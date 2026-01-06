@@ -1605,6 +1605,11 @@ textarea { resize: none; height: 18rem; }
         transition: all 0.3s ease;
         color: var(--text-color);
         min-height: 56px;
+    }
+    
+    .navbar-chat-btn {
+        display: none !important;
+    }
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1847,6 +1852,74 @@ textarea { resize: none; height: 18rem; }
     }
 }
 
+/* Conteneur pour flèche + bouton Projets alignés vertiquement */
+.project-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Flèche animée pointant directement vers le bouton Projets */
+.cv-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    animation: bounceArrow 2s ease-in-out infinite;
+}
+
+.cv-arrow svg {
+    display: block;
+    filter: drop-shadow(0 0 5px rgba(0, 238, 255, 0.6));
+    width: 40px;
+    height: 60px;
+}
+
+.cv-arrow p {
+    color: #0ef;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 238, 255, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+@keyframes bounceArrow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(15px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Responsive - adapter la taille sur mobile */
+@media (max-width: 768px) {
+    .cv-arrow svg {
+        width: 30px;
+        height: 45px;
+    }
+    
+    .cv-arrow p {
+        font-size: 1rem;
+    }
+    
+    .project-btn-wrapper {
+        gap: 0.3rem;
+    }
+}
+
 .btn-outline {
     display: inline-block;
     padding: 1rem 2.8rem;
@@ -2046,21 +2119,62 @@ img.loaded {
     }
 }
 
-/* ===== BOTPRESS CHAT WIDGET - FLOATING ONLY ===== */
+/* ===== BOTPRESS CHAT WIDGET - FLOATING BUBBLE (CLASSIC) ===== */
 
-/* Garder le widget Botpress flottant avec z-index approprié (notifications level) */
-[class*="botpress"],
-[id*="botpress"],
-.bpContainer {
+/* Conteneur principal - position fixed en bas à droite */
+.bp-widget-wrapper {
+    position: fixed !important;
     z-index: 400 !important;
-/* Assurez-vous que le widget peut s'ouvrir sans restriction */
+    bottom: 20px !important;
+    right: 20px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Bulle - visible partout */
+.bp-widget-wrapper .bpw-chat-bubble {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 400 !important;
+}
+
+/* Chat window - quand ouvert, prend la place et passe au premier plan */
+.bpw-layout {
+    position: fixed !important;
+    z-index: 999999 !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 450px !important;
+    max-width: 90vw !important;
+    height: 600px !important;
+    max-height: 80vh !important;
+    border-radius: 12px !important;
+    box-shadow: 0 5px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Assurez-vous que tout est visible */
 .bp-widget-wrapper,
 #botpress-chat-widget,
-.botpress-chat-container,
-[class*="chat"],
-[class*="widget"] {
+.botpress-chat-container {
     visibility: visible !important;
     opacity: 1 !important;
+    display: block !important;
+}
+
+/* Mobile - adapter le chat */
+@media (max-width: 768px) {
+    .bp-widget-wrapper .bpw-chat-bubble {
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+    
+    .bpw-layout {
+        width: calc(100vw - 40px) !important;
+        max-width: calc(100vw - 40px) !important;
+        height: 70vh !important;
+        bottom: 80px !important;
+    }
 }
 
 
