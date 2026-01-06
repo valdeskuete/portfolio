@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ CV Generator Pro loaded');
     initializeDarkMode();
     restoreSessionState();
+    restoreAutoSave();
     initializeEventListeners();
     renderDynamicLists();
     updateColorSwatchActive('#0ef');
@@ -285,7 +286,95 @@ function updateThemeButton(isDark) {
     }
 }
 
-// ===== RESPONSIVE SETUP =====
+// ===== AUTO-SAVE TO LOCALSTORAGE =====
+let saveTimeout;
+
+function autoSaveCV() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        const data = {
+            fullName: document.getElementById('fullName').value,
+            jobTitle: document.getElementById('jobTitle').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            location: document.getElementById('location').value,
+            about: document.getElementById('about').value,
+            educations: cvData.educations,
+            experiences: cvData.experiences,
+            skills: cvData.skills,
+            languages: cvData.languages,
+            interests: cvData.interests,
+            template: currentTemplate,
+            fontTitle: document.getElementById('fontTitle').value,
+            fontBody: document.getElementById('fontBody').value,
+            nameSize: parseInt(document.getElementById('nameSize').value),
+            jobTitleSize: parseInt(document.getElementById('jobTitleSize').value),
+            metaSize: parseInt(document.getElementById('metaSize').value),
+            sectionTitleSize: parseInt(document.getElementById('sectionTitleSize').value),
+            bodyFontSize: parseInt(document.getElementById('bodyFontSize').value),
+            primaryColor: document.getElementById('primaryColor').value,
+            photo: currentPhotoData,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('cv-auto-save', JSON.stringify(data));
+        console.log('💾 Auto-saved');
+    }, 2000); // Auto-save after 2 seconds of inactivity
+}
+
+function restoreAutoSave() {
+    const saved = localStorage.getItem('cv-auto-save');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            // Only restore if data is recent (less than 7 days)
+            const saveTime = new Date(data.timestamp);
+            const now = new Date();
+            const daysDiff = (now - saveTime) / (1000 * 60 * 60 * 24);
+            
+            if (daysDiff < 7) {
+                // Restore data
+                document.getElementById('fullName').value = data.fullName || '';
+                document.getElementById('jobTitle').value = data.jobTitle || '';
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('phone').value = data.phone || '';
+                document.getElementById('location').value = data.location || '';
+                document.getElementById('about').value = data.about || '';
+                
+                cvData = data;
+                educationCount = Math.max(...cvData.educations.map(e => e.id || 0), 0);
+                experienceCount = Math.max(...cvData.experiences.map(e => e.id || 0), 0);
+                skillCount = Math.max(...cvData.skills.map(s => s.id || 0), 0);
+                languageCount = Math.max(...cvData.languages.map(l => l.id || 0), 0);
+                interestCount = Math.max(...cvData.interests.map(i => i.id || 0), 0);
+                
+                if (data.photo) {
+                    currentPhotoData = data.photo;
+                    updatePhotoPreview();
+                }
+                
+                document.getElementById('fontTitle').value = data.fontTitle || 'Poppins';
+                document.getElementById('fontBody').value = data.fontBody || 'Roboto';
+                document.getElementById('nameSize').value = data.nameSize || 36;
+                document.getElementById('jobTitleSize').value = data.jobTitleSize || 16;
+                document.getElementById('metaSize').value = data.metaSize || 11;
+                document.getElementById('sectionTitleSize').value = data.sectionTitleSize || 16;
+                document.getElementById('bodyFontSize').value = data.bodyFontSize || 13;
+                
+                if (data.template) switchTemplate(data.template);
+                if (data.primaryColor) {
+                    document.getElementById('primaryColor').value = data.primaryColor;
+                    updateColorSwatchActive(data.primaryColor);
+                }
+                
+                renderDynamicLists();
+                showToast('Données restaurées de la sauvegarde automatique', 'info');
+                console.log('✅ Auto-save restored');
+            }
+        } catch (e) {
+            console.error('Error restoring auto-save:', e);
+        }
+    }
+}
 function setupResponsive() {
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', (e) => {
@@ -622,6 +711,7 @@ let lastPreviewState = null;
 let lastPreviewHTML = '';
 
 function updatePreview() {
+    autoSaveCV(); // Auto-save on any change
     clearTimeout(previewTimeout);
     previewTimeout = setTimeout(() => {
         renderPreview();
