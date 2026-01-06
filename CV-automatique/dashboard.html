@@ -579,56 +579,66 @@
         // ===== DATABASE MANAGEMENT =====
         let currentUser = null;
         let unsubscribeCVs = null;
+        let authReady = false;
 
         function initAuth() {
             return new Promise((resolve) => {
                 // Wait for Firebase to be ready (with longer timeout for firebase-cv-config.js)
                 let attempts = 0;
-                const maxAttempts = 100; // 10 seconds max
+                const maxAttempts = 200; // 20 seconds max
+                let authListenerSet = false;
+                
                 const checkFirebase = setInterval(() => {
                     attempts++;
                     
-                    if (window.auth && window.CVDocumentManager) {
+                    // Check if Firebase modules are loaded
+                    if (window.auth && window.CVDocumentManager && !authListenerSet) {
+                        authListenerSet = true;
                         clearInterval(checkFirebase);
-                        console.log('✅ Firebase fully initialized');
+                        console.log('✅ Firebase fully initialized, setting up auth listener...');
                         
-                        // Monitor auth state
+                        // Monitor auth state - this will set currentUser and authReady
                         window.auth.onAuthStateChanged(async (user) => {
-                            if (user) {
-                                currentUser = user;
-                                console.log('✅ User logged in:', user.email);
-                                
-                                // Ensure user profile exists
-                                try {
+                            console.log('Auth state changed, user:', user?.uid);
+                            
+                            try {
+                                if (user) {
+                                    // User already logged in
+                                    currentUser = user;
+                                    console.log('✅ User logged in:', user.email);
+                                    
+                                    // Ensure user profile exists
                                     await window.CVUserManager.ensureUserProfile(user.uid, user.email);
-                                } catch (err) {
-                                    console.error('Error ensuring user profile:', err);
-                                }
-                                
-                                renderCVCards();
-                            } else {
-                                // Sign in anonymously for demo
-                                try {
-                                    const anonResult = await window.signInAnonymously(window.auth);
+                                } else {
+                                    // No user logged in yet - sign in anonymously
+                                    console.log('⏳ Signing in anonymously...');
+                                    const anonResult = await window.auth.signInAnonymously();
                                     currentUser = anonResult.user;
-                                    console.log('✅ Anonymous user:', currentUser.uid);
+                                    console.log('✅ Anonymous user authenticated:', currentUser.uid);
                                     
                                     // Create anon user profile
                                     await window.CVUserManager.ensureUserProfile(currentUser.uid, 'anon@demo.local');
-                                    renderCVCards();
-                                } catch (err) {
-                                    console.error('Error with anonymous auth:', err);
-                                    resolve();
                                 }
+                                
+                                // Mark auth as READY - all async operations completed
+                                authReady = true;
+                                console.log('✅✅ AUTH READY! currentUser:', currentUser?.uid);
+                                renderCVCards();
+                                resolve();
+                                
+                            } catch (err) {
+                                console.error('❌ Error in auth state change:', err);
+                                authReady = true; // Mark ready even on error to unblock UI
+                                resolve();
                             }
                         });
                         
-                        resolve();
                     } else if (attempts >= maxAttempts) {
                         // Timeout - Firebase didn't load
                         clearInterval(checkFirebase);
-                        console.error('Firebase initialization timeout');
-                        showToast('Erreur: Firebase non initialisé', 'error');
+                        console.error('❌ Firebase initialization timeout after 20 seconds');
+                        showToast('Erreur: Système non prêt', 'error');
+                        authReady = true; // Unblock UI to show error
                         resolve();
                     }
                 }, 100);
@@ -769,20 +779,24 @@
                 return;
             }
 
+            if (!authReady) {
+                showToast('⏳ Veuillez attendre l\'authentification...', 'error');
+                return;
+            }
+
             if (!currentUser) {
-                showToast('Erreur: Veuillez attendre l\'authentification...', 'error');
+                showToast('❌ Authentification échouée, rechargez la page', 'error');
                 return;
             }
             
             if (!window.CVDocumentManager) {
-                showToast('Erreur: Firebase non prêt, veuillez attendre...', 'error');
-                console.warn('CVDocumentManager not ready. Available:', Object.keys(window).filter(k => k.includes('CV')));
+                showToast('⏳ Firebase en cours de chargement...', 'error');
                 return;
             }
 
             window.CVDocumentManager.createCV(currentUser.uid, name)
                 .then((cvId) => {
-                    showToast('CV créé! Redirection...', 'success');
+                    showToast('✅ CV créé! Redirection...', 'success');
                     setTimeout(() => {
                         sessionStorage.setItem('currentCVId', cvId);
                         sessionStorage.setItem('currentUserId', currentUser.uid);
@@ -808,14 +822,25 @@
         }
 
         function duplicateCV(id) {
-            if (!currentUser || !window.CVDocumentManager) {
-                showToast('Erreur: Système pas prêt', 'error');
+            // Check auth state first
+            if (!authReady) {
+                showToast('⏳ Veuillez attendre l\'authentification...', 'error');
+                return;
+            }
+
+            if (!currentUser) {
+                showToast('❌ Authentification échouée, rechargez la page', 'error');
+                return;
+            }
+
+            if (!window.CVDocumentManager) {
+                showToast('⏳ Firebase en cours de chargement...', 'error');
                 return;
             }
 
             window.CVDocumentManager.duplicateCV(id, currentUser.uid)
                 .then(() => {
-                    showToast('CV dupliqué!', 'success');
+                    showToast('✅ CV dupliqué!', 'success');
                     renderCVCards();
                 })
                 .catch((err) => {
@@ -825,15 +850,26 @@
         }
 
         function deleteCurrentCV(id) {
-            if (!currentUser || !window.CVDocumentManager) {
-                showToast('Erreur: Système pas prêt', 'error');
+            // Check auth state first
+            if (!authReady) {
+                showToast('⏳ Veuillez attendre l\'authentification...', 'error');
+                return;
+            }
+
+            if (!currentUser) {
+                showToast('❌ Authentification échouée, rechargez la page', 'error');
+                return;
+            }
+
+            if (!window.CVDocumentManager) {
+                showToast('⏳ Firebase en cours de chargement...', 'error');
                 return;
             }
 
             if (confirm('Êtes-vous sûr de vouloir supprimer ce CV ?')) {
                 window.CVDocumentManager.deleteCV(id, currentUser.uid)
                     .then(() => {
-                        showToast('CV supprimé!', 'success');
+                        showToast('✅ CV supprimé!', 'success');
                         renderCVCards();
                     })
                     .catch((err) => {
