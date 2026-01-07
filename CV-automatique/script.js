@@ -650,46 +650,7 @@ function switchTab(tabName) {
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 }
 
-// ===== PHOTO HANDLING WITH COMPRESSION =====
-function handlePhotoUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    // Check file size - compress if needed
-    const maxSize = 500 * 1024; // 500KB max
-    if (file.size > maxSize) {
-        const canvas = document.createElement('canvas');
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                // Resize image
-                canvas.width = img.width * 0.8;
-                canvas.height = img.height * 0.8;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                currentPhotoData = canvas.toDataURL('image/jpeg', 0.8);
-                updatePhotoPreview();
-                updatePreview();
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            currentPhotoData = e.target.result;
-            updatePhotoPreview();
-            updatePreview();
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function updatePhotoPreview() {
-    const preview = document.getElementById('photoPreview');
-    preview.innerHTML = `<img src="${currentPhotoData}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-}
+// REMOVED - Duplicate handlePhotoUpload moved to line 1581
 
 // ===== DYNAMIC SECTIONS =====
 function renderDynamicLists() {
@@ -2050,3 +2011,5 @@ window.goBack = goBack;
 window.saveCVToFirestore = saveCVToFirestore;
 window.loadCVFromFirestore = loadCVFromFirestore;
 window.autoSaveCVToFirestore = autoSaveCVToFirestore;
+window.updatePreview = updatePreview;
+window.handlePhotoUpload = handlePhotoUpload;
