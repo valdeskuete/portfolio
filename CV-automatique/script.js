@@ -1990,3 +1990,35 @@ function goBackToDashboard() {
         window.location.href = 'dashboard.html';
     }
 }
+
+// ===== EXPOSE ALL FUNCTIONS TO WINDOW FOR ONCLICK HANDLERS =====
+// This allows inline onclick="functionName()" to work in HTML
+window.toggleDarkMode = toggleDarkMode;
+window.switchTab = switchTab;
+window.loadExample = loadExample;
+window.exportPDF = exportPDF;
+window.toggleSidebar = toggleSidebar;
+window.toggleFont = toggleFont;
+window.toggleColor = toggleColor;
+window.addEducation = addEducation;
+window.removeEducation = removeEducation;
+window.addExperience = addExperience;
+window.removeExperience = removeExperience;
+window.addSkill = addSkill;
+window.removeSkill = removeSkill;
+window.addLanguage = addLanguage;
+window.removeLanguage = removeLanguage;
+window.addInterest = addInterest;
+window.removeInterest = removeInterest;
+window.addPage = addPage;
+window.removePage = removePage;
+window.toggleAutoPage = toggleAutoPage;
+window.nextPage = nextPage;
+window.previousPage = previousPage;
+window.zoomIn = zoomIn;
+window.zoomOut = zoomOut;
+window.resetZoom = resetZoom;
+window.goBack = goBack;
+window.saveCVToFirestore = saveCVToFirestore;
+window.loadCVFromFirestore = loadCVFromFirestore;
+window.autoSaveCVToFirestore = autoSaveCVToFirestore;

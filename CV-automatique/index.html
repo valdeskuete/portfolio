@@ -471,10 +471,7 @@
     <!-- LOADER OPTIMISÉ -->
     <script src="loader-optimized.js"></script>
     
-    <!-- ===== FIREBASE CV CONFIG - Charger avant script.js ===== -->
-    <script src="firebase-cv-config.js"></script>
-    
-    <!-- FIREBASE INITIALIZATION MODULE -->
+    <!-- FIREBASE INITIALIZATION MODULE - MUST be first -->
     <script type="module">
         // Import Firebase functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -522,16 +519,12 @@
         window.serverTimestamp = serverTimestamp;
         window.setDoc = setDoc;
         window.signInAnonymously = signInAnonymously;
-
-        // Initialize after Firebase is ready
-        setTimeout(() => {
-            // Load Firebase CV config
-            const script = document.createElement('script');
-            script.src = 'firebase-cv-config.js';
-            document.body.appendChild(script);
-        }, 500);
     </script>
     
+    <!-- ===== SCRIPT.JS - Main application logic ===== -->
     <script src="script.js"></script>
+    
+    <!-- ===== FIREBASE CV CONFIG - After script.js loaded ===== -->
+    <script src="firebase-cv-config.js"></script>
 </body>
 </html>

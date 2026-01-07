@@ -16,8 +16,18 @@
  */
 
 // Firebase configuration (imported from main firebase-config.js)
-const firebaseDb = window.db || window.firebaseDb;
-const firebaseAuth = window.auth || window.firebaseAuth;
+// Note: window.db and window.auth are set up in index.html <script type="module">
+let firebaseDb = null;
+let firebaseAuth = null;
+
+// Wait for Firebase to be ready
+const waitForFirebase = setInterval(() => {
+    if (window.db && window.auth) {
+        firebaseDb = window.db;
+        firebaseAuth = window.auth;
+        clearInterval(waitForFirebase);
+    }
+}, 50);
 
 // ===== COLLECTION PATHS =====
 const COLLECTIONS = {
