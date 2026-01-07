@@ -1,0 +1,568 @@
+/**
+ * ========== CV GENERATOR - MOBILE RESPONSIVE STYLES ==========
+ * Mobile-first responsive design for all devices
+ * Guarantees A4 portrait format + perfect readability on all screens
+ * Date: 8 January 2026
+ */
+
+/* ===== MOBILE FIRST - BASE (320px to 640px) ===== */
+@media (max-width: 640px) {
+    /* Root font scaling for mobile */
+    html {
+        font-size: 50%;
+    }
+
+    /* Hide sidebar on mobile, show toggle */
+    .cv-editor {
+        grid-template-columns: 1fr;
+        gap: 0;
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    .editor-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        border-right: none;
+    }
+
+    .editor-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .editor-preview {
+        width: 100%;
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 2rem;
+    }
+
+    /* Mobile toggle button visible */
+    .sidebar-toggle {
+        display: flex !important;
+        position: fixed;
+        bottom: 2rem;
+        right: 1.5rem;
+        z-index: 999;
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        background: var(--main-color);
+        color: white;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-toggle:hover {
+        background: var(--main-color-dark);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Sidebar styling for mobile */
+    .editor-sidebar {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Panel sections on mobile - full width with padding */
+    .panel-section {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .panel-section h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Form styling for mobile */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 1.6rem; /* Prevents mobile zoom on input focus */
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--input-border);
+        border-radius: 0.3rem;
+        background: var(--input-bg);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: var(--main-color);
+        box-shadow: 0 0 0 3px var(--main-color-light);
+        outline: none;
+    }
+
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    /* Buttons sizing for mobile */
+    .btn-add-item {
+        font-size: 1.2rem;
+        padding: 0.6rem 1rem;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* CV Preview on mobile - Full width A4 scaled */
+    .cv-preview {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem auto;
+        aspect-ratio: 210 / 297; /* A4 ratio */
+        background: white;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    /* Toolbar scaling */
+    .preview-toolbar {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--second-bg-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .preview-toolbar button {
+        font-size: 1.1rem;
+        padding: 0.6rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Tab buttons on mobile */
+    .tab-buttons {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding: 1rem 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-btn {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.2rem;
+        white-space: nowrap;
+        min-width: 44px;
+        min-height: 44px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+        border-bottom: 2px solid var(--main-color);
+    }
+
+    /* Templates grid on mobile */
+    .templates-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .template-btn {
+        font-size: 1.1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        min-height: 44px;
+        transition: all 0.3s ease;
+    }
+
+    /* Color/Font picker on mobile */
+    .controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Section headers with better spacing */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .section-header h3 {
+        font-size: 1.4rem;
+        margin: 0;
+    }
+
+    /* Item entries on mobile */
+    .item-entry {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 0.3rem;
+        border-left: 3px solid var(--main-color);
+    }
+
+    .item-entry input,
+    .item-entry textarea {
+        font-size: 1.6rem; /* Prevent zoom */
+        margin-bottom: 0.5rem;
+    }
+
+    .remove-btn {
+        font-size: 1.1rem;
+        padding: 0.6rem 1rem;
+        min-height: 44px;
+        width: 100%;
+    }
+
+    /* Scrollbar styling */
+    .editor-sidebar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .editor-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .editor-sidebar::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+
+    .editor-sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--text-secondary);
+    }
+}
+
+/* ===== TABLET (641px to 1024px) ===== */
+@media (min-width: 641px) and (max-width: 1024px) {
+    html {
+        font-size: 56%;
+    }
+
+    .cv-editor {
+        grid-template-columns: 35% 1fr;
+        gap: 0;
+        height: 100vh;
+    }
+
+    .editor-sidebar {
+        width: 100%;
+        max-width: 100%;
+        transform: none !important;
+        position: relative;
+        top: 0;
+        left: 0;
+        box-shadow: none;
+    }
+
+    .sidebar-toggle {
+        display: none !important;
+    }
+
+    .tab-buttons {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .tab-btn {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.2rem;
+        min-height: 44px;
+    }
+
+    .templates-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .cv-preview {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem auto;
+        aspect-ratio: 210 / 297;
+        background: white;
+    }
+
+    .preview-toolbar {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0.5rem;
+    }
+}
+
+/* ===== DESKTOP (1025px+) ===== */
+@media (min-width: 1025px) {
+    html {
+        font-size: 62.5%;
+    }
+
+    .cv-editor {
+        grid-template-columns: 400px 1fr;
+        gap: 0;
+        height: 100vh;
+    }
+
+    .editor-sidebar {
+        width: 400px;
+        transform: none !important;
+        position: relative;
+        top: 0;
+        left: 0;
+        box-shadow: none;
+    }
+
+    .sidebar-toggle {
+        display: none !important;
+    }
+
+    .cv-preview {
+        width: 210mm; /* A4 width */
+        max-width: 210mm;
+        height: 297mm; /* A4 height */
+        margin: 0 auto;
+        background: white;
+        page-break-inside: avoid;
+    }
+
+    .templates-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .preview-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+}
+
+/* ===== UNIVERSAL ACCESSIBILITY & READABILITY ===== */
+
+/* Guaranteed minimum font sizes */
+body,
+input,
+textarea,
+select,
+button {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+
+h1, .cv-header .name {
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+h2, .cv-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+p, span, li {
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    line-height: 1.6;
+}
+
+label {
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    font-weight: 600;
+}
+
+small {
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+}
+
+/* Minimum touch targets (44x44px per WCAG) */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="radio"],
+input[type="checkbox"],
+a.btn {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="phone"],
+input[type="password"],
+textarea,
+select {
+    min-height: 44px;
+    padding: 0.8rem;
+    font-size: 1.6rem; /* Prevent iOS zoom */
+}
+
+/* Line height and spacing for readability */
+body {
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+}
+
+.cv-preview {
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+
+/* Color contrast for accessibility */
+.text-color-#1a1a1a {
+    color: #1a1a1a;
+}
+
+.bg-#ffffff {
+    background: #ffffff;
+}
+
+/* Print styles */
+@media print {
+    .sidebar-toggle,
+    .editor-sidebar,
+    .preview-toolbar,
+    .tab-buttons {
+        display: none !important;
+    }
+
+    .cv-editor {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .editor-preview {
+        width: 100%;
+        padding: 0;
+    }
+
+    .cv-preview {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        border: none;
+        page-break-after: always;
+    }
+}
+
+/* Dark mode adjustments for readability */
+html.dark-mode .cv-preview {
+    background: var(--second-bg-color);
+    color: var(--text-color);
+}
+
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select {
+    background: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--input-border);
+}
+
+/* Safe area for notched devices (iPhone X+, tablets) */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+        padding-top: max(0, env(safe-area-inset-top));
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+}
+
+/* High DPI screen optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 2px;
+}
+
+/* Landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .cv-editor {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .editor-sidebar {
+        position: fixed;
+        height: 100vh;
+    }
+
+    .editor-preview {
+        margin-left: 0;
+    }
+}

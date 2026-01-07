@@ -320,6 +320,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeDarkMode();
     restoreSessionState();
     initializeEventListeners();
+    initMobileClosers(); // Initialize mobile sidebar closers
     renderDynamicLists();
     updateColorSwatchActive('#00eeff');
     updatePreview();
@@ -593,16 +594,40 @@ function toggleSidebar() {
 
 function openSidebar() {
     const sidebar = document.getElementById('editorSidebar');
-    sidebar.classList.add('open');
+    if (!sidebar) return;
+    sidebar.classList.add('active');
     isMobileOpen = true;
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
 }
 
 function closeSidebar() {
     const sidebar = document.getElementById('editorSidebar');
-    sidebar.classList.remove('open');
+    if (!sidebar) return;
+    sidebar.classList.remove('active');
     isMobileOpen = false;
     document.body.style.overflow = 'auto';
+    document.body.style.position = 'static';
+}
+
+// Close sidebar when clicking outside on mobile
+function initMobileClosers() {
+    if (window.innerWidth <= 640) {
+        // Close sidebar when clicking on preview area
+        const preview = document.querySelector('.editor-preview');
+        if (preview) {
+            preview.addEventListener('click', () => {
+                if (isMobileOpen) closeSidebar();
+            });
+        }
+
+        // Close sidebar when clicking a tab
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(closeSidebar, 100);
+            });
+        });
+    }
 }
 
 // ===== EVENT LISTENERS =====
@@ -1998,6 +2023,9 @@ window.switchTab = switchTab;
 window.loadExample = loadExample;
 window.exportPDF = exportPDF;
 window.toggleSidebar = toggleSidebar;
+window.openSidebar = openSidebar;
+window.closeSidebar = closeSidebar;
+window.initMobileClosers = initMobileClosers;
 window.toggleFont = toggleFont;
 window.toggleColor = toggleColor;
 window.addEducation = addEducation;
