@@ -661,9 +661,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.3.0/dist/index.min.js"></script>
     <script src="gemini-ai.js" defer></script>
     <script src="gemini-integration.js" defer></script>
+    <!-- 🔐 SÉCURITÉ: Vérifier l'authentification admin AVANT de charger le panneau -->
+    <script src="admin-auth.js" defer></script>
     <script src="gemini-admin-panel.js" defer></script>
     <script src="about-manager.js" defer></script>
-    <script src="init-demo-data.js" defer></script>
+    <!-- init-demo-data.js moved to _SCRIPTS_SETUP/ - only needed for initial setup -->
     <script src="form-validation.js" defer></script>
     <script src="lazy-loading.js" defer></script>
     <script src="accessibility.js" defer></script>

@@ -1,4 +1,15 @@
 /* ==================== TEMPLATES PROJETS ==================== */
+
+// 🔐 SÉCURITÉ: Wrapper pour les actions admin protégées
+async function requireAdminAccess(actionName, actionFunction) {
+    if (!window.AdminAuth) {
+        console.error('❌ [AdminFeatures] AdminAuth not available');
+        return false;
+    }
+    
+    return await window.AdminAuth.protectedAdminAction(actionName, actionFunction);
+}
+
 const projectTemplates = {
     maintenance: {
         title: "Remplacement Disque Dur [Client]",
@@ -34,19 +45,30 @@ const projectTemplates = {
     }
 };
 
-function loadTemplate(type) {
-    const template = projectTemplates[type];
-    if (!template) return;
+async function loadTemplate(type) {
+    // 🔐 Vérifier les droits admin
+    const isAllowed = await requireAdminAccess('load_project_template', async () => {
+        const template = projectTemplates[type];
+        if (!template) {
+            console.warn('⚠️ Template non trouvé:', type);
+            return false;
+        }
+        
+        document.getElementById('p-title').value = template.title;
+        document.getElementById('p-tag').value = template.tag;
+        document.getElementById('p-image').value = template.image;
+        document.getElementById('p-challenge').value = template.challenge;
+        document.getElementById('p-solution').value = template.solution;
+        document.getElementById('p-result').value = template.result;
+        
+        updateProjectPreview();
+        console.log('✅ Template chargé:', type);
+        return true;
+    });
     
-    document.getElementById('p-title').value = template.title;
-    document.getElementById('p-tag').value = template.tag;
-    document.getElementById('p-image').value = template.image;
-    document.getElementById('p-challenge').value = template.challenge;
-    document.getElementById('p-solution').value = template.solution;
-    document.getElementById('p-result').value = template.result;
-    
-    updateProjectPreview();
-    console.log('✅ Template chargé:', type);
+    if (!isAllowed) {
+        console.log('🔒 [AdminFeatures] Accès template refusé');
+    }
 }
 
 function updateProjectPreview() {

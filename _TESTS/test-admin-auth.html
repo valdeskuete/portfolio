@@ -1,0 +1,426 @@
+/**
+ * Test d'Authentification Admin
+ * Accédez à: http://localhost:PORT/test-admin-auth.html
+ */
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Authentification Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1f242d 0%, #323946 100%);
+            color: #fff;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #0ef;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        h1 {
+            color: #0ef;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 239, 255, 0.05);
+            border: 1px solid #0ef;
+            border-radius: 0.5rem;
+        }
+        .test-section h3 {
+            color: #0ef;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #0ef;
+            font-weight: 600;
+        }
+        input, button {
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            border: 1px solid #0ef;
+            background: rgba(0, 239, 255, 0.1);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+        input {
+            width: 100%;
+        }
+        button {
+            background: #0ef;
+            color: #000;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background: rgba(0, 239, 255, 0.2);
+            color: #0ef;
+            margin-left: 0.5rem;
+        }
+        .btn-secondary:hover {
+            background: rgba(0, 239, 255, 0.3);
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        .status.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            color: #0f0;
+        }
+        .status.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #f00;
+            color: #f00;
+        }
+        .status.info {
+            background: rgba(0, 200, 255, 0.1);
+            border: 1px solid #0cf;
+            color: #0cf;
+        }
+        .console-output {
+            background: #000;
+            border: 1px solid #0ef;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .console-line {
+            margin-bottom: 0.5rem;
+        }
+        .admin-test {
+            color: #0f0;
+        }
+        .user-test {
+            color: #f90;
+        }
+        .error-test {
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Test d'Authentification Admin</h1>
+
+        <!-- Section Configuration -->
+        <div class="test-section">
+            <h3>⚙️ Configuration Admin</h3>
+            <div class="form-group">
+                <label>Ajouter un email administrateur:</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="email" id="admin-email" placeholder="admin@example.com">
+                    <button onclick="addAdminEmail()">Ajouter</button>
+                </div>
+            </div>
+            <div id="admin-list" style="margin-top: 1rem;">
+                <p style="color: #0ef; font-weight: 600;">Admins actuels:</p>
+                <div id="admins-display"></div>
+            </div>
+        </div>
+
+        <!-- Section Test Login -->
+        <div class="test-section">
+            <h3>👤 Test de Connexion</h3>
+            
+            <div class="form-group">
+                <label>Email de test:</label>
+                <input type="email" id="test-email" value="admin@valde-tech.com" placeholder="Email à tester">
+            </div>
+
+            <button onclick="testAdminAccess()" style="width: 100%; margin-bottom: 0.5rem;">
+                🔍 Vérifier l'accès admin
+            </button>
+
+            <button onclick="simulateAdminLogin()" class="btn-secondary" style="width: 100%; margin-bottom: 0.5rem;">
+                🎭 Simuler login admin
+            </button>
+
+            <button onclick="simulateUserLogin()" class="btn-secondary" style="width: 100%;">
+                👤 Simuler login utilisateur
+            </button>
+
+            <div id="login-status"></div>
+        </div>
+
+        <!-- Section Vérification Admin -->
+        <div class="test-section">
+            <h3>🔐 Vérification Admin Panel</h3>
+            
+            <button onclick="checkAdminPanel()" style="width: 100%; margin-bottom: 0.5rem;">
+                🔍 Vérifier l'état du panel
+            </button>
+
+            <button onclick="testAdminAction('test_action')" class="btn-secondary" style="width: 100%; margin-bottom: 0.5rem;">
+                🎯 Tester une action admin
+            </button>
+
+            <button onclick="testUnauthorizedAction()" class="btn-secondary" style="width: 100%;">
+                ⛔ Tester accès non-autorisé
+            </button>
+
+            <div id="panel-status"></div>
+        </div>
+
+        <!-- Section Console -->
+        <div class="test-section">
+            <h3>📊 Console de Test</h3>
+            <button onclick="clearConsole()" style="width: 100%; margin-bottom: 1rem;">
+                🗑️ Effacer console
+            </button>
+            <div class="console-output" id="console-output"></div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="test-section" style="background: rgba(100, 200, 255, 0.1); border-color: #0cf;">
+            <h3 style="color: #0cf;">📖 Guide de Test</h3>
+            <p style="margin-bottom: 1rem;">
+                <strong>Étape 1:</strong> Configurez les emails admin autorisés
+            </p>
+            <p style="margin-bottom: 1rem;">
+                <strong>Étape 2:</strong> Testez l'accès avec "Vérifier l'accès admin"
+            </p>
+            <p style="margin-bottom: 1rem;">
+                <strong>Étape 3:</strong> Simulez une connexion pour vérifier le comportement
+            </p>
+            <p>
+                <strong>Console:</strong> Les logs s'affichent en temps réel ci-dessus
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Capturer les console logs
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        const consoleOutput = document.getElementById('console-output');
+
+        function addConsoleLine(message, type = 'log') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString('fr-FR');
+            line.innerHTML = `[${timestamp}] ${message}`;
+            
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog(...args);
+            addConsoleLine(args.join(' '), 'admin-test');
+        };
+
+        console.warn = function(...args) {
+            originalWarn(...args);
+            addConsoleLine('⚠️ ' + args.join(' '), 'user-test');
+        };
+
+        console.error = function(...args) {
+            originalError(...args);
+            addConsoleLine('❌ ' + args.join(' '), 'error-test');
+        };
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+            console.log('Console effacée');
+        }
+
+        // Gestion des admins
+        function updateAdminsDisplay() {
+            const display = document.getElementById('admins-display');
+            if (!window.AdminAuth) {
+                display.innerHTML = '<p style="color: #f00;">AdminAuth non chargé</p>';
+                return;
+            }
+
+            const admins = window.AdminAuth.ADMIN_EMAILS || [];
+            display.innerHTML = admins.length > 0 
+                ? admins.map(email => `<p>✅ ${email}</p>`).join('')
+                : '<p>Aucun admin configuré</p>';
+        }
+
+        function addAdminEmail() {
+            const email = document.getElementById('admin-email').value;
+            if (!email) {
+                console.error('Email requis');
+                return;
+            }
+
+            if (!window.AdminAuth) {
+                console.error('AdminAuth non chargé');
+                return;
+            }
+
+            if (!window.AdminAuth.ADMIN_EMAILS.includes(email)) {
+                window.AdminAuth.ADMIN_EMAILS.push(email);
+                console.log('✅ Admin ajouté:', email);
+                updateAdminsDisplay();
+                document.getElementById('admin-email').value = '';
+            } else {
+                console.warn('Email déjà dans la liste');
+            }
+        }
+
+        // Tests d'accès
+        async function testAdminAccess() {
+            const email = document.getElementById('test-email').value;
+            if (!email) {
+                console.error('Email requis pour le test');
+                return;
+            }
+
+            const statusDiv = document.getElementById('login-status');
+            
+            try {
+                if (!window.AdminAuth) {
+                    const status = document.createElement('div');
+                    status.className = 'status error';
+                    status.innerHTML = '❌ AdminAuth non chargé';
+                    statusDiv.innerHTML = '';
+                    statusDiv.appendChild(status);
+                    return;
+                }
+
+                const isAdmin = email && window.AdminAuth.ADMIN_EMAILS.includes(email);
+                
+                const status = document.createElement('div');
+                status.className = `status ${isAdmin ? 'success' : 'error'}`;
+                status.innerHTML = isAdmin 
+                    ? `✅ ${email} est un administrateur` 
+                    : `❌ ${email} n'est pas un administrateur`;
+                
+                statusDiv.innerHTML = '';
+                statusDiv.appendChild(status);
+                
+                console.log(`Email testé: ${email} - Résultat: ${isAdmin ? 'ADMIN' : 'USER'}`);
+            } catch (error) {
+                console.error('Erreur lors du test:', error);
+            }
+        }
+
+        async function simulateAdminLogin() {
+            const email = 'admin@valde-tech.com';
+            console.log(`🎭 Simulation login admin: ${email}`);
+            
+            // Simuler user object
+            window.auth = window.auth || {};
+            window.auth.currentUser = { email: email };
+            
+            if (window.AdminAuth) {
+                await window.AdminAuth.initAdminPanel();
+            }
+        }
+
+        async function simulateUserLogin() {
+            const email = 'user@example.com';
+            console.log(`👤 Simulation login utilisateur: ${email}`);
+            
+            window.auth = window.auth || {};
+            window.auth.currentUser = { email: email };
+            
+            if (window.AdminAuth) {
+                await window.AdminAuth.initAdminPanel();
+            }
+        }
+
+        async function checkAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            const statusDiv = document.getElementById('panel-status');
+            
+            if (!panel) {
+                const status = document.createElement('div');
+                status.className = 'status info';
+                status.innerHTML = 'ℹ️ Panel admin non présent dans le DOM';
+                statusDiv.innerHTML = '';
+                statusDiv.appendChild(status);
+                console.log('ℹ️ Panel admin non trouvé dans le DOM');
+                return;
+            }
+
+            const isHidden = panel.classList.contains('hidden');
+            const status = document.createElement('div');
+            status.className = `status ${isHidden ? 'error' : 'success'}`;
+            status.innerHTML = isHidden 
+                ? '🔒 Panel admin est MASQUÉ' 
+                : '🔓 Panel admin est VISIBLE';
+            
+            statusDiv.innerHTML = '';
+            statusDiv.appendChild(status);
+            
+            console.log(`État du panel: ${isHidden ? 'MASQUÉ' : 'VISIBLE'}`);
+        }
+
+        async function testAdminAction(actionName) {
+            console.log(`🎯 Test action admin: ${actionName}`);
+            
+            if (!window.AdminAuth) {
+                console.error('AdminAuth non disponible');
+                return;
+            }
+
+            await window.AdminAuth.protectedAdminAction(actionName, async () => {
+                console.log(`✅ Action exécutée: ${actionName}`);
+                return true;
+            });
+        }
+
+        async function testUnauthorizedAction() {
+            console.log('⛔ Test d\'accès non-autorisé...');
+            
+            // Simuler un utilisateur non-admin
+            if (window.auth) {
+                window.auth.currentUser = { email: 'hacker@example.com' };
+            }
+
+            if (window.AdminAuth) {
+                await window.AdminAuth.protectedAdminAction('unauthorized_action', async () => {
+                    console.log('Ce message ne devrait pas s\'afficher');
+                    return true;
+                });
+            }
+        }
+
+        // Initialisation
+        window.addEventListener('load', () => {
+            console.log('🔐 Test page chargée');
+            console.log('AdminAuth disponible:', !!window.AdminAuth);
+            updateAdminsDisplay();
+        });
+    </script>
+
+    <!-- Charger les scripts de sécurité pour le test -->
+    <script src="../admin-auth.js"></script>
+</body>
+</html>

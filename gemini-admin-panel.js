@@ -3,8 +3,29 @@
  */
 
 const GeminiAdminPanel = {
-    init() {
+    // 🔐 Vérifier l'authentification admin
+    async checkAdminAccess() {
+        if (!window.AdminAuth) {
+            console.warn('⚠️ [GeminiAdminPanel] AdminAuth not loaded yet');
+            return false;
+        }
+        const isAdmin = await window.AdminAuth.isAdminUser();
+        if (!isAdmin) {
+            console.log('🔒 [GeminiAdminPanel] Admin access denied');
+        }
+        return isAdmin;
+    },
+
+    async init() {
         console.log('🎛️ [GeminiAdminPanel] Initialisation...');
+        
+        // 🔐 Vérifier les droits admin avant de continuer
+        const isAdmin = await this.checkAdminAccess();
+        if (!isAdmin) {
+            console.log('❌ [GeminiAdminPanel] Non-admin user blocked from admin panel');
+            return; // Ne pas initialiser pour les non-admin
+        }
+        
         this.renderPanel();
         this.attachEventListeners();
     },

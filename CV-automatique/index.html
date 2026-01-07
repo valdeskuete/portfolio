@@ -9,6 +9,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&family=Inter:wght@400;600&family=Montserrat:wght@600;700&family=Raleway:wght@400;600&family=Lato:wght@400;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&family=Nunito:wght@600;700&family=Quicksand:wght@600;700&family=Source+Sans+Pro:wght@400;600&family=Arvo:wght@700&family=Caveat:wght@700&family=Oswald:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== CRITICAL CSS - CHARGÉ IMMÉDIATEMENT ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Optimisation pour mobile - évite le zoom sur les inputs */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+
+        /* ARIA live region pour les annonces d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Empêche le zoom sur iOS lors du focus */
+        body {
+            touch-action: manipulation;
+        }
+    </style>
 </head>
 <body>
     <div class="cv-editor" id="cvEditor">
@@ -31,14 +62,14 @@
             </div>
 
             <!-- TABS -->
-            <nav class="editor-nav">
-                <button class="nav-btn active" data-tab="content" onclick="switchTab('content')">
+            <nav class="editor-nav" role="tablist">
+                <button class="nav-btn active" data-tab="content" onclick="switchTab('content')" role="tab" aria-selected="true" aria-controls="tab-content">
                     <i class="fas fa-edit"></i> Contenu
                 </button>
-                <button class="nav-btn" data-tab="design" onclick="switchTab('design')">
+                <button class="nav-btn" data-tab="design" onclick="switchTab('design')" role="tab" aria-selected="false" aria-controls="tab-design">
                     <i class="fas fa-palette"></i> Design
                 </button>
-                <button class="nav-btn" data-tab="export" onclick="switchTab('export')">
+                <button class="nav-btn" data-tab="export" onclick="switchTab('export')" role="tab" aria-selected="false" aria-controls="tab-export">
                     <i class="fas fa-download"></i> Export
                 </button>
             </nav>
@@ -50,12 +81,12 @@
                 <div class="panel-section">
                     <h3><i class="fas fa-sparkles"></i> Modèles</h3>
                     <div class="examples-grid">
-                        <button class="example-btn" onclick="loadExample('dev')" title="Dev">💻</button>
-                        <button class="example-btn" onclick="loadExample('designer')" title="Designer">🎨</button>
-                        <button class="example-btn" onclick="loadExample('startup')" title="Startup">🚀</button>
-                        <button class="example-btn" onclick="loadExample('marketing')" title="Marketing">📊</button>
-                        <button class="example-btn" onclick="loadExample('datascientist')" title="Data">🤖</button>
-                        <button class="example-btn" onclick="loadExample('manager')" title="Manager">👔</button>
+                        <button class="example-btn" onclick="loadExample('dev')" aria-label="Charger modèle développeur" title="Dev">💻</button>
+                        <button class="example-btn" onclick="loadExample('designer')" aria-label="Charger modèle designer" title="Designer">🎨</button>
+                        <button class="example-btn" onclick="loadExample('startup')" aria-label="Charger modèle startup" title="Startup">🚀</button>
+                        <button class="example-btn" onclick="loadExample('marketing')" aria-label="Charger modèle marketing" title="Marketing">📊</button>
+                        <button class="example-btn" onclick="loadExample('datascientist')" aria-label="Charger modèle data scientist" title="Data">🤖</button>
+                        <button class="example-btn" onclick="loadExample('manager')" aria-label="Charger modèle manager" title="Manager">👔</button>
                     </div>
                 </div>
 
@@ -296,23 +327,23 @@
                 <div class="panel-section">
                     <h3><i class="fas fa-download"></i> Exporter</h3>
                     
-                    <button class="export-btn primary" onclick="exportPDF()">
+                    <button class="export-btn primary" onclick="exportPDF()" aria-label="Exporter en PDF">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
                     
-                    <button class="export-btn" onclick="exportPNG()">
+                    <button class="export-btn" onclick="exportPNG()" aria-label="Exporter en PNG">
                         <i class="fas fa-image"></i> PNG
                     </button>
 
-                    <button class="export-btn" onclick="exportDOCX()">
+                    <button class="export-btn" onclick="exportDOCX()" aria-label="Exporter en Word">
                         <i class="fas fa-file-word"></i> Word
                     </button>
 
-                    <button class="export-btn" onclick="exportJSON()">
+                    <button class="export-btn" onclick="exportJSON()" aria-label="Sauvegarder le CV">
                         <i class="fas fa-save"></i> Sauvegarder
                     </button>
 
-                    <button class="export-btn secondary" onclick="triggerJSONImport()">
+                    <button class="export-btn secondary" onclick="triggerJSONImport()" aria-label="Charger un CV sauvegardé">
                         <i class="fas fa-upload"></i> Charger
                     </button>
 
@@ -356,6 +387,12 @@
     
     <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ARIA LIVE REGION FOR ACCESSIBILITY -->
+    <div class="sr-only" role="status" aria-live="polite" id="ariaStatus"></div>
+    
+    <!-- LOADER OPTIMISÉ -->
+    <script src="loader-optimized.js"></script>
     
     <!-- FIREBASE INITIALIZATION MODULE -->
     <script type="module">

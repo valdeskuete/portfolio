@@ -3,6 +3,10 @@
 .env.local
 .env.*.local
 
+# �️ ARCHIVE & INUTILE
+_ARCHIVE/
+FIRESTORE_SECURITY_RULES.js
+
 # 📦 Dependencies
 node_modules/
 package-lock.json
@@ -48,6 +52,8 @@ coverage/
 out/
 
 # 🔒 Secrets (même dans les commentaires!)
+serviceAccountKey.json
+credentials.json
 **/secrets.js
 **/config.private.js
 credentials.json

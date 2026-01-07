@@ -3,12 +3,58 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // Fonction pour vérifier si l'utilisateur est admin
-    // Utilise Custom Claims pour plus de sécurité OU UID admin principal
+    // Vérifie: 1. role='admin' en Firestore users/{uid} 2. UID hardcoded (fallback)
+    // NOTE: Pas de Custom Claims (pas de Cloud Functions disponibles)
     function isAdmin() {
-      return (request.auth != null && request.auth.token.admin == true)
+      return (request.auth != null && 
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
           || request.auth.uid == "D6QdYhxO71OCvYmZcrqqrpOHpyP2";
     }
     
+    // ==================== USERS ====================
+    // Collection des profils utilisateurs avec role
+    // Structure: { email, role: 'admin'|'user'|'moderator', createdAt, updatedAt }
+    match /users/{userId} {
+      // Chacun peut lire son propre profil
+      allow read: if request.auth.uid == userId;
+      // Admin peut lire tous les profils
+      allow read: if isAdmin();
+      
+      // Utilisateur crée son profil à l'inscription
+      allow create: if request.auth.uid == userId &&
+                       request.resource.data.role == 'user' &&
+                       request.resource.data.email == request.auth.token.email;
+      
+      // Utilisateur peut mettre à jour son propre profil (sauf le role)
+      allow update: if request.auth.uid == userId && 
+                       !('role' in request.resource.data.diff().changedKeys());
+      
+      // Admin peut modifier les roles
+      allow update: if isAdmin();
+      
+      // Admin peut supprimer
+      allow delete: if isAdmin();
+    }
+
+    // ==================== AUDIT LOGS ====================
+    // Collection d'audit pour tracer les actions admin
+    // Structure: { uid, email, action, details, timestamp, success }
+    match /admin_audit_logs/{logId} {
+      // Admin peut lire tous les logs
+      allow read: if isAdmin();
+      
+      // N'importe quel utilisateur authentifié peut créer un log
+      // (le client-side valide le contenu)
+      allow create: if request.auth != null &&
+                       request.resource.data.keys().hasAll(['uid', 'email', 'action', 'timestamp']);
+      
+      // Admin peut supprimer les vieux logs (archivage)
+      allow delete: if isAdmin();
+      
+      // Pas de modification (logs immuables)
+      allow update: if false;
+    }
+
     // ==================== PROJETS ====================
     // Les projets sont publics en lecture
     match /projets/{document=**} {
@@ -94,8 +140,10 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
-    // ==================== CV-AUTOMATIQUE: USER PROFILES ====================
-    // Utilisateurs avec plans et quotas
+    // ==================== CV-AUTOMATIQUE ====================
+    // Sous-application de création de CV intégrée au portfolio
+    
+    // Profils utilisateurs avec plans et quotas
     match /cv_users/{userId} {
       allow read: if request.auth.uid == userId || isAdmin();
       allow create: if request.auth.uid == userId;
@@ -103,7 +151,6 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // ==================== CV-AUTOMATIQUE: CV DOCUMENTS ====================
     // Documents CV appartenant aux utilisateurs
     match /cv_documents/{cvId} {
       allow read: if resource.data.userId == request.auth.uid || isAdmin();
@@ -112,15 +159,13 @@ service cloud.firestore {
       allow delete: if resource.data.userId == request.auth.uid || isAdmin();
     }
     
-    // ==================== CV-AUTOMATIQUE: BILLING ====================
-    // Informations de facturation par utilisateur
+    // Facturation et abonnements
     match /cv_billing/{userId} {
       allow read: if request.auth.uid == userId || isAdmin();
       allow write: if isAdmin();
     }
     
-    // ==================== CV-AUTOMATIQUE: ACTIVITY LOG ====================
-    // Journal d'activités pour analytics et audit
+    // Journal d'activités
     match /cv_activity/{docId} {
       allow read: if resource.data.userId == request.auth.uid || isAdmin();
       allow create: if request.auth.uid != null;

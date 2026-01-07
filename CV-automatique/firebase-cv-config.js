@@ -2,6 +2,17 @@
  * Firebase CV Manager
  * Handles all Firestore operations for CV management
  * Architecture designed for scalability and future billing integration
+ * 
+ * ⚠️ IMPORTANT: Cette app utilise des collections SÉPARÉES (cv_users, cv_documents)
+ * pour rester indépendante de la sécurité du root site (admin panel).
+ * 
+ * Les firestore.rules protègent:
+ * - cv_users: accessible par le user lui-même OU admin
+ * - cv_documents: accessible par le owner OU admin
+ * - cv_billing: accessible par le user OU admin
+ * - cv_activity: logs d'activité
+ * 
+ * Pas de conflit avec la collection 'users' du root site (role-based auth)
  */
 
 // Firebase configuration (imported from main firebase-config.js)

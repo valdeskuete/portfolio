@@ -9,10 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ===== CRITICAL CSS - CHARGÉ IMMÉDIATEMENT ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Optimisation pour mobile - évite le zoom sur les inputs */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+
+        /* ARIA live region pour les annonces d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         :root {
@@ -42,6 +61,8 @@
             background: var(--bg-light);
             color: var(--text-dark);
             transition: all 0.3s ease;
+            /* Empêche le zoom sur iOS lors du focus */
+            touch-action: manipulation;
         }
 
         /* ===== HEADER ===== */
@@ -487,20 +508,28 @@
     </style>
 </head>
 <body>
+    <!-- ARIA LIVE REGION FOR ACCESSIBILITY -->
+    <div class="sr-only" role="status" aria-live="polite" id="ariaStatus"></div>
+
     <!-- HEADER -->
-    <header>
-        <div class="logo">
+    <header role="banner">
+        <div class="logo" onclick="window.location.reload()" role="button" tabindex="0" aria-label="CV Pro - Accueil">
             <i class="fas fa-file-alt"></i> CV Pro
         </div>
         <div class="header-actions">
-            <button class="theme-toggle" onclick="toggleDarkMode()" title="Basculer thème">
-                <i class="fas fa-moon"></i>
+            <button class="theme-toggle" onclick="toggleDarkMode()" 
+                    aria-label="Basculer le thème sombre/clair" 
+                    title="Basculer thème">
+                <i class="fas fa-moon" aria-hidden="true"></i>
             </button>
-            <button class="btn-primary" onclick="createNewCV()">
-                <i class="fas fa-plus"></i> Nouveau CV
+            <button class="btn-primary" onclick="createNewCV()" 
+                    aria-label="Créer un nouveau CV">
+                <i class="fas fa-plus" aria-hidden="true"></i> Nouveau CV
             </button>
-            <button class="btn-secondary" onclick="logout()" title="Déconnexion">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            <button class="btn-secondary" onclick="logout()" 
+                    aria-label="Se déconnecter" 
+                    title="Déconnexion">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Déconnexion
             </button>
         </div>
     </header>
@@ -541,6 +570,9 @@
 
     <!-- TOAST -->
     <div id="toast" class="toast" style="display: none;"></div>
+
+    <!-- LOADER OPTIMISÉ -->
+    <script src="loader-optimized.js"></script>
 
     <script type="module">
         // Import Firebase functions

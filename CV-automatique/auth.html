@@ -9,10 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ===== CRITICAL CSS - CHARGÉ IMMÉDIATEMENT ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Optimisation pour mobile - évite le zoom sur les inputs */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+
+        /* ARIA live region pour les annonces d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         :root {
@@ -441,18 +460,23 @@
                 </button>
             </div>
 
+            <!-- ARIA LIVE REGION FOR ACCESSIBILITY -->
+            <div class="sr-only" role="status" aria-live="polite" id="ariaStatus"></div>
+
             <!-- LOGIN FORM -->
-            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)" aria-label="Formulaire de connexion">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" placeholder="votre@email.com" required>
-                    <span class="form-error" id="loginEmailError"></span>
+                    <input type="email" id="loginEmail" placeholder="votre@email.com" required 
+                           aria-required="true" aria-describedby="loginEmailError">
+                    <span class="form-error" id="loginEmailError" role="alert"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="loginPassword">Mot de passe</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required>
-                    <span class="form-error" id="loginPasswordError"></span>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required
+                           aria-required="true" aria-describedby="loginPasswordError">
+                    <span class="form-error" id="loginPasswordError" role="alert"></span>
                 </div>
 
                 <div class="form-checkbox">
@@ -460,22 +484,23 @@
                     <label for="rememberMe">Se souvenir de moi</label>
                 </div>
 
-                <button type="submit" class="btn-primary" id="loginBtn">
+                <button type="submit" class="btn-primary" id="loginBtn" aria-label="Se connecter">
                     <i class="fas fa-spinner"></i> Connexion
                 </button>
-                <a class="forgot-password-link" onclick="switchAuthTab('reset')">Mot de passe oublié?</a>
+                <a class="forgot-password-link" onclick="switchAuthTab('reset')" role="button" tabindex="0">Mot de passe oublié?</a>
             </form>
 
             <!-- RESET PASSWORD FORM -->
-            <form class="auth-form" id="resetForm" onsubmit="handleReset(event)">
-                <button type="button" class="back-button" onclick="switchAuthTab('login')">
+            <form class="auth-form" id="resetForm" onsubmit="handleReset(event)" aria-label="Formulaire de réinitialisation de mot de passe">
+                <button type="button" class="back-button" onclick="switchAuthTab('login')" aria-label="Retour à la connexion">
                     <i class="fas fa-arrow-left"></i> Retour
                 </button>
                 
                 <div class="form-group">
                     <label for="resetEmail">Email</label>
-                    <input type="email" id="resetEmail" placeholder="votre@email.com" required>
-                    <span class="form-error" id="resetEmailError"></span>
+                    <input type="email" id="resetEmail" placeholder="votre@email.com" required
+                           aria-required="true" aria-describedby="resetEmailError">
+                    <span class="form-error" id="resetEmailError" role="alert"></span>
                 </div>
                 
                 <p style="font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; text-align: center;">
