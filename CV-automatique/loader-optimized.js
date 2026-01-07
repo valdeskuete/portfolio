@@ -5,7 +5,7 @@
  */
 
 // ===== DETECTION DE LA PAGE ACTUELLE =====
-const currentPage = () => {
+const getCurrentPage = () => {
   const path = window.location.pathname.toLowerCase();
   if (path.includes('auth')) return 'auth';
   if (path.includes('dashboard')) return 'dashboard';
@@ -106,7 +106,7 @@ async function registerServiceWorker() {
 
 // ===== PAGE-SPECIFIC LOADER =====
 async function loadPageResources() {
-  const page = currentPage();
+  const page = getCurrentPage();
   
   switch(page) {
     case 'auth':
