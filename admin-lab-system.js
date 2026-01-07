@@ -535,7 +535,7 @@ class ContentManager {
 
             this.showNotification(`✅ ${collection} ajouté avec succès`, 'success');
         } catch (error) {
-            console.error(`❌ Erreur ajout ${collection}:`, error);
+            window.ErrorHandler.error(`admin-lab-system.addItem(${collection})`, error);
             this.showNotification(`❌ Erreur: ${error.message}`, 'error');
         }
     }
@@ -573,7 +573,7 @@ class ContentManager {
             );
             this.showNotification(`✅ ${collection} supprimé`, 'success');
         } catch (error) {
-            console.error(`❌ Erreur suppression ${collection}:`, error);
+            window.ErrorHandler.error(`admin-lab-system.deleteItem(${collection})`, error);
             this.showNotification(`❌ Erreur: ${error.message}`, 'error');
         }
     }
@@ -588,6 +588,7 @@ class ContentManager {
             );
             this.showNotification(`✅ Article ${currentState ? 'publié' : 'dépublié'}`, 'success');
         } catch (error) {
+            window.ErrorHandler.error('admin-lab-system.togglePublish', error);
             this.showNotification(`❌ Erreur: ${error.message}`, 'error');
         }
     }

@@ -95,7 +95,7 @@ async function initializeApp() {
         console.log('✅ Firebase is available! Initializing filters...');
         initFilterButtons();
     } else {
-        console.error('❌ Firebase not available even after waiting!');
+        window.ErrorHandler.warning('script.initializeApp', new Error('Firebase not available after waiting'));
     }
     
     console.log('✅ script.js initialization complete');
@@ -111,8 +111,7 @@ async function initializeApp() {
     initSmartHeaderScroll();
     
     } catch (error) {
-        if (window.logError) window.logError('initializeApp', error);
-        console.error('❌ Erreur lors de l\'initialisation:', error);
+        window.ErrorHandler.error('script.initializeApp', error);
     }
 }
 
@@ -266,7 +265,7 @@ function initFilterButtons() {
     console.log('📍 Filter container found:', !!filterContainer);
     
     if (!filterContainer) {
-        console.error('❌ .filter-buttons container not found');
+        window.ErrorHandler.warning('script.initFilterButtons', new Error('.filter-buttons container not found'));
         console.log('📸 All divs with "filter" in class:', 
             Array.from(document.querySelectorAll('[class*="filter"]')).map(el => ({
                 tag: el.tagName,
@@ -283,7 +282,7 @@ function initFilterButtons() {
     );
     
     if (filterButtons.length === 0) {
-        console.error('❌ No filter buttons found inside container');
+        window.ErrorHandler.warning('script.initFilterButtons', new Error('No filter buttons found inside container'));
         return;
     }
 

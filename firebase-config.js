@@ -45,22 +45,10 @@ const el = {
   closeModal: document.getElementById('close-modal')
 };
 
-// Gestion d'erreurs globale
-window.appErrors = [];
-window.logError = function(context, error) {
-  const errorObj = {
-    timestamp: new Date().toISOString(),
-    context: context,
-    message: error.message || String(error),
-    stack: error.stack || ''
-  };
-  window.appErrors.push(errorObj);
-  console.error(`[${context}]`, error);
-  // Garder seulement les 50 derniers erreurs en mémoire
-  if (window.appErrors.length > 50) {
-    window.appErrors.shift();
-  }
-};
+// ✅ Gestion d'erreurs centralisée via error-handler.js
+// Les lignes suivantes sont maintenant obsolètes mais conservées pour compatibilité:
+// - window.appErrors[] → ErrorHandler.getErrors()
+// - window.logError() → ErrorHandler.error()
 
 // Exposer les fonctions Firestore globalement pour les scripts non-module
 window.firebaseDb = db;

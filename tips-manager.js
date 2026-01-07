@@ -379,8 +379,8 @@ window.TipsManager = {
             
             this.loadTipsFromFirebase();
         } catch (error) {
-            console.error('❌ Erreur publication:', error);
-            alert('❌ Erreur : ' + error.message);
+            window.ErrorHandler.error('tips-manager.publishTip', error);
+            window.NotificationSystem.error('❌ Erreur : ' + error.message, 4000);
         }
     },
 
