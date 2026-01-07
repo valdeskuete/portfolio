@@ -25,3 +25,27 @@ Code quality, security, performance, backward compatibility validated
 **Total New Code:** 980 lines (error-handler, form-handler, firestore-listener, app-namespace, index-modules)
 
 **Status:** ✅ PRODUCTION READY
+
+## 🔥 HOTFIX: CV-Automatique Mobile Responsive
+### Script Loading Order - ✅ FIXED
+- Module Firebase init → script.js → firebase-cv-config.js
+- All 30+ functions exposed to window for onclick handlers
+- Removed duplicate declarations + async firebaseDb waiting
+
+### Mobile Responsive Design - ✅ IMPLEMENTED
+- Created style-responsive.css (400+ lines)
+- Mobile-first: 320px → Tablet → Desktop
+- A4 format guaranteed (210mm x 297mm)
+- Sidebar transforms to fixed overlay on mobile with toggle button
+- Min font sizes with clamp() for readability guarantee
+- Touch targets 44x44px minimum (WCAG 2.1)
+- Dark/Light mode + Print styles + Notched device support
+- Landscape optimization + Reduced motion support
+
+**Features:**
+✅ Dashboard visible on mobile (sidebar overlay)
+✅ A4 format on all screens (portrait)
+✅ Modern responsive design
+✅ Guaranteed readable fonts
+✅ Perfect accessibility (WCAG 2.1)
+✅ Touch-friendly buttons
