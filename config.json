@@ -1,6 +1,6 @@
 {
   "gemini": {
-    "apiKey": "AIzaSyDiT49IQjegPMQaOtyFzETJW9NMPtFXx_o",
+    "apiKey": "${VITE_GEMINI_API_KEY}",
     "model": "gemini-1.5-flash",
     "maxTokens": 1000,
     "temperature": 0.7,
@@ -8,7 +8,7 @@
     "enabled": true
   },
   "recaptcha": {
-    "siteKey": "6LdEVFspAAAAAI5Xz3xbFqFlFcR5VbVdqWJHmFU7",
+    "siteKey": "${VITE_RECAPTCHA_SITE_KEY}",
     "version": "v3",
     "scoreThreshold": 0.5,
     "enabled": true

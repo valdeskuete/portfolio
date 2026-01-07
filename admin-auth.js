@@ -20,67 +20,48 @@ const AdminAuth = {
     CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
 
     // Vérifier si l'utilisateur actuel est un administrateur
-    // Priorité: 1. Role Firestore 2. Email fallback
+    // SIMPLIFIÉ: 2 niveaux seulement (Firestore + Email fallback)
     async isAdminUser() {
         try {
             if (!window.auth?.currentUser) {
-                console.log('❌ [AdminAuth] No authenticated user');
                 return false;
             }
 
             const userId = window.auth.currentUser.uid;
             const userEmail = window.auth.currentUser.email;
-
-            // 🔄 Vérifier le cache
             const now = Date.now();
+
+            // 1️⃣ Vérifier le cache (5 min)
             if (this.roleCache && (now - this.roleCacheTime < this.CACHE_DURATION)) {
-                console.log('📦 [AdminAuth] Using cached role:', this.roleCache);
                 return this.roleCache === 'admin';
             }
 
-            // 🔍 Vérifier le role dans Firestore
-            if (window.db && window.doc && window.getDoc) {
-                try {
-                    const userRef = window.doc(window.db, 'users', userId);
-                    const userSnap = await window.getDoc(userRef);
-                    
-                    if (userSnap.exists()) {
-                        const userData = userSnap.data();
-                        const role = userData?.role;
-                        
-                        // Cache le role
-                        this.roleCache = role;
-                        this.roleCacheTime = now;
-                        
-                        if (role === 'admin') {
-                            console.log('✅ [AdminAuth] Admin user verified via Firestore:', userEmail);
-                            return true;
-                        } else {
-                            console.log('👤 [AdminAuth] Regular user:', userEmail, '- Role:', role);
-                            return false;
-                        }
-                    }
-                } catch (error) {
-                    console.warn('⚠️ [AdminAuth] Could not read Firestore role:', error);
-                    // Fallback à l'email check
+            // 2️⃣ Vérifier Firestore role
+            try {
+                const userRef = window.doc(window.db, 'users', userId);
+                const userSnap = await window.getDoc(userRef);
+                
+                if (userSnap.exists() && userSnap.data().role === 'admin') {
+                    this.roleCache = 'admin';
+                    this.roleCacheTime = now;
+                    console.log('✅ [AdminAuth] Admin via Firestore:', userEmail);
+                    return true;
                 }
+            } catch (error) {
+                console.warn('⚠️ [AdminAuth] Firestore unavailable, using email fallback');
             }
 
-            // 📧 Fallback: vérifier email
-            const isAdminEmail = this.ADMIN_EMAILS.includes(userEmail);
-            if (isAdminEmail) {
-                console.log('✅ [AdminAuth] Admin user verified via email fallback:', userEmail);
-                this.roleCache = 'admin';
-                this.roleCacheTime = now;
-                return true;
-            } else {
-                console.warn('⚠️ [AdminAuth] Non-admin user attempted access:', userEmail);
-                this.roleCache = 'user';
-                this.roleCacheTime = now;
-                return false;
+            // 3️⃣ Fallback: Email check
+            const isAdmin = this.ADMIN_EMAILS.includes(userEmail);
+            this.roleCache = isAdmin ? 'admin' : 'user';
+            this.roleCacheTime = now;
+            
+            if (isAdmin) {
+                console.log('✅ [AdminAuth] Admin via email fallback:', userEmail);
             }
+            return isAdmin;
         } catch (error) {
-            console.error('❌ [AdminAuth] Error checking admin status:', error);
+            console.error('❌ [AdminAuth] Error checking admin:', error);
             return false;
         }
     },

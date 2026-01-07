@@ -16,6 +16,12 @@ let bodyFontSize = 13;
 let isMobileOpen = false;
 let resizeTimeout;
 
+// Page management state
+let currentPage = 1;
+let totalPages = 1;
+let isAutoPageMode = true;
+let pagesData = []; // Array to store data for each page
+
 let cvData = {
     fullName: '',
     jobTitle: '',
@@ -1069,6 +1075,11 @@ function renderPreview() {
     
     // Auto-adjust zoom for mobile
     adjustZoomForScreen();
+    
+    // Detect page overflow in auto mode
+    if (isAutoPageMode) {
+        setTimeout(detectPageOverflow, 50);
+    }
 }
 
 // ===== SMART ZOOM FOR RESPONSIVE =====
@@ -1851,6 +1862,114 @@ function applyZoom() {
     sessionStorage.setItem('cv-zoom', zoomLevel);
 }
 
+// ===== PAGE MANAGEMENT =====
+function addPage() {
+    if (!isAutoPageMode) {
+        totalPages++;
+        currentPage = totalPages;
+        updatePageIndicator();
+        showToast(`Page ${totalPages} ajoutée`, 'success');
+        updatePreview();
+    } else {
+        showToast('Mode automatique activé - les pages sont gérées automatiquement', 'info');
+    }
+}
+
+function removePage() {
+    if (!isAutoPageMode) {
+        if (totalPages > 1) {
+            totalPages--;
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            updatePageIndicator();
+            showToast(`Page supprimée - ${totalPages} pages restantes`, 'success');
+            updatePreview();
+        } else {
+            showToast('Impossible de supprimer la dernière page', 'warning');
+        }
+    } else {
+        showToast('Mode automatique activé - les pages sont gérées automatiquement', 'info');
+    }
+}
+
+function toggleAutoPage() {
+    isAutoPageMode = !isAutoPageMode;
+    const btn = document.getElementById('autoPageBtn');
+    
+    if (isAutoPageMode) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fas fa-magic"></i><span>Auto</span>';
+        showToast('Mode automatique activé', 'info');
+        // Reset to single page in auto mode
+        totalPages = 1;
+        currentPage = 1;
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fas fa-hand-pointer"></i><span>Manuel</span>';
+        showToast('Mode manuel activé - vous pouvez ajouter/supprimer des pages', 'info');
+    }
+    
+    updatePageIndicator();
+}
+
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        updatePageIndicator();
+        updatePreview();
+    }
+}
+
+function nextPage() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        updatePageIndicator();
+        updatePreview();
+    }
+}
+
+function updatePageIndicator() {
+    const indicator = document.getElementById('currentPageDisplay');
+    if (indicator) {
+        indicator.textContent = `Page ${currentPage}/${totalPages}`;
+    }
+}
+
+// ===== AUTO-PAGE DETECTION =====
+function detectPageOverflow() {
+    if (!isAutoPageMode) return;
+    
+    const preview = document.getElementById('cvPreview');
+    if (!preview) return;
+    
+    // Calculate content height vs A4 height
+    const contentHeight = preview.scrollHeight;
+    const a4Height = 297 * 3.78; // Convert mm to pixels (approx)
+    const maxContentHeight = a4Height * 0.85; // 85% of page height
+    
+    if (contentHeight > maxContentHeight) {
+        // Content overflows, split into multiple pages
+        const overflowRatio = contentHeight / maxContentHeight;
+        const newPageCount = Math.ceil(overflowRatio);
+        
+        if (newPageCount !== totalPages) {
+            totalPages = newPageCount;
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            updatePageIndicator();
+        }
+    } else {
+        // Content fits on one page
+        if (totalPages > 1) {
+            totalPages = 1;
+            currentPage = 1;
+            updatePageIndicator();
+        }
+    }
+}
+
 // ===== NAVIGATION =====
 function goBackToDashboard() {
     // Save before leaving
@@ -1871,4 +1990,3 @@ function goBackToDashboard() {
         window.location.href = 'dashboard.html';
     }
 }
-

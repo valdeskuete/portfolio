@@ -1,5 +1,8 @@
 {
   "projects": {
     "default": "valde-tech"
+  },
+  "hosting": {
+    "default": "valde-tech"
   }
 }

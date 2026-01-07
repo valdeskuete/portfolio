@@ -380,6 +380,83 @@
                 </div>
             </div>
         </main>
+
+        <!-- BARRE D'OUTILS MODERNE (STYLE PUBLISHER) -->
+        <div class="modern-toolbar" id="modernToolbar">
+            <!-- Section Navigation Rapide -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn active" data-tab="content" onclick="switchTab('content')" title="Contenu">
+                        <i class="fas fa-edit"></i>
+                        <span>Contenu</span>
+                    </button>
+                    <button class="toolbar-btn" data-tab="design" onclick="switchTab('design')" title="Design">
+                        <i class="fas fa-palette"></i>
+                        <span>Design</span>
+                    </button>
+                    <button class="toolbar-btn" data-tab="export" onclick="switchTab('export')" title="Export">
+                        <i class="fas fa-download"></i>
+                        <span>Export</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Gestion des Pages -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="addPage()" title="Ajouter une page">
+                        <i class="fas fa-plus"></i>
+                        <span>Ajouter</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="removePage()" title="Supprimer la page">
+                        <i class="fas fa-trash"></i>
+                        <span>Supprimer</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleAutoPage()" title="Mode auto/manual" id="autoPageBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>Auto</span>
+                    </button>
+                </div>
+                <div class="page-indicator">
+                    <span id="currentPageDisplay">Page 1/1</span>
+                </div>
+            </div>
+
+            <!-- Section Zoom et Navigation Pages -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="previousPage()" title="Page précédente">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="zoomOut()" title="Zoom arrière">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="resetZoom()" title="Zoom normal">
+                        <span id="zoomLevelDisplay">100%</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="zoomIn()" title="Zoom avant">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="nextPage()" title="Page suivante">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Actions Rapides -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn primary" onclick="exportPDF()" title="Exporter PDF">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>PDF</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleSidebar()" title="Menu" id="menuToggleToolbar">
+                        <i class="fas fa-bars"></i>
+                        <span>Menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -393,6 +470,9 @@
     
     <!-- LOADER OPTIMISÉ -->
     <script src="loader-optimized.js"></script>
+    
+    <!-- ===== FIREBASE CV CONFIG - Charger avant script.js ===== -->
+    <script src="firebase-cv-config.js"></script>
     
     <!-- FIREBASE INITIALIZATION MODULE -->
     <script type="module">

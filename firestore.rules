@@ -22,12 +22,13 @@ service cloud.firestore {
       
       // Utilisateur crée son profil à l'inscription
       allow create: if request.auth.uid == userId &&
-                       request.resource.data.role == 'user' &&
-                       request.resource.data.email == request.auth.token.email;
+                        request.resource.data.role == 'user' &&
+                        request.resource.data.email == request.auth.token.email;
       
       // Utilisateur peut mettre à jour son propre profil (sauf le role)
+      // Vérifier que le role n'a pas changé
       allow update: if request.auth.uid == userId && 
-                       !('role' in request.resource.data.diff().changedKeys());
+                        request.resource.data.role == resource.data.role;
       
       // Admin peut modifier les roles
       allow update: if isAdmin();
@@ -46,7 +47,7 @@ service cloud.firestore {
       // N'importe quel utilisateur authentifié peut créer un log
       // (le client-side valide le contenu)
       allow create: if request.auth != null &&
-                       request.resource.data.keys().hasAll(['uid', 'email', 'action', 'timestamp']);
+                        request.resource.data.keys().hasAll(['uid', 'email', 'action', 'timestamp']);
       
       // Admin peut supprimer les vieux logs (archivage)
       allow delete: if isAdmin();
@@ -108,7 +109,7 @@ service cloud.firestore {
     // ==================== CONSEILS / TIPS ====================
     // Les conseils sont publics en lecture
     // Document structure: { titre: string, categorie: enum(os|hardware|security|network|software), 
-    //                       difficulte: enum(debutant|intermediaire|avance), description: string, date: timestamp }
+    //                        difficulte: enum(debutant|intermediaire|avance), description: string, date: timestamp }
     match /tips/{document=**} {
       allow read: if true;
       // Seulement l'admin peut gérer

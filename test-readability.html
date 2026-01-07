@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Lisibilité - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Test spécifique pour vérifier les améliorations */
+        .test-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            border-color: var(--main-color);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .test-form {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .test-form input,
+        .test-form textarea {
+            width: 100%;
+            padding: 1.6rem 1.8rem;
+            font-size: 1.6rem;
+            background: var(--bg-color);
+            border: 2px solid var(--border-medium);
+            border-radius: 1rem;
+            margin: 0.7rem 0;
+            color: var(--text-primary);
+        }
+        
+        .test-form input:focus,
+        .test-form textarea:focus {
+            border-color: var(--main-color);
+            box-shadow: var(--focus-ring);
+            outline: none;
+        }
+        
+        .test-btn {
+            padding: 1.2rem 3rem;
+            background: var(--main-color);
+            color: white;
+            border: none;
+            border-radius: 3rem;
+            font-size: 1.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 52px;
+        }
+        
+        .test-btn:hover {
+            background: var(--main-color-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .test-text-large {
+            font-size: 1.8rem;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            margin: 1rem 0;
+        }
+        
+        .test-text-large strong {
+            color: var(--main-color);
+            font-weight: 600;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .test-header h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .test-header p {
+            font-size: 2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .test-badge {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-tertiary);
+            color: var(--main-color);
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .test-info {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            border-left: 4px solid var(--main-color);
+            margin: 1rem 0;
+        }
+        
+        .test-info h3 {
+            color: var(--main-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+        }
+        
+        .test-info p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-section">
+        <div class="test-header">
+            <h1>Test de Lisibilité</h1>
+            <p>Cette page teste les améliorations de lisibilité sur fond blanc et mobile. Les éléments ci-dessous devraient être parfaitement lisibles sur tous les appareils.</p>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-card">
+                <h3 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-primary);">Carte Service</h3>
+                <p class="test-text-large">
+                    <strong>Maintenance Informatique:</strong> Expertise complète du hardware avec diagnostic précis et remplacement de composants. 
+                    Solutions professionnelles pour tous vos besoins IT.
+                </p>
+                <div class="test-badge">Professionnel</div>
+                <div class="test-badge">Certifié</div>
+            </div>
+
+            <div class="test-card">
+                <h3 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-primary);">Projet Portfolio</h3>
+                <p class="test-text-large">
+                    <strong>Défi:</strong> Optimisation des performances d'une infrastructure existante.
+                </p>
+                <p class="test-text-large">
+                    <strong>Résultat:</strong> Réduction de 60% du temps de chargement et amélioration de l'expérience utilisateur.
+                </p>
+            </div>
+        </div>
+
+        <div class="test-form">
+            <h2 style="font-size: 2.8rem; margin-bottom: 1.5rem; color: var(--text-primary);">Formulaire de Contact</h2>
+            
+            <label for="test-name">Nom complet</label>
+            <input type="text" id="test-name" placeholder="Votre nom complet" required>
+            
+            <label for="test-email">Email professionnel</label>
+            <input type="email" id="test-email" placeholder="votre.email@entreprise.com" required>
+            
+            <label for="test-message">Votre message</label>
+            <textarea id="test-message" placeholder="Décrivez votre projet ou votre besoin..." rows="5" required></textarea>
+            
+            <button class="test-btn" type="button">Envoyer le message</button>
+        </div>
+
+        <div class="test-info">
+            <h3>Avantages des Améliorations</h3>
+            <p>✓ Tailles de texte augmentées pour une meilleure lisibilité<br>
+            ✓ Contraste renforcé sur fond blanc<br>
+            ✓ Espacement amélioré entre les lignes et éléments<br>
+            ✓ Focus visibles pour l'accessibilité<br>
+            ✓ Design responsive optimisé pour mobile<br>
+            ✓ Bordures et ombres plus visibles</p>
+        </div>
+
+        <div class="test-info">
+            <h3>Couleurs et Thème</h3>
+            <p>Le site s'adapte automatiquement au thème de votre système (clair/sombre). 
+            En mode clair, le cyan est plus foncé (#005a70) pour garantir un contraste optimal sur fond blanc.</p>
+        </div>
+    </div>
+
+    <script>
+        // Test des interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ CSS amélioré chargé');
+            console.log('Variables CSS:', getComputedStyle(document.documentElement).getPropertyValue('--main-color'));
+            console.log('Taille police base:', getComputedStyle(document.documentElement).getPropertyValue('--font-size-p'));
+            console.log('Hauteur ligne base:', getComputedStyle(document.documentElement).getPropertyValue('--line-height-base'));
+        });
+    </script>
+</body>
+</html>
