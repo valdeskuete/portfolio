@@ -663,6 +663,12 @@
             e.preventDefault();
             clearErrors();
 
+            // Vérifier que Firebase est initialisé
+            if (!window.auth || !window.signInWithEmailAndPassword) {
+                showToast('Firebase n\'est pas encore initialisé. Veuillez patienter...', 'error');
+                return;
+            }
+
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const btn = document.getElementById('loginBtn');
@@ -707,6 +713,12 @@
         async function handleSignup(e) {
             e.preventDefault();
             clearErrors();
+
+            // Vérifier que Firebase est initialisé
+            if (!window.auth || !window.createUserWithEmailAndPassword) {
+                showToast('Firebase n\'est pas encore initialisé. Veuillez patienter...', 'error');
+                return;
+            }
 
             const firstName = document.getElementById('signupFirstName').value;
             const lastName = document.getElementById('signupLastName').value;
@@ -795,6 +807,12 @@
         async function handleReset(e) {
             e.preventDefault();
             clearErrors();
+
+            // Vérifier que Firebase est initialisé
+            if (!window.auth || !window.sendPasswordResetEmail) {
+                showToast('Firebase n\'est pas encore initialisé. Veuillez patienter...', 'error');
+                return;
+            }
 
             const email = document.getElementById('resetEmail').value.trim();
             const btn = document.getElementById('resetBtn');
