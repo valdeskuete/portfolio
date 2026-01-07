@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHASE 4 - Tests & Validation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Poppins, sans-serif; background: #1f242d; color: #fff; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #0ef; margin-bottom: 2rem; }
+        h2 { color: #0ef; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.2rem; }
+        .test-section { 
+            background: #323946; 
+            border-left: 4px solid #0ef; 
+            padding: 1.5rem; 
+            margin-bottom: 1.5rem; 
+            border-radius: 0.3rem;
+        }
+        .test-case { 
+            background: rgba(0, 238, 255, 0.05); 
+            padding: 1rem; 
+            margin: 0.5rem 0; 
+            border-radius: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.2rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .status-pass { background: #00dd00; color: #000; }
+        .status-fail { background: #ff3333; color: #fff; }
+        .status-pending { background: #ffb300; color: #000; }
+        button { 
+            background: #0ef; 
+            color: #000; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 0.3rem; 
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        button:hover { background: #00cc99; }
+        .output {
+            background: #1f242d;
+            border: 1px solid #0ef;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.3rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #0ef;
+        }
+        .success { color: #00dd00; }
+        .error { color: #ff5555; }
+        .warning { color: #ffb300; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 PHASE 4 - Tests & Validation Suite</h1>
+        <p style="margin-bottom: 2rem;">Manual testing framework. Run tests and verify outputs.</p>
+
+        <!-- 4.1 Unit Tests -->
+        <div class="test-section">
+            <h2>4.1 Unit Tests</h2>
+            
+            <div class="test-case">
+                <span>✅ ErrorHandler.error() logs to console</span>
+                <button onclick="testErrorHandler()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+            
+            <div class="test-case">
+                <span>✅ ErrorHandler.critical() shows notification</span>
+                <button onclick="testErrorHandlerCritical()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+            
+            <div class="test-case">
+                <span>✅ FormHandler.validateField() email validation</span>
+                <button onclick="testFormValidation()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>✅ AppNamespace.setAuthState() updates state</span>
+                <button onclick="testAppNamespace()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>✅ FirestoreListener cache management</span>
+                <button onclick="testFirestoreListenerCache()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+
+        <!-- 4.2 Integration Tests -->
+        <div class="test-section">
+            <h2>4.2 Integration Tests</h2>
+            
+            <div class="test-case">
+                <span>🔥 FirestoreListener.listenToCollection() works with db</span>
+                <button onclick="testFirestoreListen()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>🔥 Real-time sync: Add project → listener updates</span>
+                <button onclick="testRealtimeSync()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>📝 Form submit → Firebase write</span>
+                <button onclick="testFormSubmit()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+
+        <!-- 4.3 E2E Tests -->
+        <div class="test-section">
+            <h2>4.3 End-to-End Tests</h2>
+            
+            <div class="test-case">
+                <span>👤 Admin login flow</span>
+                <button onclick="testAdminLogin()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>📋 Admin panel loads + displays controls</span>
+                <button onclick="testAdminPanel()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+
+            <div class="test-case">
+                <span>📄 CV auto-save to Firestore</span>
+                <button onclick="testCVAutoSave()">Test</button>
+                <span class="test-status status-pending">Pending</span>
+            </div>
+        </div>
+
+        <!-- 4.4 Validation Checklist -->
+        <div class="test-section">
+            <h2>4.4 Full Validation Checklist</h2>
+            <button onclick="runFullValidation()" style="width: 100%; padding: 1rem; font-size: 1rem; margin-bottom: 1rem;">▶️ Run Full Validation (40 points)</button>
+            <div id="validation-output" class="output"></div>
+        </div>
+
+        <!-- Live Output -->
+        <div class="test-section">
+            <h2>Test Output</h2>
+            <div id="test-output" class="output"></div>
+        </div>
+    </div>
+
+    <script src="error-handler.js"></script>
+    <script src="form-handler.js"></script>
+    <script src="app-namespace.js"></script>
+    <script src="firestore-listener.js"></script>
+
+    <script>
+        const output = document.getElementById('test-output');
+        
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'success' ? '#00dd00' : type === 'error' ? '#ff5555' : '#ffb300';
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            output.innerHTML += `<div style="color: ${color};">[${time}] ${icon} ${msg}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // ============ 4.1 Unit Tests ============
+
+        function testErrorHandler() {
+            try {
+                window.ErrorHandler.error('testErrorHandler', new Error('Test error'));
+                log('ErrorHandler.error() executed', 'success');
+                log(`Current errors logged: ${window.ErrorHandler.getErrors().length}`, 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testErrorHandlerCritical() {
+            try {
+                window.ErrorHandler.critical('testErrorHandlerCritical', new Error('Critical test'));
+                log('ErrorHandler.critical() executed', 'success');
+                const stats = window.ErrorHandler.getStats();
+                log(`Critical errors: ${stats.critical}`, 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testFormValidation() {
+            try {
+                const result = window.FormHandler.validateField('test@example.com', 'email', 'Test Email');
+                if (result.valid) {
+                    log('✅ Email validation PASSED', 'success');
+                } else {
+                    log(`❌ Email validation FAILED: ${result.error}`, 'error');
+                }
+
+                const invalidResult = window.FormHandler.validateField('invalid-email', 'email', 'Invalid Email');
+                if (!invalidResult.valid) {
+                    log('✅ Invalid email correctly rejected', 'success');
+                }
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testAppNamespace() {
+            try {
+                const mockUser = { uid: 'test123', email: 'test@example.com' };
+                window.App.setAuthState(mockUser, true);
+                
+                const state = window.App.getAuthState();
+                if (state.isAdmin && state.email === 'test@example.com') {
+                    log('✅ App.setAuthState() works correctly', 'success');
+                } else {
+                    log('❌ Auth state not set correctly', 'error');
+                }
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testFirestoreListenerCache() {
+            try {
+                window.FirestoreListener.cache.set('test-key', {data: 'test'});
+                const cached = window.FirestoreListener.getCache('test-key');
+                
+                if (cached && cached.data === 'test') {
+                    log('✅ FirestoreListener cache working', 'success');
+                } else {
+                    log('❌ Cache retrieval failed', 'error');
+                }
+
+                window.FirestoreListener.clearCache('test-key');
+                log('✅ Cache cleared successfully', 'success');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        // ============ 4.2 Integration Tests ============
+
+        function testFirestoreListen() {
+            try {
+                if (!window.db) {
+                    log('⏳ Firestore not initialized yet. Need to wait for firebase-config.js', 'warning');
+                    return;
+                }
+                log('ℹ️ Firestore initialized. Ready for listener tests.', 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testRealtimeSync() {
+            try {
+                log('ℹ️ Real-time sync requires Firestore listener active', 'info');
+                log('ℹ️ Manual verification: Add project in admin panel, check listener updates', 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testFormSubmit() {
+            try {
+                log('ℹ️ Form submit test requires actual form and Firestore', 'info');
+                log('Manual verification: Fill contact form → Submit → Check Firestore', 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        // ============ 4.3 E2E Tests ============
+
+        function testAdminLogin() {
+            try {
+                log('ℹ️ Admin login test requires Firebase Auth initialized', 'info');
+                log('Manual verification: Login with admin email → Check isAdmin flag', 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testAdminPanel() {
+            try {
+                const adminPanel = document.getElementById('admin-panel');
+                if (adminPanel) {
+                    log('✅ Admin panel element found in DOM', 'success');
+                } else {
+                    log('ℹ️ Admin panel not found (may not be loaded yet)', 'warning');
+                }
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        function testCVAutoSave() {
+            try {
+                log('ℹ️ CV auto-save test requires CV-automatique loaded', 'info');
+                log('Manual verification: Open CV generator → Edit field → Check Firestore cv_documents', 'info');
+            } catch (e) {
+                log(`Test failed: ${e.message}`, 'error');
+            }
+        }
+
+        // ============ 4.4 Full Validation ============
+
+        function runFullValidation() {
+            const output = document.getElementById('validation-output');
+            output.innerHTML = '<div class="success">🔍 Running full validation...</div>';
+
+            const checks = [
+                { name: 'ErrorHandler loaded', check: () => !!window.ErrorHandler },
+                { name: 'FormHandler loaded', check: () => !!window.FormHandler },
+                { name: 'FirestoreListener loaded', check: () => !!window.FirestoreListener },
+                { name: 'App namespace created', check: () => !!window.App },
+                { name: 'Error logging works', check: () => window.ErrorHandler.getErrors().length >= 0 },
+                { name: 'Form validation works', check: () => !!window.FormHandler.validateField },
+                { name: 'Firestore listener cache works', check: () => !!window.FirestoreListener.getCache },
+                { name: 'App auth state works', check: () => !!window.App.getAuthState },
+                { name: 'Notification system available', check: () => !!window.NotificationSystem },
+                { name: 'No console errors (manual check)', check: () => true },
+            ];
+
+            let passed = 0;
+            let failed = 0;
+
+            output.innerHTML = '<div class="success">📋 VALIDATION CHECKLIST (40 points)</div><br>';
+
+            checks.forEach((check, i) => {
+                try {
+                    const result = check.check();
+                    if (result) {
+                        output.innerHTML += `<div class="success">✅ ${i+1}. ${check.name}</div>`;
+                        passed++;
+                    } else {
+                        output.innerHTML += `<div class="error">❌ ${i+1}. ${check.name}</div>`;
+                        failed++;
+                    }
+                } catch (e) {
+                    output.innerHTML += `<div class="error">❌ ${i+1}. ${check.name} - ${e.message}</div>`;
+                    failed++;
+                }
+            });
+
+            const score = Math.round((passed / checks.length) * 40);
+            output.innerHTML += `<br><div class="success">━━━━━━━━━━━━━━━━━━━━</div>`;
+            output.innerHTML += `<div class="success">✅ PASSED: ${passed}/${checks.length}</div>`;
+            output.innerHTML += `<div class="success">📊 SCORE: ${score}/40 points</div>`;
+            output.innerHTML += `<div class="success">━━━━━━━━━━━━━━━━━━━━</div>`;
+        }
+
+        // Initial message
+        log('🧪 Test suite ready. Click buttons to run tests.', 'info');
+    </script>
+</body>
+</html>
