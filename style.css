@@ -299,7 +299,6 @@ span { color: var(--main-color); }
 .header.scrolled {
     padding: 0.8rem 5%;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
     transition: .3s;
     box-sizing: border-box;
     overflow: visible;
@@ -1404,8 +1403,6 @@ input:focus, textarea:focus, select:focus {
     background: var(--input-bg);
     box-shadow: 0 0 10px var(--shadow-rgba);
 }
-    box-shadow: 0 0 1rem rgba(0, 238, 255, 0.2);
-}
 
 /* Focus visible pour accessibilité */
 button:focus-visible,
@@ -1963,13 +1960,8 @@ textarea { resize: none; height: 18rem; }
         border: 1px solid var(--main-color);
     }
     
-    .navbar-chat-btn {
+.navbar-chat-btn {
         display: none !important;
-    }
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 0.8rem;
     }
     
     .navbar a:hover,
@@ -2475,7 +2467,7 @@ img.loaded {
     }
 }
 
-/* ===== BOTPRESS CHAT WIDGET - FLOATING BUBBLE (CLASSIC) ===== */
+/* ===== BOTPRESS CHAT WIDGET - CORRIGÉ POUR MEILLEUR AFFICHAGE ===== */
 
 /* Conteneur principal - position fixed en bas à droite */
 .bp-widget-wrapper {
@@ -2493,20 +2485,33 @@ img.loaded {
     bottom: 20px !important;
     right: 20px !important;
     z-index: 400 !important;
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(0, 238, 255, 0.3) !important;
+    transition: transform 0.3s ease !important;
 }
 
-/* Chat window - quand ouvert, prend la place et passe au premier plan */
+.bp-widget-wrapper .bpw-chat-bubble:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Chat window - CORRIGÉ pour éviter le cache */
 .bpw-layout {
     position: fixed !important;
     z-index: 999999 !important;
-    bottom: 20px !important;
+    bottom: 90px !important;  /* Au-dessus du bouton */
     right: 20px !important;
-    width: 450px !important;
-    max-width: 90vw !important;
-    height: 600px !important;
-    max-height: 80vh !important;
+    width: 380px !important;
+    max-width: calc(100vw - 40px) !important;
+    height: 500px !important;
+    max-height: calc(100vh - 120px) !important;
     border-radius: 12px !important;
-    box-shadow: 0 5px 40px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    overflow: hidden !important;
 }
 
 /* Assurez-vous que tout est visible */
@@ -2518,19 +2523,31 @@ img.loaded {
     display: block !important;
 }
 
-/* Mobile - adapter le chat */
+/* Mobile - adapter le chat pour éviter le cache */
 @media (max-width: 768px) {
     .bp-widget-wrapper .bpw-chat-bubble {
         bottom: 20px !important;
         right: 20px !important;
+        width: 50px !important;
+        height: 50px !important;
     }
     
     .bpw-layout {
-        width: calc(100vw - 40px) !important;
-        max-width: calc(100vw - 40px) !important;
-        height: 70vh !important;
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        height: 65vh !important;
         bottom: 80px !important;
+        right: 10px !important;
+        left: 10px !important;
     }
 }
 
+/* Petit écran - mode ultra compact */
+@media (max-width: 480px) {
+    .bpw-layout {
+        height: 60vh !important;
+        width: calc(100vw - 10px) !important;
+        bottom: 70px !important;
+    }
+}
 

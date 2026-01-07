@@ -115,6 +115,46 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // ==================== NOUVELLES COLLECTIONS SCALABLES ====================
+    
+    // STATISTIQUES - Chiffres clés et réalisations
+    // Structure: { number: string, label: string, icon: string, color: string, priority: number }
+    match /statistiques/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // LABORATOIRE IT - Projets techniques avancés
+    // Structure: { title: string, category: string, description: string, technologies: array, 
+    //              image: string, demo: string, github: string, priority: number }
+    match /laboratoire/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // BLOG - Articles techniques et veille
+    // Structure: { title: string, content: string, excerpt: string, tags: array, 
+    //              image: string, author: string, published: boolean, date: timestamp }
+    match /blog/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // CERTIFICATIONS - Diplômes et certifications
+    // Structure: { name: string, issuer: string, date: timestamp, credential: string, 
+    //              logo: string, level: string }
+    match /certifications/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // PARTENAIRES - Clients et partenaires
+    // Structure: { name: string, logo: string, url: string, category: string, active: boolean }
+    match /partenaires/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // ==================== CONFIG (GEMINI SETTINGS) ====================
     // Paramètres Gemini gérés par admin
     match /config/{document=**} {

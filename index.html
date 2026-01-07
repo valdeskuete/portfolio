@@ -67,6 +67,7 @@
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin-panel-styles.css">
+    <link rel="stylesheet" href="dynamic-sections-styles.css">
 </head>
 <body>
 
@@ -116,7 +117,7 @@
             <span class="lang-switch" style="margin-left: 2rem; color: white; font-size: 1.2rem;">
             </span>
 
-            <a href="#" id="admin-login-link" title="Admin" role="button" aria-label="Accès administrateur"><i class="fa-solid fa-user-shield"></i></a>
+            <button id="admin-login-link" title="Admin" role="button" aria-label="Accès administrateur" style="background: none; border: none; color: var(--text-color); cursor: pointer; font-size: 1.6rem; padding: 0.5rem;"><i class="fa-solid fa-user-shield"></i></button>
         </nav>
     </header>
 
@@ -346,6 +347,75 @@
     </section>
 
 
+    <!-- SECTION: NOS RÉALISATIONS EN CHIFFRES -->
+    <section class="stats-showcase" id="stats-showcase">
+        <h2 class="heading">Nos <span>Réalisations</span></h2>
+        <div class="stats-grid" id="stats-grid-dynamic">
+            <!-- Chargé dynamiquement depuis Firestore -->
+            <div class="stat-card loading">
+                <div class="spinner"></div>
+                <p>Chargement des statistiques...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: LABORATOIRE IT -->
+    <section class="lab" id="lab">
+        <h2 class="heading">Laboratoire <span>IT</span></h2>
+        <p class="section-subtitle">Découvrez nos projets innovants et solutions techniques</p>
+        
+        <div class="lab-filters">
+            <button class="lab-filter active" data-category="all">Tous les projets</button>
+            <button class="lab-filter" data-category="infrastructure">Infrastructure</button>
+            <button class="lab-filter" data-category="securite">Sécurité</button>
+            <button class="lab-filter" data-category="automatisation">Automatisation</button>
+            <button class="lab-filter" data-category="cloud">Cloud & Réseau</button>
+        </div>
+
+        <div class="lab-grid" id="lab-grid-dynamic">
+            <!-- Projets chargés dynamiquement -->
+            <div class="lab-card loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: BLOG TECH -->
+    <section class="blog" id="blog">
+        <h2 class="heading">Blog <span>Technique</span></h2>
+        <p class="section-subtitle">Articles, tutoriels et veille technologique</p>
+        
+        <div class="blog-container" id="blog-container-dynamic">
+            <!-- Articles chargés dynamiquement -->
+            <div class="blog-card loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: CERTIFICATIONS & FORMATIONS -->
+    <section class="certifications" id="certifications">
+        <h2 class="heading">Certifications & <span>Formations</span></h2>
+        <div class="cert-grid" id="cert-grid-dynamic">
+            <!-- Chargé dynamiquement -->
+            <div class="cert-card loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: PARTENAIRES & CLIENTS -->
+    <section class="partners" id="partners">
+        <h2 class="heading">Ils me <span>Font Confiance</span></h2>
+        <div class="partners-grid" id="partners-grid-dynamic">
+            <!-- Logos chargés dynamiquement -->
+            <div class="partner-logo loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: CONSEILS & ASTUCES (EXISTANTE) -->
     <section class="tips" id="tips">
         <h2 class="heading">Conseils & <span>Astuces</span></h2>
         
@@ -370,6 +440,33 @@
         </div>
         
         <div class="tips-container" id="tips-display"></div>
+    </section>
+
+    <!-- SECTION: COMMUNAUTÉ & RÉSEAUX -->
+    <section class="community" id="community">
+        <h2 class="heading">Suivez mon <span>Parcours</span></h2>
+        <div class="community-links">
+            <a href="https://github.com/valdeskuete" target="_blank" class="community-card">
+                <i class="fa-brands fa-github"></i>
+                <h3>GitHub</h3>
+                <p>Code source et projets open-source</p>
+            </a>
+            <a href="https://linkedin.com/in/valdes-kuete" target="_blank" class="community-card">
+                <i class="fa-brands fa-linkedin"></i>
+                <h3>LinkedIn</h3>
+                <p>Expériences professionnelles</p>
+            </a>
+            <a href="https://twitter.com/valdestech" target="_blank" class="community-card">
+                <i class="fa-brands fa-twitter"></i>
+                <h3>Twitter</h3>
+                <p>Actualités IT et astuces</p>
+            </a>
+            <a href="https://youtube.com/@valdestech" target="_blank" class="community-card">
+                <i class="fa-brands fa-youtube"></i>
+                <h3>YouTube</h3>
+                <p>Tutoriels et démonstrations</p>
+            </a>
+        </div>
     </section>
 
     <section class="contact" id="contact">
@@ -411,9 +508,9 @@
     </section>
 
     <div id="admin-login-wrapper" style="text-align: center; margin: 30px;">
-        <div id="admin-login-trigger" style="cursor: pointer; color: #555; font-size: 1.4rem; opacity: 0.5;">
+        <button id="admin-login-trigger" style="cursor: pointer; color: #555; font-size: 1.4rem; opacity: 0.5; background: none; border: none; padding: 10px; min-height: auto;">
             <i class="fa-solid fa-lock"></i> Administration
-        </div>
+        </button>
     </div>
 
     <div id="admin-panel" class="admin-section hidden">
@@ -441,6 +538,230 @@
                 <button class="tab-btn" onclick="openTab('tab-tips')" role="tab">💡 Astuces</button>
                 <button class="tab-btn" onclick="openTab('tab-comments')" role="tab">💬 Commentaires</button>
                 <button class="tab-btn" onclick="openTab('tab-reviews')" role="tab">⭐ Avis</button>
+                <button class="tab-btn" onclick="openTab('tab-stats')" role="tab">📊 Stats</button>
+                <button class="tab-btn" onclick="openTab('tab-lab')" role="tab">🔬 Lab</button>
+                <button class="tab-btn" onclick="openTab('tab-blog')" role="tab">📝 Blog</button>
+                <button class="tab-btn" onclick="openTab('tab-certs')" role="tab">🎓 Certifs</button>
+                <button class="tab-btn" onclick="openTab('tab-partners')" role="tab">🤝 Partenaires</button>
+            </div>
+
+            <!-- NOUVEAUX ONGLETS ADMIN SCALABLES -->
+
+            <div id="tab-stats" class="tab-content">
+                <h3>📊 Gérer les Statistiques</h3>
+                <div class="admin-form-grid">
+                    <div class="input-group">
+                        <label>Nombre</label>
+                        <input type="text" id="stat-number" placeholder="+500" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Label</label>
+                        <input type="text" id="stat-label" placeholder="Clients Satisfaits" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Icône (Font Awesome)</label>
+                        <input type="text" id="stat-icon" placeholder="fa-solid fa-users" value="fa-solid fa-chart-line">
+                    </div>
+                    <div class="input-group">
+                        <label>Couleur</label>
+                        <input type="color" id="stat-color" value="#0ef">
+                    </div>
+                    <div class="input-group">
+                        <label>Priorité</label>
+                        <input type="number" id="stat-priority" value="1" min="1" max="10">
+                    </div>
+                </div>
+                <button class="btn" onclick="adminSystem.addItem('stats', {
+                    number: document.getElementById('stat-number').value,
+                    label: document.getElementById('stat-label').value,
+                    icon: document.getElementById('stat-icon').value,
+                    color: document.getElementById('stat-color').value,
+                    priority: parseInt(document.getElementById('stat-priority').value)
+                })">➕ Ajouter Statistique</button>
+                
+                <h3 style="margin-top: 2rem;">Liste des Statistiques</h3>
+                <div id="admin-stats-list" class="admin-grid-list"></div>
+            </div>
+
+            <div id="tab-lab" class="tab-content">
+                <h3>🔬 Laboratoire IT - Nouveau Projet</h3>
+                <div class="admin-form-grid">
+                    <div class="input-group">
+                        <label>Titre</label>
+                        <input type="text" id="lab-title" placeholder="Nom du projet" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Catégorie</label>
+                        <select id="lab-category" required>
+                            <option value="">-- Choisir --</option>
+                            <option value="infrastructure">Infrastructure</option>
+                            <option value="securite">Sécurité</option>
+                            <option value="automatisation">Automatisation</option>
+                            <option value="cloud">Cloud & Réseau</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Technologies (séparées par virgule)</label>
+                        <input type="text" id="lab-technologies" placeholder="Docker, Python, AWS">
+                    </div>
+                    <div class="input-group">
+                        <label>Image URL</label>
+                        <input type="url" id="lab-image" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>Démo URL</label>
+                        <input type="url" id="lab-demo" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>GitHub URL</label>
+                        <input type="url" id="lab-github" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>Priorité</label>
+                        <input type="number" id="lab-priority" value="1" min="1" max="10">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 1rem;">
+                    <label>Description</label>
+                    <textarea id="lab-description" placeholder="Description détaillée du projet..." style="min-height: 100px;"></textarea>
+                </div>
+                <button class="btn" onclick="adminSystem.addItem('lab', {
+                    title: document.getElementById('lab-title').value,
+                    category: document.getElementById('lab-category').value,
+                    description: document.getElementById('lab-description').value,
+                    technologies: document.getElementById('lab-technologies').value.split(',').map(t => t.trim()).filter(t => t),
+                    image: document.getElementById('lab-image').value,
+                    demo: document.getElementById('lab-demo').value,
+                    github: document.getElementById('lab-github').value,
+                    priority: parseInt(document.getElementById('lab-priority').value)
+                })">🚀 Ajouter Projet Lab</button>
+
+                <h3 style="margin-top: 2rem;">Projets du Laboratoire</h3>
+                <div id="admin-lab-list" class="admin-grid-list"></div>
+            </div>
+
+            <div id="tab-blog" class="tab-content">
+                <h3>📝 Blog - Nouvel Article</h3>
+                <div class="admin-form-grid">
+                    <div class="input-group">
+                        <label>Titre</label>
+                        <input type="text" id="blog-title" placeholder="Titre de l'article" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Extrait</label>
+                        <input type="text" id="blog-excerpt" placeholder="Résumé court...">
+                    </div>
+                    <div class="input-group">
+                        <label>Tags (séparés par virgule)</label>
+                        <input type="text" id="blog-tags" placeholder="Sécurité, Windows, Réseau">
+                    </div>
+                    <div class="input-group">
+                        <label>Image URL</label>
+                        <input type="url" id="blog-image" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>Auteur</label>
+                        <input type="text" id="blog-author" value="Valdes Kuete">
+                    </div>
+                    <div class="input-group">
+                        <label>Publier immédiatement</label>
+                        <input type="checkbox" id="blog-published" checked>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 1rem;">
+                    <label>Contenu</label>
+                    <textarea id="blog-content" placeholder="Contenu complet de l'article..." style="min-height: 150px;"></textarea>
+                </div>
+                <button class="btn" onclick="adminSystem.addItem('blog', {
+                    title: document.getElementById('blog-title').value,
+                    content: document.getElementById('blog-content').value,
+                    excerpt: document.getElementById('blog-excerpt').value,
+                    tags: document.getElementById('blog-tags').value.split(',').map(t => t.trim()).filter(t => t),
+                    image: document.getElementById('blog-image').value,
+                    author: document.getElementById('blog-author').value,
+                    published: document.getElementById('blog-published').checked,
+                    date: window.Firebase.serverTimestamp()
+                })">📝 Publier Article</button>
+
+                <h3 style="margin-top: 2rem;">Articles du Blog</h3>
+                <div id="admin-blog-list" class="admin-grid-list"></div>
+            </div>
+
+            <div id="tab-certs" class="tab-content">
+                <h3>🎓 Certifications - Nouvelle Certification</h3>
+                <div class="admin-form-grid">
+                    <div class="input-group">
+                        <label>Nom</label>
+                        <input type="text" id="cert-name" placeholder="Certification XYZ" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Organisme</label>
+                        <input type="text" id="cert-issuer" placeholder="Microsoft, Cisco..." required>
+                    </div>
+                    <div class="input-group">
+                        <label>Date d'obtention</label>
+                        <input type="date" id="cert-date" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Niveau</label>
+                        <input type="text" id="cert-level" placeholder="Professional, Associate...">
+                    </div>
+                    <div class="input-group">
+                        <label>Logo URL</label>
+                        <input type="url" id="cert-logo" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>Credential URL</label>
+                        <input type="url" id="cert-credential" placeholder="https://...">
+                    </div>
+                </div>
+                <button class="btn" onclick="adminSystem.addItem('certs', {
+                    name: document.getElementById('cert-name').value,
+                    issuer: document.getElementById('cert-issuer').value,
+                    date: new Date(document.getElementById('cert-date').value),
+                    level: document.getElementById('cert-level').value,
+                    logo: document.getElementById('cert-logo').value,
+                    credential: document.getElementById('cert-credential').value
+                })">🎓 Ajouter Certification</button>
+
+                <h3 style="margin-top: 2rem;">Certifications</h3>
+                <div id="admin-certs-list" class="admin-grid-list"></div>
+            </div>
+
+            <div id="tab-partners" class="tab-content">
+                <h3>🤝 Partenaires - Nouveau Partenaire</h3>
+                <div class="admin-form-grid">
+                    <div class="input-group">
+                        <label>Nom</label>
+                        <input type="text" id="partner-name" placeholder="Nom du partenaire" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Logo URL</label>
+                        <input type="url" id="partner-logo" placeholder="https://..." required>
+                    </div>
+                    <div class="input-group">
+                        <label>Site Web</label>
+                        <input type="url" id="partner-url" placeholder="https://...">
+                    </div>
+                    <div class="input-group">
+                        <label>Catégorie</label>
+                        <select id="partner-category">
+                            <option value="client">Client</option>
+                            <option value="fournisseur">Fournisseur</option>
+                            <option value="technologie">Technologie</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="adminSystem.addItem('partners', {
+                    name: document.getElementById('partner-name').value,
+                    logo: document.getElementById('partner-logo').value,
+                    url: document.getElementById('partner-url').value,
+                    category: document.getElementById('partner-category').value,
+                    active: true
+                })">🤝 Ajouter Partenaire</button>
+
+                <h3 style="margin-top: 2rem;">Partenaires</h3>
+                <div id="admin-partners-list" class="admin-grid-list"></div>
             </div>
 
             <div id="tab-about" class="tab-content">
@@ -720,5 +1041,145 @@
     <!-- Scripts de maintenance système -->
     <script src="diagnostic.js" defer></script>
     <script src="performance-optimize.js" defer></script>
+    
+    <!-- Système Admin Scalable - Laboratoire IT -->
+    <script src="admin-lab-system.js" defer></script>
+    
+    <!-- Système de Données Démo -->
+    <script src="demo-data-init.js" defer></script>
+    
+    <!-- Intégration du système admin après le chargement du DOM -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialiser le système admin scalable
+            if (typeof initAdminSystem === 'function') {
+                setTimeout(() => {
+                    initAdminSystem();
+                    console.log('🚀 Système admin scalable initialisé');
+                }, 1500); // Attendre que Firebase soit prêt
+            }
+            
+            // Liaison des formulaires admin avec le système
+            const setupAdminIntegration = () => {
+                // Formulaire Statistiques (ancien système - gardé pour compatibilité)
+                const statsForm = document.getElementById('stats-form');
+                if (statsForm) {
+                    statsForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (adminSystem) {
+                            await adminSystem.addItem('stats', {
+                                number: document.getElementById('stat-number').value,
+                                label: document.getElementById('stat-label').value,
+                                icon: document.getElementById('stat-icon')?.value || 'fa-solid fa-chart-line',
+                                color: document.getElementById('stat-color')?.value || '#0ef',
+                                priority: parseInt(document.getElementById('stat-priority')?.value || '1')
+                            });
+                            statsForm.reset();
+                        }
+                    });
+                }
+                
+                // Formulaire Projets (ancien système - gardé pour compatibilité)
+                const projectForm = document.getElementById('project-form');
+                if (projectForm) {
+                    projectForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (window.addDoc && window.db) {
+                            try {
+                                await window.addDoc(window.collection(window.db, "projets"), {
+                                    titre: document.getElementById('p-title').value,
+                                    tag: document.getElementById('p-tag').value,
+                                    challenge: document.getElementById('p-challenge').value,
+                                    solution: document.getElementById('p-solution').value,
+                                    resultat: document.getElementById('p-result').value,
+                                    image: document.getElementById('p-image').value,
+                                    github: document.getElementById('p-github').value || "",
+                                    demo: document.getElementById('p-demo').value || "",
+                                    likes: 0,
+                                    date: window.serverTimestamp()
+                                });
+                                projectForm.reset();
+                                alert("✅ Projet publié avec succès !");
+                            } catch (error) {
+                                console.error("❌ Erreur publication projet:", error);
+                                alert("❌ Erreur lors de la publication");
+                            }
+                        }
+                    });
+                }
+                
+                // Formulaire Tips (ancien système - gardé pour compatibilité)
+                const tipForm = document.getElementById('tip-form');
+                if (tipForm) {
+                    tipForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (adminSystem) {
+                            const stepsText = document.getElementById('tip-steps').value;
+                            const etapes = stepsText.split('\n').filter(s => s.trim().length > 0);
+                            
+                            await adminSystem.addItem('tips', {
+                                titre: document.getElementById('tip-title').value,
+                                categorie: document.getElementById('tip-category').value,
+                                difficulte: document.getElementById('tip-difficulty').value,
+                                description: document.getElementById('tip-content').value,
+                                etapes: etapes.length > 0 ? etapes : null,
+                                conseil: document.getElementById('tip-conseil').value || null,
+                                temps: document.getElementById('tip-temps').value || null,
+                                date: window.Firebase.serverTimestamp()
+                            });
+                            tipForm.reset();
+                        }
+                    });
+                }
+                
+                // Formulaire Journal (ancien système - gardé pour compatibilité)
+                const journalForm = document.getElementById('journal-form');
+                if (journalForm) {
+                    journalForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (window.addDoc && window.db) {
+                            try {
+                                await window.addDoc(window.collection(window.db, "journal"), {
+                                    titre: document.getElementById('j-title').value,
+                                    resume: document.getElementById('j-resume')?.value || document.getElementById('j-title').value.substring(0, 100),
+                                    contexte: document.getElementById('j-context')?.value || "",
+                                    contenu: document.getElementById('j-content').value,
+                                    date: window.serverTimestamp()
+                                });
+                                journalForm.reset();
+                                alert("✅ Article publié !");
+                            } catch (error) {
+                                console.error("❌ Erreur journal:", error);
+                            }
+                        }
+                    });
+                }
+                
+                // Formulaire À Propos (ancien système - gardé pour compatibilité)
+                const aboutForm = document.getElementById('about-form');
+                if (aboutForm) {
+                    aboutForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (window.setDoc && window.db) {
+                            try {
+                                await window.setDoc(window.doc(window.db, "about", "main"), {
+                                    whoAmI: document.getElementById('about-who').value,
+                                    myJourney: document.getElementById('about-journey').value,
+                                    mission: document.getElementById('about-mission').value,
+                                    values: document.getElementById('about-values').value.split('|').map(v => v.trim())
+                                });
+                                alert("✅ Contenu À propos enregistré !");
+                            } catch (error) {
+                                console.error("❌ Erreur À propos:", error);
+                            }
+                        }
+                    });
+                }
+            };
+            
+            // Attendre un peu puis configurer les intégrations
+            setTimeout(setupAdminIntegration, 2000);
+        });
+    </script>
 </body>
 </html>

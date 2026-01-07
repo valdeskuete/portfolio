@@ -11,7 +11,7 @@
 const AdminAuth = {
     // Fallback: emails autorisés (backup si Firestore indisponible)
     ADMIN_EMAILS: [
-        'admin@valde-tech.com',
+        'valdeskuete8@gmail.com',
     ],
     
     // Cache du role pour éviter trop de reads Firestore

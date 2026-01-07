@@ -379,7 +379,123 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ==================== 5. FONCTIONS GLOBALES FIREBASE ====================*/
+/* ==================== 5. GESTIONNAIRES D'ÉVÉNEMENTS ADMIN ====================*/
+
+// Gestionnaire pour le bouton admin dans le footer
+document.addEventListener('DOMContentLoaded', () => {
+    const adminLoginTrigger = document.getElementById('admin-login-trigger');
+    const adminLoginLink = document.getElementById('admin-login-link');
+    const loginModal = document.getElementById('login-modal');
+    const closeModal = document.getElementById('close-modal');
+    const loginForm = document.getElementById('login-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const adminPanel = document.getElementById('admin-panel');
+
+    // Ouvrir la modale de connexion (footer)
+    if (adminLoginTrigger) {
+        adminLoginTrigger.addEventListener('click', () => {
+            console.log('🔐 Ouverture modale connexion admin (footer)');
+            if (loginModal) loginModal.classList.remove('hidden');
+        });
+    }
+
+    // Ouvrir la modale de connexion (navbar)
+    if (adminLoginLink) {
+        adminLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('🔐 Ouverture modale connexion admin (navbar)');
+            if (loginModal) loginModal.classList.remove('hidden');
+        });
+    }
+
+    // Fermer la modale
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            console.log('❌ Fermeture modale connexion');
+            if (loginModal) loginModal.classList.add('hidden');
+        });
+    }
+
+    // Fermer la modale en cliquant à l'extérieur
+    if (loginModal) {
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Gestion du formulaire de connexion
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            console.log('🔐 Tentative de connexion avec:', email);
+
+            // Vérifier si window.adminLogin existe (défini dans admin-auth.js)
+            if (window.adminLogin) {
+                try {
+                    const success = await window.adminLogin(email, password);
+                    if (success) {
+                        console.log('✅ Connexion admin réussie');
+                        if (loginModal) loginModal.classList.add('hidden');
+                        if (adminPanel) adminPanel.classList.remove('hidden');
+                        // Charger les données admin
+                        if (window.loadAdminData) {
+                            window.loadAdminData();
+                        }
+                    } else {
+                        console.log('❌ Échec de connexion admin');
+                        alert('Email ou mot de passe incorrect');
+                    }
+                } catch (error) {
+                    console.error('❌ Erreur connexion:', error);
+                    alert('Erreur lors de la connexion');
+                }
+            } else {
+                console.error('❌ Fonction adminLogin non disponible');
+                alert('Système d\'authentification non chargé');
+            }
+        });
+    }
+
+    // Gestion de la déconnexion
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            console.log('🚪 Déconnexion admin');
+            if (window.adminLogout) {
+                window.adminLogout();
+            }
+            if (adminPanel) adminPanel.classList.add('hidden');
+        });
+    }
+
+    // Gestion des boutons "suivre sur les réseaux" (social media)
+    const socialMediaLinks = document.querySelectorAll('.social-media a');
+    socialMediaLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            console.log('🔗 Clique social media:', href);
+            
+            // Si c'est un lien téléphonique ou email, laisser agir normalement
+            if (href.startsWith('tel:') || href.startsWith('mailto:')) {
+                return; // Laisser agir normalement
+            }
+            
+            // Pour les liens externes, ouvrir dans un nouvel onglet
+            if (href.startsWith('http') && !href.includes(window.location.hostname)) {
+                e.preventDefault();
+                window.open(href, '_blank', 'noopener,noreferrer');
+            }
+        });
+    });
+
+    console.log('✅ Gestionnaires admin et social media initialisés');
+});
+
+/* ==================== 6. FONCTIONS GLOBALES FIREBASE ====================*/
 // IMPORTANT: Toutes les fonctions Firebase sont définies dans firebase-config.js
 // - window.deleteItem()
 // - window.approveItem()
