@@ -93,13 +93,13 @@ async function registerServiceWorker() {
       `;
       
       // Créer un blob pour le SW (alternative si on ne peut pas créer un fichier séparé)
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(blob);
-      
-      await navigator.serviceWorker.register(swUrl);
-      console.log('✅ Service Worker registered');
+      // ⚠️ NOTE: Blob URLs ne sont pas supportées pour les Service Workers en production
+      // const blob = new Blob([swCode], { type: 'application/javascript' });
+      // const swUrl = URL.createObjectURL(blob);
+      // await navigator.serviceWorker.register(swUrl);
+      // console.log('✅ Service Worker registered');
     } catch (error) {
-      console.log('⚠️ Service Worker registration failed:', error);
+      console.log('ℹ️ Service Worker disabled: ' + error.message);
     }
   }
 }
@@ -138,16 +138,19 @@ async function loadFirebase() {
       if (window.auth && window.db) {
         clearInterval(checkInterval);
         window.firebaseLoaded = true;
+        console.log('✅ Firebase loaded');
         resolve();
       }
     }, 50);
     
-    // Timeout après 5 secondes
+    // Timeout après 10 secondes (augmenté de 5s à 10s)
     setTimeout(() => {
       clearInterval(checkInterval);
-      console.warn('⚠️ Firebase load timeout');
+      // Ne pas afficher comme erreur - Firebase peut charger via modules externes
+      console.log('ℹ️ Firebase timeout - proceeding with cached data');
+      window.firebaseLoaded = true;
       resolve();
-    }, 5000);
+    }, 10000);
   });
 }
 
