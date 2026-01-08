@@ -48,11 +48,20 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            overflow-x: hidden;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: hidden;
         }
 
         .auth-container {
             width: 100%;
             max-width: 420px;
+            overflow-x: hidden;
         }
 
         .auth-card {
@@ -210,6 +219,36 @@
 
         .form-row .form-group {
             margin-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-card {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .auth-tabs {
+                gap: 0.5rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .auth-tab {
+                padding: 0.6rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .form-group input {
+                padding: 0.8rem 0.75rem;
+                font-size: 16px !important;
+            }
         }
 
         .form-checkbox {
