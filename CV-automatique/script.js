@@ -648,6 +648,12 @@ function switchTab(tabName) {
     
     document.getElementById(`tab-${tabName}`).classList.add('active');
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    
+    // Close sidebar on mobile after tab selection
+    if (window.innerWidth <= 767 && window.MobileUI) {
+        const sidebar = document.getElementById('editorSidebar');
+        sidebar?.classList.remove('open');
+    }
 }
 
 // REMOVED - Duplicate handlePhotoUpload moved to line 1581
@@ -1840,10 +1846,12 @@ function zoomOut() {
 }
 
 function applyZoom() {
-    const container = document.getElementById('previewContainer');
+    const container = document.getElementById('cvPreview');
+    if (!container) return; // Prevent null errors
     container.style.transform = `scale(${zoomLevel / 100})`;
     container.style.transformOrigin = 'top center';
-    document.getElementById('zoomLevel').textContent = zoomLevel + '%';
+    const zoomDisplay = document.getElementById('zoomLevelDisplay');
+    if (zoomDisplay) zoomDisplay.textContent = zoomLevel + '%';
     // Store zoom in session
     sessionStorage.setItem('cv-zoom', zoomLevel);
 }
@@ -1987,8 +1995,6 @@ window.toggleSidebar = toggleSidebar;
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
 window.initMobileClosers = initMobileClosers;
-window.toggleFont = toggleFont;
-window.toggleColor = toggleColor;
 window.addEducation = addEducation;
 window.removeEducation = removeEducation;
 window.addExperience = addExperience;
