@@ -1,6 +1,6 @@
 /**
  * Page Management Module for CV Generator
- * Handles page separation, numbering, and overflow
+ * Handles page separation visualization, numbering, and page detection
  */
 
 const PageManager = {
@@ -8,85 +8,53 @@ const PageManager = {
     currentPageIndex: 0,
     pageHeight: 297, // mm
     pageWidth: 210, // mm
-    contentPerPage: [],
     
     /**
-     * Render CV with visible page separations
+     * Add page breaks to HTML content while keeping it on one continuous display
+     * This shows visual page separations without actually dividing content
      */
     renderWithPageBreaks(cvHtml) {
-        // Create pages container
         const container = document.getElementById('cvPreviewContent');
         if (!container) return;
         
-        // Split content into pages
-        const pages = this.splitIntoPages(cvHtml);
+        // Just add the HTML as-is, no division
+        container.innerHTML = cvHtml;
+        container.className = 'cv-preview-content';
         
-        // Clear and rebuild
-        container.innerHTML = '';
-        container.className = 'cv-pages-container';
+        // Add visual page breaks - approximate based on content height
+        setTimeout(() => this.addPageBreakMarkers(), 50);
         
-        pages.forEach((pageContent, index) => {
-            const pageDiv = document.createElement('div');
-            pageDiv.className = 'cv-page';
-            pageDiv.setAttribute('data-page', `${index + 1}/${pages.length}`);
-            
-            pageDiv.innerHTML = `
-                <div class="cv-page-content">
-                    ${pageContent}
-                </div>
-                <div class="page-break-indicator">--- Page Break ---</div>
-            `;
-            
-            container.appendChild(pageDiv);
-        });
+        // Update total pages based on actual height
+        this.detectTotalPages();
+    },
+    
+    /**
+     * Add visual page break markers based on content height
+     */
+    addPageBreakMarkers() {
+        const container = document.getElementById('cvPreviewContent');
+        if (!container) return;
         
-        // Update page count
-        window.totalPages = pages.length;
+        // Get approximate height of one A4 page in pixels
+        // A4 = 297mm at ~96 DPI = ~1122px
+        const pageHeightPx = 1122;
+        const contentHeight = container.scrollHeight;
+        
+        // Calculate pages needed
+        window.totalPages = Math.max(1, Math.ceil(contentHeight / pageHeightPx));
         this.updatePageIndicator();
     },
     
     /**
-     * Split HTML content into pages based on height
+     * Detect total pages from content height
      */
-    splitIntoPages(htmlContent) {
-        const pages = [];
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        tempDiv.style.cssText = 'position: absolute; visibility: hidden; width: 210mm; font-size: 11px; padding: 1.5cm; line-height: 1.4;';
-        document.body.appendChild(tempDiv);
+    detectTotalPages() {
+        const container = document.getElementById('cvPreviewContent');
+        if (!container) return;
         
-        // Approximate page height in pixels (A4: 297mm ≈ 1122px at 96dpi)
-        const pageHeightPx = 1122;
-        let currentPage = '';
-        let currentHeight = 0;
-        let elementBuffer = '';
-        
-        // Get all content elements
-        const elements = tempDiv.querySelectorAll('.cv-section, .cv-item, p, h2, h3');
-        
-        elements.forEach((element) => {
-            const elementHeight = element.offsetHeight + 20; // Add padding
-            
-            // If adding this element exceeds page height, start new page
-            if (currentHeight + elementHeight > pageHeightPx && currentPage.length > 0) {
-                pages.push(currentPage.trim());
-                currentPage = '';
-                currentHeight = 0;
-            }
-            
-            currentPage += element.outerHTML;
-            currentHeight += elementHeight;
-        });
-        
-        // Add remaining content
-        if (currentPage.trim()) {
-            pages.push(currentPage.trim());
-        }
-        
-        document.body.removeChild(tempDiv);
-        
-        // Return at least 1 page
-        return pages.length > 0 ? pages : [htmlContent];
+        const pageHeightPx = 1122; // A4 at 96 DPI
+        const contentHeight = container.scrollHeight;
+        window.totalPages = Math.max(1, Math.ceil(contentHeight / pageHeightPx));
     },
     
     /**
@@ -100,7 +68,7 @@ const PageManager = {
     },
     
     /**
-     * Navigate to page
+     * Navigate to page (scroll based on page height)
      */
     goToPage(pageNum) {
         if (pageNum >= 1 && pageNum <= window.totalPages) {
@@ -114,12 +82,16 @@ const PageManager = {
      * Scroll to specific page in preview
      */
     scrollToPage(pageNum) {
-        const pages = document.querySelectorAll('.cv-page');
-        if (pages[pageNum - 1]) {
-            pages[pageNum - 1].scrollIntoView({ behavior: 'smooth' });
-        }
+        const container = document.getElementById('cvPreviewContainer');
+        if (!container) return;
+        
+        const pageHeightPx = 1122; // A4 at 96 DPI
+        const scrollPosition = (pageNum - 1) * pageHeightPx;
+        
+        container.scrollTop = scrollPosition;
     }
 };
 
 // Expose to window
 window.PageManager = PageManager;
+

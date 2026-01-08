@@ -1851,6 +1851,11 @@ function zoomOut() {
     applyZoom();
 }
 
+function resetZoom() {
+    zoomLevel = 100;
+    applyZoom();
+}
+
 function applyZoom() {
     const container = document.getElementById('cvPreview');
     if (!container) return; // Prevent null errors
