@@ -1062,7 +1062,13 @@ function renderPreview() {
     
     } // Close else block for default templates
 
-    preview.innerHTML = html;
+    // Render with visible page breaks and numbering
+    if (window.PageManager) {
+        window.PageManager.renderWithPageBreaks(html);
+    } else {
+        preview.innerHTML = html;
+    }
+    
     lastPreviewHTML = html; // Cache the output
     
     // Auto-adjust zoom for mobile
@@ -1910,16 +1916,20 @@ function toggleAutoPage() {
 function previousPage() {
     if (currentPage > 1) {
         currentPage--;
+        if (window.PageManager) {
+            window.PageManager.goToPage(currentPage);
+        }
         updatePageIndicator();
-        updatePreview();
     }
 }
 
 function nextPage() {
     if (currentPage < totalPages) {
         currentPage++;
+        if (window.PageManager) {
+            window.PageManager.goToPage(currentPage);
+        }
         updatePageIndicator();
-        updatePreview();
     }
 }
 

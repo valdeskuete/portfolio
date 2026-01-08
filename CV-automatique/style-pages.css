@@ -1,0 +1,170 @@
+/**
+ * Page Separation and Numbering Styles
+ * Shows visual page breaks exactly as they appear in PDF/images
+ */
+
+/* ===== PAGE SEPARATION CONTAINER ===== */
+.cv-pages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* ===== INDIVIDUAL PAGE =====  */
+.cv-page {
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+}
+
+/* Page number at bottom */
+.cv-page::after {
+    content: attr(data-page);
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    font-size: 11px;
+    color: #999;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== PAGE CONTENT =====  */
+.cv-page-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5cm;
+    height: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* ===== PAGE BREAK VISUAL =====  */
+.page-break-indicator {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 2px dashed #ddd;
+    text-align: center;
+    font-size: 10px;
+    color: #999;
+    display: none;
+}
+
+.cv-page:not(:last-child) .page-break-indicator {
+    display: block;
+}
+
+/* ===== RESPONSIVE PAGE SIZING ===== */
+@media (max-width: 767px) {
+    /* Mobile: Stack pages vertically, smaller size */
+    .cv-pages-container {
+        gap: 0.5rem;
+    }
+
+    .cv-page {
+        width: 100%;
+        aspect-ratio: 210 / 297;
+    }
+
+    .cv-page-content {
+        padding: 0.75cm;
+        font-size: clamp(8px, 2vw, 11px);
+    }
+
+    .cv-page::after {
+        font-size: 9px;
+        bottom: 0.3rem;
+        right: 0.5rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Tablet: Medium pages */
+    .cv-page {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    .cv-page-content {
+        padding: 1cm;
+        font-size: 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Desktop: Full A4 size */
+    .cv-page {
+        width: 210mm;
+        height: 297mm;
+    }
+
+    .cv-page-content {
+        padding: 1.5cm;
+        font-size: 11px;
+    }
+}
+
+/* ===== PRINT STYLES - CRITICAL =====  */
+@media print {
+    .cv-pages-container {
+        gap: 0;
+        page-break-after: auto;
+    }
+
+    .cv-page {
+        width: 210mm;
+        height: 297mm;
+        aspect-ratio: auto;
+        border: none;
+        box-shadow: none;
+        margin: 0;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .cv-page-content {
+        padding: 1.5cm;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .page-break-indicator {
+        display: none !important;
+    }
+
+    .cv-page::after {
+        content: 'Page ' attr(data-page);
+    }
+}
+
+/* ===== SECTION OVERFLOW HANDLING =====  */
+.cv-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* Prevent section titles from being orphaned */
+.cv-section-title {
+    break-after: avoid;
+    page-break-after: avoid;
+}
+
+/* ===== CONTENT SCALING FOR PAGES =====  */
+.cv-preview-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dynamic content that respects page boundaries */
+.cv-content-page {
+    width: 100%;
+    min-height: 100%;
+}
