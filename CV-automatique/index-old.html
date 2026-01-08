@@ -50,79 +50,10 @@
             <i class="fas fa-bars"></i>
         </button>
         
-        <!-- MAIN EDITOR AREA WITH PREVIEW -->
-        <div class="editor-main">
-            <!-- CV PREVIEW CONTAINER - Left side on desktop, top on mobile -->
-            <div class="cv-preview-container" id="cvPreviewContainer">
-                <div class="cv-preview" id="cvPreview">
-                    <div class="cv-preview-content" id="cvPreviewContent">
-                        <!-- Preview will be rendered here by script.js updatePreview() -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- TOOLBAR - Bottom on mobile, bottom on all -->
-            <div class="editor-toolbar" id="editorToolbar">
-                <!-- Section Zoom et Navigation Pages -->
-                <div class="toolbar-section">
-                    <div class="toolbar-group">
-                        <button class="toolbar-btn" onclick="previousPage()" title="Page précédente">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="toolbar-btn" onclick="zoomOut()" title="Zoom arrière">
-                            <i class="fas fa-search-minus"></i>
-                        </button>
-                        <button class="toolbar-btn" onclick="resetZoom()" title="Zoom normal">
-                            <span id="zoomLevelDisplay">100%</span>
-                        </button>
-                        <button class="toolbar-btn" onclick="zoomIn()" title="Zoom avant">
-                            <i class="fas fa-search-plus"></i>
-                        </button>
-                        <button class="toolbar-btn" onclick="nextPage()" title="Page suivante">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Section Gestion des Pages -->
-                <div class="toolbar-section">
-                    <div class="toolbar-group">
-                        <button class="toolbar-btn" onclick="addPage()" title="Ajouter une page">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="toolbar-btn" onclick="removePage()" title="Supprimer la page">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="toolbar-btn" id="autoPageBtn" title="Mode auto/manual" onclick="toggleAutoPage()">
-                            <i class="fas fa-magic"></i>
-                            <span>Auto</span>
-                        </button>
-                    </div>
-                    <div class="page-indicator">
-                        <span id="currentPageDisplay">Page 1/1</span>
-                    </div>
-                </div>
-
-                <!-- Section Actions Rapides -->
-                <div class="toolbar-section">
-                    <div class="toolbar-group">
-                        <button class="toolbar-btn primary" onclick="exportPDF()" title="Exporter PDF">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>PDF</span>
-                        </button>
-                        <button class="toolbar-btn" onclick="toggleSidebar()" title="Menu" id="menuToggleToolbar">
-                            <i class="fas fa-bars"></i>
-                            <span>Menu</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SIDEBAR WITH FORMS - Right side on desktop, overlay on mobile -->
+        <!-- SIDEBAR -->
         <aside class="editor-sidebar" id="editorSidebar">
             <div class="sidebar-header">
-                <h1><i class="fas fa-file-alt"></i> CV Pro</h1>
+                <h1><i class="fas fa-file-alt"></i> CV Pro avec Valdes Tech</h1>
                 <p>Créateur Premium</p>
                 <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()" style="display:none;" aria-label="Close sidebar">
                     <i class="fas fa-times"></i>
@@ -273,24 +204,58 @@
                 </div>
 
                 <div class="panel-section">
-                    <h3><i class="fas fa-fill-drip"></i> Couleur Principale</h3>
-                    <div class="color-palette">
-                        <div class="color-swatch" data-color="#00eeff" style="background: #00eeff;" title="Cyan" onclick="setColor('#00eeff')"></div>
-                        <div class="color-swatch" data-color="#ff6600" style="background: #ff6600;" title="Orange" onclick="setColor('#ff6600')"></div>
-                        <div class="color-swatch" data-color="#1a5f7a" style="background: #1a5f7a;" title="Bleu" onclick="setColor('#1a5f7a')"></div>
-                        <div class="color-swatch" data-color="#000000" style="background: #000000;" title="Noir" onclick="setColor('#000000')"></div>
-                        <div class="color-swatch" data-color="#e91e63" style="background: #e91e63;" title="Rose" onclick="setColor('#e91e63')"></div>
-                        <div class="color-swatch" data-color="#4CAF50" style="background: #4CAF50;" title="Vert" onclick="setColor('#4CAF50')"></div>
+                    <h3><i class="fas fa-image"></i> Photo</h3>
+                    <div style="margin-bottom: 15px;">
+                        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" style="display: none;">
+                        <button onclick="document.getElementById('photoInput').click()" style="width: 100%; padding: 10px; background: #0084ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-upload"></i> Télécharger Photo
+                        </button>
                     </div>
-                    <div class="color-input-wrapper" style="margin-top: 10px;">
-                        <input type="color" id="primaryColor" value="#00eeff" oninput="updatePreview(); syncColorHex(this.value)">
-                        <span id="primaryColorHex">#00eeff</span>
+                    <div id="photoEditorTools" style="display: none; gap: 10px;">
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Crop (%):</small>
+                            <input type="range" id="cropSlider" min="0" max="50" value="0" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Brightness:</small>
+                            <input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
+                        <label style="display: block; margin-top: 10px;">
+                            <small>Contrast:</small>
+                            <input type="range" id="contrastSlider" min="50" max="150" value="100" oninput="applyPhotoFilter()" style="width: 100%; margin-top: 5px;">
+                        </label>
                     </div>
                 </div>
 
                 <div class="panel-section">
-                    <h3><i class="fas fa-typography"></i> Typographie</h3>
+                    <h3><i class="fas fa-palette"></i> Couleurs</h3>
+                    <div class="color-presets">
+                        <button class="color-preset modern" onclick="applyColorPreset('modern')" title="Modern"></button>
+                        <button class="color-preset classic" onclick="applyColorPreset('classic')" title="Classic"></button>
+                        <button class="color-preset bold" onclick="applyColorPreset('bold')" title="Bold"></button>
+                        <button class="color-preset minimal" onclick="applyColorPreset('minimal')" title="Minimal"></button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-fill-drip"></i> Personnaliser</h3>
                     
+                    <div class="form-group">
+                        <label>Couleur Principale</label>
+                        <div class="color-palette">
+                            <div class="color-swatch" data-color="#00eeff" style="background: #00eeff;" title="Cyan" onclick="setColor('#00eeff')"></div>
+                            <div class="color-swatch" data-color="#ff6600" style="background: #ff6600;" title="Orange" onclick="setColor('#ff6600')"></div>
+                            <div class="color-swatch" data-color="#1a5f7a" style="background: #1a5f7a;" title="Bleu" onclick="setColor('#1a5f7a')"></div>
+                            <div class="color-swatch" data-color="#000000" style="background: #000000;" title="Noir" onclick="setColor('#000000')"></div>
+                            <div class="color-swatch" data-color="#e91e63" style="background: #e91e63;" title="Rose" onclick="setColor('#e91e63')"></div>
+                            <div class="color-swatch" data-color="#4CAF50" style="background: #4CAF50;" title="Vert" onclick="setColor('#4CAF50')"></div>
+                        </div>
+                        <div class="color-input-wrapper" style="margin-top: 10px;">
+                            <input type="color" id="primaryColor" value="#00eeff" oninput="updatePreview(); syncColorHex(this.value)">
+                            <span id="primaryColorHex">#00eeff</span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Police Titre</label>
                         <select id="fontTitle" onchange="updatePreview()">
@@ -316,7 +281,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><i class="fas fa-heading"></i> Nom (Size)</label>
+                        <label><i class="fas fa-heading"></i> Nom (Heading)</label>
                         <div class="size-input-wrapper">
                             <input type="range" id="nameSize" min="24" max="52" value="36" oninput="updatePreview(); document.getElementById('nameSizeDisplay').textContent = this.value + 'px'">
                             <span id="nameSizeDisplay">36px</span>
@@ -372,6 +337,10 @@
                         <i class="fas fa-image"></i> PNG
                     </button>
 
+                    <button class="export-btn" onclick="exportDOCX()" aria-label="Exporter en Word">
+                        <i class="fas fa-file-word"></i> Word
+                    </button>
+
                     <button class="export-btn" onclick="exportJSON()" aria-label="Sauvegarder le CV">
                         <i class="fas fa-save"></i> Sauvegarder
                     </button>
@@ -386,39 +355,149 @@
                 <div class="panel-section">
                     <h3><i class="fas fa-arrow-left"></i> Navigation</h3>
                     
-                    <button class="export-btn secondary" onclick="goBack()">
-                        <i class="fas fa-home"></i> Retour
+                    <button class="export-btn secondary" onclick="goBackToDashboard()">
+                        <i class="fas fa-home"></i> Mes CVs
                     </button>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-search-plus"></i> Zoom</h3>
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+                        <span id="zoomLevel">100%</span>
+                        <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
 
             </div>
         </aside>
+
+        <!-- APERÇU -->
+        <main class="editor-preview" id="editorPreview">
+            <div class="preview-wrapper">
+                <div class="preview-container" id="previewContainer">
+                    <div class="cv-page minimal-template" id="cvPreview">
+                        <!-- Contenu généré dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- BARRE D'OUTILS MODERNE (STYLE PUBLISHER) -->
+        <div class="modern-toolbar" id="modernToolbar">
+            <!-- Section Navigation Rapide -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn active" data-tab="content" onclick="switchTab('content')" title="Contenu">
+                        <i class="fas fa-edit"></i>
+                        <span>Contenu</span>
+                    </button>
+                    <button class="toolbar-btn" data-tab="design" onclick="switchTab('design')" title="Design">
+                        <i class="fas fa-palette"></i>
+                        <span>Design</span>
+                    </button>
+                    <button class="toolbar-btn" data-tab="export" onclick="switchTab('export')" title="Export">
+                        <i class="fas fa-download"></i>
+                        <span>Export</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Gestion des Pages -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="addPage()" title="Ajouter une page">
+                        <i class="fas fa-plus"></i>
+                        <span>Ajouter</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="removePage()" title="Supprimer la page">
+                        <i class="fas fa-trash"></i>
+                        <span>Supprimer</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleAutoPage()" title="Mode auto/manual" id="autoPageBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>Auto</span>
+                    </button>
+                </div>
+                <div class="page-indicator">
+                    <span id="currentPageDisplay">Page 1/1</span>
+                </div>
+            </div>
+
+            <!-- Section Zoom et Navigation Pages -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="previousPage()" title="Page précédente">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="zoomOut()" title="Zoom arrière">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="resetZoom()" title="Zoom normal">
+                        <span id="zoomLevelDisplay">100%</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="zoomIn()" title="Zoom avant">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="nextPage()" title="Page suivante">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Actions Rapides -->
+            <div class="toolbar-section">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn primary" onclick="exportPDF()" title="Exporter PDF">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>PDF</span>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleSidebar()" title="Menu" id="menuToggleToolbar">
+                        <i class="fas fa-bars"></i>
+                        <span>Menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ARIA LIVE REGION FOR ACCESSIBILITY -->
     <div class="sr-only" role="status" aria-live="polite" id="ariaStatus"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- ===== MODULE FIREBASE INIT ===== -->
+    <!-- LOADER OPTIMISÉ -->
+    <script src="loader-optimized.js?v=3"></script>
+    
+    <!-- FIREBASE INITIALIZATION MODULE - MUST be first -->
     <script type="module">
+        // Import Firebase functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, deleteDoc, doc, updateDoc, getDocs, getDoc, setDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import {
+            getFirestore, collection, addDoc, onSnapshot, query,
+            orderBy, where, deleteDoc, doc, updateDoc, getDocs,
+            increment, serverTimestamp, setDoc, getDoc
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import {
+            getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+            onAuthStateChanged, signOut, signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+        // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDCZZ6f8SmLwGG0Z9eH3mXe4-2tOfUyXO0",
+            apiKey: "AIzaSyBirIXLKxkuWT7js3CB4_pGB6tk4wPa2AM",
             authDomain: "valde-tech.firebaseapp.com",
             projectId: "valde-tech",
-            storageBucket: "valde-tech.appspot.com",
-            messagingSenderId: "370909297073",
-            appId: "1:370909297073:web:eb670e5f48fdd097f01e80"
+            storageBucket: "valde-tech.firebasestorage.app",
+            messagingSenderId: "1057527881640",
+            appId: "1:1057527881640:web:0fa2badcf46267bee7879d"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
