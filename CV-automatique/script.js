@@ -92,10 +92,12 @@ function autoSaveToFirebase() {
         photoData: currentPhotoData
     };
 
-    return window.CVDocumentManager.updateCV(currentCVId, saveData)
+    return window.CVDocumentManager?.updateCV(currentCVId, saveData)
         .catch(err => {
-            console.error('Error saving to Firebase:', err);
-            // Fallback to localStorage for offline
+            console.warn('Firebase unavailable, using localStorage:', err);
+            localStorage.setItem('cv-auto-save', JSON.stringify({ ...saveData, timestamp: new Date().toISOString() }));
+        }) ?? Promise.resolve(() => {
+            // Fallback: no Firebase, save to localStorage
             localStorage.setItem('cv-auto-save', JSON.stringify({ ...saveData, timestamp: new Date().toISOString() }));
         });
 }
@@ -2004,8 +2006,18 @@ function goBackToDashboard() {
 // This allows inline onclick="functionName()" to work in HTML
 window.toggleDarkMode = toggleDarkMode;
 window.switchTab = switchTab;
+window.switchTemplate = switchTemplate;
+window.setColor = setColor;
 window.loadExample = loadExample;
 window.exportPDF = exportPDF;
+window.exportPNG = exportPNG;
+window.exportDOCX = exportDOCX;
+window.exportJSON = exportJSON;
+window.triggerJSONImport = triggerJSONImport;
+window.importJSON = importJSON;
+window.syncColorHex = syncColorHex;
+window.applyColorPreset = applyColorPreset;
+window.applyPhotoFilter = applyPhotoFilter;
 window.toggleSidebar = toggleSidebar;
 window.openSidebar = openSidebar;
 window.closeSidebar = closeSidebar;
@@ -2028,7 +2040,7 @@ window.previousPage = previousPage;
 window.zoomIn = zoomIn;
 window.zoomOut = zoomOut;
 window.resetZoom = resetZoom;
-window.goBack = goBack;
+window.goBack = goBackToDashboard;
 window.saveCVToFirestore = saveCVToFirestore;
 window.loadCVFromFirestore = loadCVFromFirestore;
 window.autoSaveCVToFirestore = autoSaveCVToFirestore;
